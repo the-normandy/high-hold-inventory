@@ -1,0 +1,60 @@
+<section class="flex flex-1 flex-col self-center items-center justify-center">
+    <h2 class="text-3xl text-center pb-10">Crafted Items {{ this.mode().charAt(0).toUpperCase() + this.mode().slice(1) }} Form</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <h3 class="text-xl text-center pb-4">General Information</h3>
+        <mat-form-field class="w-full">
+            <mat-label>Purpose</mat-label>
+            <input matInput type="text" formControlName="purpose">
+        </mat-form-field>
+        <div formArrayName="items" class="pb-4">
+            <div class="flex flex-row gap-10 items-center justify-center pb-4">
+                <h3 class="text-xl text-center">Items</h3>
+                <button matIconButton (click)="addNewItem()"><mat-icon>add</mat-icon></button>
+            </div>
+            @for (row of itemRows.controls; track $index) {
+                <div class="flex flex-row gap-4 items-center justify-center" [formGroupName]="$index">
+                    <mat-form-field>
+                        <mat-label>Crafting</mat-label>
+                        <mat-select formControlName="crafting">
+                            @for (craft of crafting; track craft) {
+                            <mat-option [value]="craft">
+                                {{ craft }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Category</mat-label>
+                        <mat-select formControlName="category">
+                            @for (category of getCategoriesFromRow($index); track category) {
+                                <mat-option [value]="category">
+                                    {{ category }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Item</mat-label>
+                        <mat-select formControlName="item">
+                            @for (item of getItemsFromRow($index); track item.name) {
+                            <mat-option [value]="item">
+                                {{ item.name }}
+                            </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Quantity</mat-label>
+                        <input matInput type="number" formControlName="quantity">
+                    </mat-form-field>
+                    <mat-checkbox formControlName="laborOnly">Labor only?</mat-checkbox>
+                    <button type="button" matIconButton (click)="removeItem($index)"><mat-icon>delete</mat-icon></button>
+                </div>
+            }
+        </div>
+        <div class="flex items-center justify-center gap-6">
+            <button matButton="filled" class="w-44">Generate</button>
+            <button type="button" matButton="filled" class="w-44" routerLink="/new">Back</button>
+        </div>
+    </form>
+</section>

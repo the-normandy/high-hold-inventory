@@ -1,0 +1,71 @@
+<section class="flex flex-1 flex-col self-center items-center justify-center">
+        <h2 class="text-3xl text-center pb-10">Material {{title()}} Form</h2>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+        <h3 class="text-xl text-center pb-4">General Information</h3>
+        <div class="flex flex-row gap-4 items-center justify-center">
+            <mat-form-field class="w-sm">
+                <mat-label>Silver</mat-label>
+                <input matInput type="number" formControlName="silver">
+            </mat-form-field>
+        @if (isDeposit()) {
+            <mat-form-field class="w-full">
+                <mat-label>Purpose</mat-label>
+                <input matInput type="text" formControlName="purpose">
+            </mat-form-field>
+        } @else {
+            <mat-form-field class="w-sm">
+                <mat-label>Usage</mat-label>
+                <mat-select formControlName="usage">
+                    <mat-option value="Personal Use">Personal Use</mat-option>
+                    <mat-option value="Clan">Clan</mat-option>
+                    <mat-option value="Profit">Profit</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="w-full">
+                <mat-label>Ownership</mat-label>
+                <mat-hint>Who is this withdrawal for?</mat-hint>
+                <input matInput type="text" formControlName="ownership">
+            </mat-form-field>
+        }
+        </div>
+        <div formArrayName="items" class="pb-4">
+            <div class="flex flex-row gap-10 items-center justify-center pb-4">
+                <h3 class="text-xl text-center">Items</h3>
+                <button matIconButton (click)="addNewItem()"><mat-icon>add</mat-icon></button>
+            </div>
+            @for (row of itemRows.controls; track $index) {
+                <div class="flex flex-row gap-4 items-center justify-center" [formGroupName]="$index">
+                    <mat-form-field>
+                        <mat-label>Category</mat-label>
+                        <mat-select formControlName="category">
+                            @for (category of categories; track category) {
+                                <mat-option [value]="category">
+                                    {{ category }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Item</mat-label>
+                        <mat-select formControlName="item">
+                            @for (item of getItemsFromRow($index); track item.name) {
+                                <mat-option [value]="item">
+                                    {{ item.name }}
+                                </mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Quantity</mat-label>
+                        <input matInput type="number" formControlName="quantity">
+                    </mat-form-field>
+                    <button type="button" matIconButton (click)="removeItem($index)"><mat-icon>delete</mat-icon></button>
+                </div>
+            }
+        </div>
+        <div class="flex items-center justify-center gap-6">
+            <button matButton="filled" class="w-44">Generate</button>
+            <button type="button" matButton="filled" class="w-44" routerLink="/new">Back</button>
+        </div>
+    </form>
+</section>
