@@ -4,7 +4,7 @@
         <h3 class="text-xl text-center pb-4">General Information</h3>
         <mat-form-field class="w-full">
             <mat-label>Purpose</mat-label>
-            <input matInput type="text" formControlName="purpose">
+            <input matInput type="text" formControlName="purpose" aria-label="purpose">
         </mat-form-field>
         <div formArrayName="items" class="pb-4">
             <div class="flex flex-row gap-10 items-center justify-center pb-4">
@@ -45,7 +45,7 @@
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Quantity</mat-label>
-                        <input matInput type="number" formControlName="quantity">
+                        <input matInput type="number" formControlName="quantity" aria-label="quantity">
                     </mat-form-field>
                     <mat-checkbox formControlName="laborOnly">Labor only?</mat-checkbox>
                     <button type="button" matIconButton (click)="removeItem($index)"><mat-icon>delete</mat-icon></button>
