@@ -10,6 +10,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { ItemData, Category } from "../../core/data/item.model";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DatePipe } from "@angular/common";
+import { InventoryService } from "./inventory.service";
 
 @Component({
     selector: 'app-inventory',
@@ -24,6 +25,7 @@ import { DatePipe } from "@angular/common";
 export class InventoryComponent implements OnInit {
 
     data = inject(DataStore);
+    service = inject(InventoryService);
     mode = signal<string>('');
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
@@ -91,10 +93,10 @@ export class InventoryComponent implements OnInit {
         return this.form.get('items') as FormArray;
     }
 
-    addNewItem() {
+    addNewItem(category: Category | null = null, item: ItemData | null = null) {
         const group = this.fb.group({
-            category: [null, Validators.required],
-            item: [null, Validators.required],
+            category: [category, Validators.required],
+            item: [item, Validators.required],
             quantity: [1, [Validators.required, Validators.min(1)]]
         });
 
