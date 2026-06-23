@@ -5,7 +5,11 @@
 /tmp
 /out-tsc
 /bazel-out
-/src-tauri
+/src-tauri/target/
+latest.json
+
+# Angular
+.angular
 
 # Node
 /node_modules
@@ -20,6 +24,10 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+
+# Environment files
+.env
+.env.*
 
 # Visual Studio Code
 .vscode/*
