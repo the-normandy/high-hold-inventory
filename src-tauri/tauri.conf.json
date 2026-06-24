@@ -3,6 +3,11 @@
   "productName": "High Hold Storehouse",
   "version": "1.0.2",
   "identifier": "com.high-hold.storehouse",
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJFRDZGODVBQUQwRDAyNDkKUldSSkFnMnRXdmpXdmd0QTZHZW9hemd2TUZLZHlncDJYS3FzNkk4dnZPN29yeUxqc3ZSZU5TbXQK"
+    }
+  },
   "build": {
     "frontendDist": "../dist/high-hold-inventory/browser",
     "devUrl": "http://localhost:4200",
