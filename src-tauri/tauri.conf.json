@@ -5,7 +5,10 @@
   "identifier": "com.high-hold.storehouse",
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJFRDZGODVBQUQwRDAyNDkKUldSSkFnMnRXdmpXdmd0QTZHZW9hemd2TUZLZHlncDJYS3FzNkk4dnZPN29yeUxqc3ZSZU5TbXQK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEJFRDZGODVBQUQwRDAyNDkKUldSSkFnMnRXdmpXdmd0QTZHZW9hemd2TUZLZHlncDJYS3FzNkk4dnZPN29yeUxqc3ZSZU5TbXQK",
+      "endpoints": [
+        "https://github.com/the-normandy/high-hold-inventory/releases/latest/download/latest.json"
+      ]
     }
   },
   "build": {
@@ -34,6 +37,7 @@
   "bundle": {
     "active": true,
     "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
