@@ -55,7 +55,7 @@ export class UpdaterComponent implements OnInit {
         if (!this.updateData) { 
             this.shouldRenderUpdateProgress.set(false);
             this.shouldRenderUpdateError.set(true);
-            this.renderMessage.set('An unknown error occurred.');
+            this.renderMessage.set('An unknown error occurred when fetching update data.');
             return;
          }
 
