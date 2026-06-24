@@ -37,6 +37,7 @@ export class UpdaterComponent implements OnInit {
     dismissUpdate() {
         this.shouldRenderUpdateRequest.set(false);
         this.shouldRenderUpdateProgress.set(false);
+        this.shouldRenderUpdateError.set(false);
     }
 
     async startUpdate() {
