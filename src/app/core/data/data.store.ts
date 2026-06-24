@@ -124,7 +124,13 @@ export class DataStore {
         ]
     };
 
-
+    craftData = {
+        Alchemy: this.alchemyItems,
+        Blacksmithing: this.blacksmithingItems,
+        Leatherworking: this.leatherworkingItems,
+        Woodcarving: this.woodcarvingItems
+    } satisfies Record<CraftCategory, Record<string, ItemData[]>>;
+    
     craftItems: CraftCategory[] = ['Alchemy', 'Blacksmithing', 'Leatherworking', 'Woodcarving'];
 
     items: Record<Category, ItemData[]> = {
