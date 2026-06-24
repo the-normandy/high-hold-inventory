@@ -7,9 +7,18 @@
             <input matInput type="text" formControlName="purpose" aria-label="purpose">
         </mat-form-field>
         <div formArrayName="items" class="pb-4">
-            <div class="flex flex-row gap-10 items-center justify-center pb-4">
-                <h3 class="text-xl text-center">Items</h3>
-                <button matIconButton (click)="addNewItem()"><mat-icon>add</mat-icon></button>
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center pb-4">
+                <div></div>
+                    <h3 class="text-xl justify-self-center px-4">Items</h3>
+                    <div class="justify-self-start flex items-center gap-20">
+                    <button matIconButton (click)="addNewItem()"><mat-icon>add</mat-icon></button>
+                    <input type="text" id="search" placeholder="Search an item" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Search item" class="py-2 justify-self-start rounded-full px-4 outline focus:outline-(--mat-sys-primary) focus:outline-2" />
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="onQuickAdd($event.option.value)" >
+                        @for (searchable of filteredItems(); track searchable.item.name) {
+                            <mat-option [value]="searchable">{{searchable.item.name}}</mat-option>
+                        }
+                    </mat-autocomplete>
+                </div>
             </div>
             @for (row of itemRows.controls; track $index) {
                 <div class="flex flex-row gap-4 items-center justify-center" [formGroupName]="$index">

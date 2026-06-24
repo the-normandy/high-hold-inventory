@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { DataStore } from "../../core/data/data.store";
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
@@ -11,6 +11,9 @@ import { DatePipe } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { CraftService, CraftSearchableItem } from "./craft.service";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 @Component({
     selector: 'app-craft',
@@ -18,11 +21,12 @@ import { MatCheckboxModule } from "@angular/material/checkbox";
     styles: `:host { @apply flex-1; }`,
     imports: [
     MatFormFieldModule, ReactiveFormsModule, MatIconModule, MatInputModule,
-    MatButtonModule, MatSelectModule, RouterModule, MatCheckboxModule
+    MatButtonModule, MatSelectModule, RouterModule, MatCheckboxModule, MatAutocompleteModule
 ]
 })
 export class CraftComponent implements OnInit {
     data = inject(DataStore);
+    service = inject(CraftService);
     fb = inject(FormBuilder);
     snackBar = inject(MatSnackBar);
     route = inject(ActivatedRoute);
@@ -31,6 +35,23 @@ export class CraftComponent implements OnInit {
     form = this.fb.group({
         purpose: this.fb.control<string | null>(null),
         items: this.fb.array<FormGroup<any>>([])
+    });
+
+    allItems = this.service.getAllItems();
+
+    searchControl = new FormControl('');
+
+    searchText = toSignal(
+        this.searchControl.valueChanges,
+        { initialValue: '' }
+    );
+
+    filteredItems = computed(() => {
+        const search = this.searchText()?.toLowerCase() ?? '';
+
+        return this.allItems.filter(item =>
+            item.item.name.toLowerCase().includes(search)
+        );
     });
 
     ngOnInit() {
@@ -43,6 +64,21 @@ export class CraftComponent implements OnInit {
         this.mode.set(param.toLowerCase());
 
         this.addNewItem();
+    }
+
+    displayItem(item: CraftSearchableItem | null): string {
+        return item?.item.name ?? '';
+    }
+
+    onQuickAdd(searchable: CraftSearchableItem) {
+        this.addNewItem(
+            searchable.craft,
+            searchable.category,
+            searchable.item
+        );
+
+        this.searchControl.setValue('');
+        (document.getElementById('search') as HTMLInputElement).value = '';
     }
 
     get crafting(): CraftCategory[] {
@@ -102,11 +138,11 @@ export class CraftComponent implements OnInit {
         }
     }
 
-    addNewItem() {
+    addNewItem(crafting: CraftCategory | null = null, category: string | null = null, item: ItemData | null = null) {
         const group = this.fb.group({
-            crafting: [null, Validators.required],
-            category: [null, Validators.required],
-            item: [null, Validators.required],
+            crafting: [crafting, Validators.required],
+            category: [category, Validators.required],
+            item: [item, Validators.required],
             quantity: [1, [Validators.required, Validators.min(1)]],
             laborOnly: [false]
         });
