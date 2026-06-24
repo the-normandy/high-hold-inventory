@@ -1,7 +1,8 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
+import { testUpdater } from "./updater.service";
 
 @Component({
     selector: 'app-home',
@@ -11,6 +12,9 @@ import { RouterLink } from "@angular/router";
         MatCardModule, MatButtonModule, RouterLink
     ]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
+    ngOnInit() {
+        testUpdater();
+    }
 }
