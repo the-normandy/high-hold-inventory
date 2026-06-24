@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from "@angular/core";
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -10,7 +10,9 @@ import { MatSelectModule } from "@angular/material/select";
 import { ItemData, Category } from "../../core/data/item.model";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DatePipe } from "@angular/common";
-import { InventoryService } from "./inventory.service";
+import { InventoryService, SearchableItem } from "./inventory.service";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-inventory',
@@ -19,7 +21,7 @@ import { InventoryService } from "./inventory.service";
     imports: [
     MatFormFieldModule, MatInputModule, ReactiveFormsModule,
     MatIconModule, MatButtonModule, MatSelectModule,
-    RouterLink
+    RouterLink, MatAutocompleteModule
 ]
 })
 export class InventoryComponent implements OnInit {
@@ -38,6 +40,23 @@ export class InventoryComponent implements OnInit {
         ownership: this.fb.control<string | null>(null),
         usage: this.fb.control<string | null>(null),
         items: this.fb.array<FormGroup<any>>([])
+    });
+
+    allItems = this.service.getAllItems();
+
+    searchControl = new FormControl('');
+
+    searchText = toSignal(
+        this.searchControl.valueChanges,
+        { initialValue: '' }
+    );
+
+    filteredItems = computed(() => {
+        const search = this.searchText()?.toLowerCase() ?? '';
+
+        return this.allItems.filter(item =>
+            item.item.name.toLowerCase().includes(search)
+        );
     });
 
     ngOnInit() {
@@ -69,6 +88,16 @@ export class InventoryComponent implements OnInit {
         this.form.get('usage')?.updateValueAndValidity();
         this.form.get('ownership')?.updateValueAndValidity();
         this.addNewItem();
+    }
+
+    displayItem(item: SearchableItem | null): string {
+        return item?.item.name ?? '';
+    }
+
+    onQuickAdd(searchable: SearchableItem) {
+        this.addNewItem(searchable.category, searchable.item);
+        this.searchControl.setValue('');
+        (document.getElementById('search') as HTMLInputElement).value = '';
     }
 
     isDeposit(): boolean {
