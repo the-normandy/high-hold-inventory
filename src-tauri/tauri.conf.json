@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "High Hold Storehouse",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "identifier": "com.high-hold.storehouse",
   "build": {
     "frontendDist": "../dist/high-hold-inventory/browser",
