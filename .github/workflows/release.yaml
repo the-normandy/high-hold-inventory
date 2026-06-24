@@ -49,7 +49,7 @@ jobs:
             platforms = @{
               "windows-x86_64" = @{
                 signature = $sig
-                url = "https://github.com/the-normandy/high-hold-inventory/releases/download/${{ github.ref_name }}/$($installer.Name -replace ' ', '%20')"
+                url = "https://github.com/the-normandy/high-hold-inventory/releases/download/${{ github.ref_name }}/$($installer.Name -replace ' ', '.')"
               }
             }
           } | ConvertTo-Json -Depth 10
