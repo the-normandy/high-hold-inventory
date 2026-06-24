@@ -12,3 +12,10 @@
         <span>{{renderMessage()}}</span>
     </div>
 }
+@if (shouldRenderUpdateError()) {
+    <div class="self-center flex flex-row gap-8 p-6 mt-10 border border-red-700 bg-red-700/10 text-red-700 rounded-md items-center">
+        <mat-icon>cancel</mat-icon>
+        <span>Some text here</span>
+        <button matButton="tonal" (click)="dismissUpdate()">Dismiss</button>
+    </div>
+}
