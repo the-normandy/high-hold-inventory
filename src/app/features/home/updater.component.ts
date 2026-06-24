@@ -8,7 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
     selector: 'app-updater',
     templateUrl: 'updater.component.html',
-    styles: `:host { @apply flex-1; }`,
+    styles: `:host { @apply flex-1 w-fit; }`,
     imports: [MatIconModule, MatButtonModule, MatProgressSpinnerModule]
 })
 export class UpdaterComponent implements OnInit {
