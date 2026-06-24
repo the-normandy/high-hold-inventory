@@ -29,6 +29,7 @@ export class UpdaterComponent implements OnInit {
     renderMessage = signal<string | null>(null);
     shouldRenderUpdateRequest = signal<boolean>(false);
     shouldRenderUpdateProgress = signal<boolean>(false);
+    shouldRenderUpdateError = signal<boolean>(false);
     version = signal<string | null>(null);
     updateData: Update | null = null;
     private updating = false;
@@ -44,12 +45,15 @@ export class UpdaterComponent implements OnInit {
         }
 
         this.updating = true;
+        let phase;
         let downloaded = 0;
         let contentLength = 0;
         this.shouldRenderUpdateRequest.set(false);
         this.shouldRenderUpdateProgress.set(true);
 
         if (!this.updateData) { 
+            this.shouldRenderUpdateProgress.set(false);
+            this.shouldRenderUpdateError.set(true);
             this.renderMessage.set('An unknown error occurred.');
             return;
          }
@@ -58,6 +62,7 @@ export class UpdaterComponent implements OnInit {
             await this.updateData.downloadAndInstall((event) => {
                 switch(event.event) {
                     case 'Started': {
+                        phase = 'downloading';
                         contentLength = event.data.contentLength ?? 0;
                         this.renderMessage.set('Starting update...');
                         break;
@@ -72,14 +77,17 @@ export class UpdaterComponent implements OnInit {
                         break;
                     }
                     case 'Finished': {
+                        phase = 'installing';
                         this.renderMessage.set("Download finished. Installing...");
                         break;
                     }
                 }
             });
          } catch(error) {
+            this.shouldRenderUpdateProgress.set(false);
+            this.shouldRenderUpdateError.set(true);
             console.error(error);
-            this.renderMessage.set('Update failed.');
+            this.renderMessage.set(`Update failed while ${phase}. If this persists, contact the-normandy with details.`);
          } finally {
             this.updating = false;
          }
