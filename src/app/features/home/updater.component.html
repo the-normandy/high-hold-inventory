@@ -1,0 +1,14 @@
+@if (shouldRenderUpdateRequest()) {
+    <div class="self-center flex flex-row gap-8 p-6 mt-10 border border-(--mat-sys-primary)">
+        <mat-icon>notifications_active</mat-icon>
+        <span>A new version ({{version()}}) was found.</span>
+        <button matButton="filled" (click)="startUpdate()">Update</button>
+        <button matButton="tonal" (click)="dismissUpdate()">Dismiss</button>
+    </div>
+} 
+@if (shouldRenderUpdateProgress()) {
+    <div class="self-center flex flex-row gap-8 p-6 mt-10 border border-(--mat-sys-primary)">
+        <mat-spinner diameter="24"></mat-spinner>
+        <span>{{renderMessage()}}</span>
+    </div>
+}
