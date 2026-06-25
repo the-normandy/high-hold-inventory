@@ -75,7 +75,7 @@ export class UpdaterComponent implements OnInit {
                         const mbDownloaded = (downloaded / 1024 / 1024).toFixed(1);
                         const mbTotal = (contentLength / 1024 / 1024).toFixed(1);
 
-                        this.renderMessage.set(`Downloading: ${mbDownloaded} of ${mbTotal}`)
+                        this.renderMessage.set(`Downloading: ${mbDownloaded} / ${mbTotal} MB`)
                         break;
                     }
                     case 'Finished': {
