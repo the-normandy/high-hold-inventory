@@ -140,6 +140,7 @@ export class CraftComponent implements OnInit {
 
     addNewItem(crafting: CraftCategory | null = null, category: string | null = null, item: ItemData | null = null) {
         const group = this.fb.group({
+            id: crypto.randomUUID(),
             crafting: [crafting, Validators.required],
             category: [category, Validators.required],
             item: [item, Validators.required],

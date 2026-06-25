@@ -124,6 +124,7 @@ export class InventoryComponent implements OnInit {
 
     addNewItem(category: Category | null = null, item: ItemData | null = null) {
         const group = this.fb.group({
+            id: crypto.randomUUID(),
             category: [category, Validators.required],
             item: [item, Validators.required],
             quantity: [1, [Validators.required, Validators.min(1)]]

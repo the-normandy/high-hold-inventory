@@ -42,7 +42,7 @@
                 </mat-autocomplete>
                 </div>
             </div>
-            @for (row of itemRows.controls; track $index) {
+            @for (row of itemRows.controls; track row.value.id) {
                 <div class="flex flex-row gap-4 items-center justify-center" [formGroupName]="$index">
                     <mat-form-field>
                         <mat-label>Category</mat-label>
