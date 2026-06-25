@@ -26,6 +26,7 @@ export class UpdaterComponent implements OnInit {
         }
     }
 
+    debug: unknown = null;
     renderMessage = signal<string | null>(null);
     shouldRenderUpdateRequest = signal<boolean>(false);
     shouldRenderUpdateProgress = signal<boolean>(false);
@@ -85,9 +86,9 @@ export class UpdaterComponent implements OnInit {
                 }
             });
          } catch(error) {
+            console.error(error);
             this.shouldRenderUpdateProgress.set(false);
             this.shouldRenderUpdateError.set(true);
-            console.error(error);
             this.renderMessage.set(`Update failed while ${phase}. If this persists, contact the-normandy with details.`);
          } finally {
             this.updating = false;
