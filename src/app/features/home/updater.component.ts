@@ -22,23 +22,19 @@ export class UpdaterComponent implements OnInit {
         if (update) {
             this.updateData = update;
             this.version.set(update.version);
-            this.shouldRenderUpdateRequest.set(true);
+            this.renderState.set('request');
         }
     }
 
     debug: unknown = null;
     renderMessage = signal<string | null>(null);
-    shouldRenderUpdateRequest = signal<boolean>(false);
-    shouldRenderUpdateProgress = signal<boolean>(false);
-    shouldRenderUpdateError = signal<boolean>(false);
+    renderState = signal<'idle' | 'request' | 'progress' | 'error'>('idle');
     version = signal<string | null>(null);
     updateData: Update | null = null;
     private updating = false;
 
     dismissUpdate() {
-        this.shouldRenderUpdateRequest.set(false);
-        this.shouldRenderUpdateProgress.set(false);
-        this.shouldRenderUpdateError.set(false);
+        this.renderState.set('idle');
     }
 
     async startUpdate() {
@@ -50,12 +46,10 @@ export class UpdaterComponent implements OnInit {
         let phase;
         let downloaded = 0;
         let contentLength = 0;
-        this.shouldRenderUpdateRequest.set(false);
-        this.shouldRenderUpdateProgress.set(true);
+        this.renderState.set('progress');
 
         if (!this.updateData) { 
-            this.shouldRenderUpdateProgress.set(false);
-            this.shouldRenderUpdateError.set(true);
+            this.renderState.set('error');
             this.renderMessage.set('An unknown error occurred when fetching update data.');
             return;
          }
@@ -87,8 +81,7 @@ export class UpdaterComponent implements OnInit {
             });
          } catch(error) {
             console.error(error);
-            this.shouldRenderUpdateProgress.set(false);
-            this.shouldRenderUpdateError.set(true);
+            this.renderState.set('error')
             this.renderMessage.set(`Update failed while ${phase}. If this persists, contact the-normandy with details.`);
          } finally {
             this.updating = false;
