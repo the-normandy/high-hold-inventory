@@ -147,48 +147,4 @@ export class CraftComponent {
     removeItem(index: number) {
         this.itemRows.removeAt(index);
     }
-
-    async submit() {
-        const value = this.form().getRawValue() as {
-            purpose: string | null;
-            items: {
-                category: CraftCategory | null;
-                item: ItemData;
-                quantity: number;
-                laborOnly: boolean;
-            }[]
-        }
-
-        const rows = value.items ?? [];
-
-        const total = rows.reduce(
-            (sum, row) => 
-                sum + (row.quantity * (row.laborOnly ? row.item.labor! : row.item.price)
-        ), 0);
-
-        const date = new DatePipe('en-GB').transform(new Date(), 'dd-MM-yyyy');
-
-        const items = rows
-            .map(
-                row =>
-                    `* ${row.quantity}x ${row.item.name} (${row.quantity * ( row.laborOnly ? row.item.labor! : row.item.price)})`
-            )
-            .join('\n');
-
-        let output = `## ${this.mode().toUpperCase()}
-*${date}*
-
-**Items ${this.mode() === 'withdraw' ? 'withdrawn' : 'deposited'}:**
-${items}
-
-**Total Silver:** 
-${total}
-
-**Purpose:**
-${value.purpose ?? ''}`;
-
-        await navigator.clipboard.writeText(output);
-        this.snackBar.open('Copied to clipboard', 'OK', {duration: 2000});        
-    }
-
 }
