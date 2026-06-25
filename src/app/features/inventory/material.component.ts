@@ -1,10 +1,10 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, input, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { DataStore } from "../../core/data/data.store";
 import { MatSelectModule } from "@angular/material/select";
 import { ItemData, Category } from "../../core/data/item.model";
@@ -21,26 +21,20 @@ import { toSignal } from "@angular/core/rxjs-interop";
     imports: [
     MatFormFieldModule, MatInputModule, ReactiveFormsModule,
     MatIconModule, MatButtonModule, MatSelectModule,
-    RouterLink, MatAutocompleteModule
+    MatAutocompleteModule
 ]
 })
 export class MaterialComponent implements OnInit {
 
     data = inject(DataStore);
     service = inject(MaterialService);
-    mode = signal<string>('');
+    mode = input.required<string>();
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
     snackBar = inject(MatSnackBar);
     title = computed(() => this.mode().charAt(0).toUpperCase() + this.mode().slice(1));
 
-    form = this.fb.group({
-        purpose: this.fb.control<string | null>(null),
-        silver: this.fb.control<number | null>(null),
-        ownership: this.fb.control<string | null>(null),
-        usage: this.fb.control<string | null>(null),
-        items: this.fb.array<FormGroup<any>>([])
-    });
+    form = input.required<FormGroup>();
 
     allItems = this.service.getAllItems();
 
@@ -60,33 +54,25 @@ export class MaterialComponent implements OnInit {
     });
 
     ngOnInit() {
-        const param = this.route.snapshot.paramMap.get('mode');
-
-        if (!param) {
-            throw new Error('Route parameter not found');
-        }
-
-        this.mode.set(param.toLowerCase());
-
         if (this.mode() === 'deposit') {
-            this.form.get('purpose')?.setValidators([Validators.required]);
-            this.form.get('silver')?.setValue(null);
-            this.form.get('usage')?.clearValidators();
-            this.form.get('ownership')?.clearValidators();
-            this.form.get('usage')?.setValue(null);
-            this.form.get('ownership')?.setValue(null);
+            this.form().get('purpose')?.setValidators([Validators.required]);
+            this.form().get('silver')?.setValue(null);
+            this.form().get('usage')?.clearValidators();
+            this.form().get('ownership')?.clearValidators();
+            this.form().get('usage')?.setValue(null);
+            this.form().get('ownership')?.setValue(null);
         } else {
-            this.form.get('usage')?.setValidators([Validators.required]);
-            this.form.get('ownership')?.setValidators([Validators.required]);
-            this.form.get('purpose')?.clearValidators();
-            this.form.get('silver')?.setValue(null);
-            this.form.get('purpose')?.setValue(null);
+            this.form().get('usage')?.setValidators([Validators.required]);
+            this.form().get('ownership')?.setValidators([Validators.required]);
+            this.form().get('purpose')?.clearValidators();
+            this.form().get('silver')?.setValue(null);
+            this.form().get('purpose')?.setValue(null);
         }
 
-        this.form.get('silver')?.updateValueAndValidity();
-        this.form.get('purpose')?.updateValueAndValidity();
-        this.form.get('usage')?.updateValueAndValidity();
-        this.form.get('ownership')?.updateValueAndValidity();
+        this.form().get('silver')?.updateValueAndValidity();
+        this.form().get('purpose')?.updateValueAndValidity();
+        this.form().get('usage')?.updateValueAndValidity();
+        this.form().get('ownership')?.updateValueAndValidity();
     }
 
     displayItem(item: SearchableItem | null): string {
@@ -118,7 +104,7 @@ export class MaterialComponent implements OnInit {
     }
 
     get itemRows(): FormArray {
-        return this.form.get('items') as FormArray;
+        return this.form().get('items') as FormArray;
     }
 
     addNewItem(category: Category | null = null, item: ItemData | null = null) {
@@ -141,7 +127,7 @@ export class MaterialComponent implements OnInit {
     }
 
     async submit() {
-        const value = this.form.getRawValue() as {
+        const value = this.form().getRawValue() as {
             purpose: string | null;
             silver: number | null;
             ownership: string | null;

@@ -1,6 +1,6 @@
 <section class="flex flex-1 flex-col self-center items-center justify-center">
-        <h2 class="text-3xl text-center pb-10">Material {{title()}} Form</h2>
-    <form [formGroup]="form" (ngSubmit)="submit()">
+        <h2 class="text-2xl text-center pb-10">Materials</h2>
+    <form [formGroup]="form()" (ngSubmit)="submit()">
         <h3 class="text-xl text-center pb-4">General Information</h3>
         <div class="flex flex-row gap-4 items-center justify-center">
             <mat-form-field class="w-sm">
@@ -71,10 +71,6 @@
                     <button type="button" matIconButton (click)="removeItem($index)"><mat-icon>delete</mat-icon></button>
                 </div>
             }
-        </div>
-        <div class="flex items-center justify-center gap-6">
-            <button matButton="filled" class="w-44">Generate</button>
-            <button type="button" matButton="filled" class="w-44" routerLink="/new">Back</button>
         </div>
     </form>
 </section>

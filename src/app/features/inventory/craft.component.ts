@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
 import { DataStore } from "../../core/data/data.store";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -24,18 +24,14 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     MatButtonModule, MatSelectModule, RouterModule, MatCheckboxModule, MatAutocompleteModule
 ]
 })
-export class CraftComponent implements OnInit {
+export class CraftComponent {
     data = inject(DataStore);
     service = inject(CraftService);
-    fb = inject(FormBuilder);
     snackBar = inject(MatSnackBar);
     route = inject(ActivatedRoute);
-    mode = signal<string>('');
-
-    form = this.fb.group({
-        purpose: this.fb.control<string | null>(null),
-        items: this.fb.array<FormGroup<any>>([])
-    });
+    mode = input.required<string>();
+    fb = inject(FormBuilder);
+    form = input.required<FormGroup>();
 
     allItems = this.service.getAllItems();
 
@@ -53,16 +49,6 @@ export class CraftComponent implements OnInit {
             item.item.name.toLowerCase().includes(search)
         );
     });
-
-    ngOnInit() {
-        const param = this.route.snapshot.paramMap.get('mode');
-
-        if (!param) {
-            throw new Error('Route parameter not found');
-        }
-
-        this.mode.set(param.toLowerCase());
-    }
 
     displayItem(item: CraftSearchableItem | null): string {
         return item?.item.name ?? '';
@@ -100,7 +86,7 @@ export class CraftComponent implements OnInit {
     }
 
     get itemRows(): FormArray {
-        return this.form.get('items') as FormArray;
+        return this.form().get('items') as FormArray;
     }
 
     getCategoriesFromRow(index: number): string[] {
@@ -163,7 +149,7 @@ export class CraftComponent implements OnInit {
     }
 
     async submit() {
-        const value = this.form.getRawValue() as {
+        const value = this.form().getRawValue() as {
             purpose: string | null;
             items: {
                 category: CraftCategory | null;

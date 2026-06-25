@@ -1,6 +1,6 @@
 <section class="flex flex-1 flex-col self-center items-center justify-center">
-    <h2 class="text-3xl text-center pb-10">Crafted Items {{ this.mode().charAt(0).toUpperCase() + this.mode().slice(1) }} Form</h2>
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <h2 class="text-2xl text-center pb-10">Crafted Items</h2>
+    <form [formGroup]="form()" (ngSubmit)="submit()">
         <h3 class="text-xl text-center pb-4">General Information</h3>
         <mat-form-field class="w-full">
             <mat-label>Purpose</mat-label>
@@ -60,10 +60,6 @@
                     <button type="button" matIconButton (click)="removeItem($index)"><mat-icon>delete</mat-icon></button>
                 </div>
             }
-        </div>
-        <div class="flex items-center justify-center gap-6">
-            <button matButton="filled" class="w-44">Generate</button>
-            <button type="button" matButton="filled" class="w-44" routerLink="/new">Back</button>
         </div>
     </form>
 </section>
