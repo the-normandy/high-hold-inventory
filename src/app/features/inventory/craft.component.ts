@@ -62,8 +62,6 @@ export class CraftComponent implements OnInit {
         }
 
         this.mode.set(param.toLowerCase());
-
-        this.addNewItem();
     }
 
     displayItem(item: CraftSearchableItem | null): string {

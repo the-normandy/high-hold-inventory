@@ -87,7 +87,6 @@ export class InventoryComponent implements OnInit {
         this.form.get('purpose')?.updateValueAndValidity();
         this.form.get('usage')?.updateValueAndValidity();
         this.form.get('ownership')?.updateValueAndValidity();
-        this.addNewItem();
     }
 
     displayItem(item: SearchableItem | null): string {
