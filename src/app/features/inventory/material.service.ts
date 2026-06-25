@@ -10,7 +10,7 @@ export interface SearchableItem {
 @Injectable({
     providedIn: 'root'
 })
-export class InventoryService {
+export class MaterialService {
 
     private readonly data = inject(DataStore);
 

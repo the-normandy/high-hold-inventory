@@ -10,13 +10,13 @@ import { MatSelectModule } from "@angular/material/select";
 import { ItemData, Category } from "../../core/data/item.model";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { DatePipe } from "@angular/common";
-import { InventoryService, SearchableItem } from "./inventory.service";
+import { MaterialService, SearchableItem } from "./material.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { toSignal } from "@angular/core/rxjs-interop";
 
 @Component({
-    selector: 'app-inventory',
-    templateUrl: 'inventory.component.html',
+    selector: 'app-material',
+    templateUrl: 'material.component.html',
     styles: `:host { @apply flex-1; }`,
     imports: [
     MatFormFieldModule, MatInputModule, ReactiveFormsModule,
@@ -24,10 +24,10 @@ import { toSignal } from "@angular/core/rxjs-interop";
     RouterLink, MatAutocompleteModule
 ]
 })
-export class InventoryComponent implements OnInit {
+export class MaterialComponent implements OnInit {
 
     data = inject(DataStore);
-    service = inject(InventoryService);
+    service = inject(MaterialService);
     mode = signal<string>('');
     route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
