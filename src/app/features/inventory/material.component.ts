@@ -76,7 +76,7 @@ export class MaterialComponent implements OnInit {
     }
 
     displayItem(item: SearchableItem | null): string {
-        return item?.item.name ?? '';
+        return item?.item?.name ?? '';
     }
 
     onQuickAdd(searchable: SearchableItem) {

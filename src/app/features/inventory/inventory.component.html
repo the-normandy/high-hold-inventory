@@ -1,7 +1,7 @@
 <h2 class="text-3xl text-center pb-4">{{this.mode() === 'deposit' ? 'Deposit' : 'Withdrawal'}} Form</h2>
 <div class="flex items-center justify-center gap-10 self-center justify-self-center pb-10">
     <mat-checkbox [checked]="shouldRenderMaterial()" (change)="shouldRenderMaterial.set($event.checked)">Materials Form</mat-checkbox>
-    <mat-checkbox [checked]="shouldRenderCraft()" (change)="shouldRenderMaterial.set($event.checked)">Crafted Items Form</mat-checkbox>
+    <mat-checkbox [checked]="shouldRenderCraft()" (change)="shouldRenderCraft.set($event.checked)">Crafted Items Form</mat-checkbox>
 </div>
 @if (shouldRenderMaterial()) {
     <app-material [form]="materialForm" [mode]="mode()"></app-material>
@@ -10,6 +10,6 @@
     <app-craft [form]="craftForm" [mode]="mode()"></app-craft>
 }
 <div class="flex items-center justify-center gap-6 self-center justify-self-center">
-    <button matButton="filled" class="w-44">Generate</button>
+    <button matButton="filled" (click)="submit()" class="w-44">Generate</button>
     <button type="button" matButton="tonal" class="w-44" routerLink="/new">Back</button>
 </div>

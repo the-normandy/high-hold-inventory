@@ -7,12 +7,13 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { Category, CraftCategory, ItemData } from "../../core/data/item.model";
 import { DatePipe } from "@angular/common";
 import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
     selector: 'app-inventory',
     templateUrl: 'inventory.component.html',
     styles: `:host { @apply flex-1; }`,
-    imports: [MaterialComponent, CraftComponent, MatCheckboxModule]
+    imports: [MaterialComponent, CraftComponent, MatCheckboxModule, MatButtonModule]
 })
 export class InventoryComponent implements OnInit {
 
@@ -128,21 +129,18 @@ export class InventoryComponent implements OnInit {
         sections.push(`*${date}*`);
 
         if (itemLines.length) {
-            sections.push(`
-    **Items ${label}:**
-    ${itemLines.join('\n')}`);
+            sections.push(`**Items ${label}:**
+${itemLines.join('\n')}`);
         }
 
         if (includeMaterial) {
-            sections.push(`
-    **Total Silver in Materials:**
-    ${materialTotal}`);
+            sections.push(`**Total Silver in Materials:**
+${materialTotal}`);
         }
 
         if (includeCraft) {
-            sections.push(`
-    **Total Silver in Crafting:**
-    ${craftTotal}`);
+            sections.push(`**Total Silver in Crafting:**
+${craftTotal}`);
         }
 
         if (
@@ -150,34 +148,29 @@ export class InventoryComponent implements OnInit {
             material.silver !== null &&
             material.silver !== 0
         ) {
-            sections.push(`
-    **Silver ${silverLabel}:**
-    ${material.silver}`);
+            sections.push(`**Silver ${silverLabel}:**
+${material.silver}`);
         }
 
-        sections.push(`
-    **Total Silver:**
-    ${grandTotal}`);
+        sections.push(`**Total Silver:**
+${grandTotal}`);
 
         if (includeMaterial && material.purpose) {
-            sections.push(`
-    **Purpose of Materials:**
-    ${material.purpose}`);
+            sections.push(`**Purpose of Materials:**
+${material.purpose}`);
         }
 
         if (includeCraft && craft.purpose) {
-            sections.push(`
-    **Purpose of Crafting:**
-    ${craft.purpose}`);
+            sections.push(`**Purpose of Crafting:**
+${craft.purpose}`);
         }
 
         if (includeMaterial && this.mode() === 'withdraw') {
-            sections.push(`
-    **Personal Use/Clan/Profit?**
-    ${material.usage ?? ''}
+            sections.push(`**Personal Use/Clan/Profit?**
+${material.usage ?? ''}
 
-    **For You, the Clan, or Militia Member?**
-    ${material.ownership ?? ''}`);
+**For You, the Clan, or Militia Member?**
+${material.ownership ?? ''}`);
         }
 
         const output = sections.join('\n\n');
