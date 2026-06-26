@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { MaterialComponent } from "./material.component";
 import { CraftComponent } from "./craft.component";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { Category, CraftCategory, ItemData } from "../../core/data/item.model";
 import { DatePipe } from "@angular/common";
@@ -13,7 +13,7 @@ import { MatButtonModule } from "@angular/material/button";
     selector: 'app-inventory',
     templateUrl: 'inventory.component.html',
     styles: `:host { @apply flex-1; }`,
-    imports: [MaterialComponent, CraftComponent, MatCheckboxModule, MatButtonModule]
+    imports: [MaterialComponent, CraftComponent, MatCheckboxModule, MatButtonModule, RouterModule]
 })
 export class InventoryComponent implements OnInit {
 
