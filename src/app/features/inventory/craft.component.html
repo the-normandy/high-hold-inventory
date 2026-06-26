@@ -1,8 +1,8 @@
 <section class="flex flex-1 flex-col self-center items-center justify-center">
     <h2 class="text-2xl text-center pb-10">Crafted Items</h2>
-    <form [formGroup]="form()">
+    <form [formGroup]="form()" class="flex flex-col">
         <h3 class="text-xl text-center pb-4">General Information</h3>
-        <mat-form-field class="w-full">
+        <mat-form-field class="w-2xl self-center justify-self-center">
             <mat-label>Purpose</mat-label>
             <input matInput type="text" formControlName="purpose" aria-label="purpose">
         </mat-form-field>
