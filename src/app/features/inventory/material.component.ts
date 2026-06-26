@@ -9,7 +9,6 @@ import { DataStore } from "../../core/data/data.store";
 import { MatSelectModule } from "@angular/material/select";
 import { ItemData, Category } from "../../core/data/item.model";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { DatePipe } from "@angular/common";
 import { MaterialService, SearchableItem } from "./material.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { toSignal } from "@angular/core/rxjs-interop";

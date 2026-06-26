@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { DataStore } from "../../core/data/data.store";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -7,7 +7,6 @@ import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { MatSelectModule } from "@angular/material/select";
 import { AlchemyCategory, BlacksmithingCategory, CraftCategory, ItemData, LeatherworkingCategory, WoodcarvingCategory } from "../../core/data/item.model";
-import { DatePipe } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatCheckboxModule } from "@angular/material/checkbox";
