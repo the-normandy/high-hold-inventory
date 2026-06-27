@@ -3,6 +3,11 @@
     <img src="/logo.png" alt="logo" height="80" />
     <span>Storehouse</span>
 </a>
+<span class="ml-auto px-4 flex flex-row items-center justify-items-center gap-2">
+    <mat-icon>light_mode</mat-icon>
+    <mat-slide-toggle (change)="themeChange()" [checked]="getSliderPosition()"></mat-slide-toggle>
+    <mat-icon>dark_mode</mat-icon>
+</span>
 </mat-toolbar>
 <main class="flex flex-1 px-10">
 <router-outlet />
