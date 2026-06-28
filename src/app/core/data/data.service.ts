@@ -18,14 +18,16 @@ export interface PricesFile {
 export class DataService {
 
     private readonly dataStore = inject(DataStore);
+    directory = '';
+
+    async ngOnInit() {
+        this.directory = await appLocalDataDir();
+    }
 
     async load(): Promise<void> {
 
         try {
-
-            const directory = await appLocalDataDir();
-
-            const file = await join(directory, 'prices.json');
+            const file = await join(this.directory, 'prices.json');
 
             const text = await readTextFile(file);
 
