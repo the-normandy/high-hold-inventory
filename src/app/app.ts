@@ -7,6 +7,7 @@ import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { ThemeStore } from './core/theme/theme.store';
 import { getVersion } from '@tauri-apps/api/app'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { DataService } from './core/data/data.service';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +19,27 @@ export class App {
   version = signal<string>('');
   protected readonly title = computed(() => `Storehouse`);
   mode = inject(ThemeStore);
+  dataService = inject(DataService);
+  dataError = signal<string | null>(null);
 
   constructor() {
     this.updateWindow();
+  }
+  
+  async ngOnInit(): Promise<void> {
+    try {
+      await this.dataService.load();
+    } catch(error) {
+      this.dataError.set("Failed to locate prices.json in folder.")
+    }
+  }
+
+  async retryLoadData() {
+    try {
+      await this.dataService.load();
+    } catch(error) {
+      this.dataError.set("Failed to locate prices.json in folder.")
+    }
   }
   
   async getCurrentVersion() {

@@ -11,4 +11,12 @@
 </mat-toolbar>
 <main class="flex flex-1 px-10">
 <router-outlet />
+@if (dataError() !== null) {
+    <div class="self-center flex flex-row gap-8 p-6 mt-10 border border-red-500 bg-red-800/10 text-red-500 rounded-md items-center">
+        <mat-icon>cancel</mat-icon>
+        <span>{{dataError()}}</span>
+        <button matButton="tonal" (click)="retryLoadData()">Retry</button>
+        <button matButton="tonal" (click)="openDataFolder()">Open folder</button>
+    </div>
+}
 </main>
