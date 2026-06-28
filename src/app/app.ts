@@ -41,6 +41,10 @@ export class App {
       this.dataError.set("Failed to locate prices.json in folder.")
     }
   }
+
+  openDataFolder() {
+    
+  }
   
   async getCurrentVersion() {
     const version = await getVersion();
