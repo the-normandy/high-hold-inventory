@@ -8,6 +8,7 @@ import { ThemeStore } from './core/theme/theme.store';
 import { getVersion } from '@tauri-apps/api/app'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { DataService } from './core/data/data.service';
+import { openPath } from '@tauri-apps/plugin-opener';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +44,7 @@ export class App {
   }
 
   openDataFolder() {
-    
+    openPath(this.dataService.directory);
   }
   
   async getCurrentVersion() {

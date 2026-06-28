@@ -9,8 +9,10 @@
     <mat-icon>dark_mode</mat-icon>
 </span>
 </mat-toolbar>
-<main class="flex flex-1 px-10">
-<router-outlet />
+<main class="flex flex-col flex-1 px-10">
+    <div class="flex flex-row flex-1">
+        <router-outlet />
+    </div>
 @if (dataError() !== null) {
     <div class="self-center flex flex-row gap-8 p-6 mt-10 border border-red-500 bg-red-800/10 text-red-500 rounded-md items-center">
         <mat-icon>cancel</mat-icon>
