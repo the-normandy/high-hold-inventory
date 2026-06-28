@@ -13,7 +13,12 @@
     "fs:allow-appcache-read-recursive",
     "fs:allow-app-write",
     "fs:allow-app-write-recursive",
-    "opener:allow-open-path",
+    {
+      "identifier": "opener:allow-open-path",
+      "allow": [
+        {"path": "$APPLOCALDATA" }
+      ]
+    },
     "core:window:allow-set-title",
     "updater:allow-check",
     "updater:allow-download",

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 
 import { readTextFile } from '@tauri-apps/plugin-fs';
-import { executableDir, join, appLocalDataDir, appDataDir } from '@tauri-apps/api/path';
+import { executableDir, join, appLocalDataDir, appDataDir, BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { Category, CraftCategory, ItemData } from './item.model';
 
@@ -18,22 +18,16 @@ export interface PricesFile {
 export class DataService {
 
     private readonly dataStore = inject(DataStore);
-    directory = '';
-
-    async ngOnInit() {
-        this.directory = await appLocalDataDir();
-    }
 
     async load(): Promise<void> {
 
         try {
-            const file = await join(this.directory, 'prices.json');
 
-            const text = await readTextFile(file);
+            const text = await readTextFile('prices.json', {baseDir: BaseDirectory.AppLocalData});
 
             const data = JSON.parse(text) as PricesFile;
 
-            if (data) {
+            if (!data) {
                 throw Error("Failed to locate prices.json");
             }
 

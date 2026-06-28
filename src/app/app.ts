@@ -9,6 +9,8 @@ import { getVersion } from '@tauri-apps/api/app'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { DataService } from './core/data/data.service';
 import { openPath } from '@tauri-apps/plugin-opener';
+import { BaseDirectory } from '@tauri-apps/plugin-fs';
+import { appLocalDataDir } from '@tauri-apps/api/path';
 
 @Component({
   selector: 'app-root',
@@ -38,13 +40,15 @@ export class App {
   async retryLoadData() {
     try {
       await this.dataService.load();
+      this.dataError.set(null);
     } catch(error) {
       this.dataError.set("Failed to locate prices.json in folder.")
     }
   }
 
-  openDataFolder() {
-    openPath(this.dataService.directory);
+  async openDataFolder() {
+    const path = await appLocalDataDir();
+    await openPath(path);
   }
   
   async getCurrentVersion() {
