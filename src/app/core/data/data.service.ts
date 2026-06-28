@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 
 import { readTextFile } from '@tauri-apps/plugin-fs';
-import { appDataDir, join } from '@tauri-apps/api/path';
+import { executableDir, join, appLocalDataDir, appDataDir } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { Category, CraftCategory, ItemData } from './item.model';
 
@@ -23,7 +23,7 @@ export class DataService {
 
         try {
 
-            const directory = await appDataDir();
+            const directory = await appLocalDataDir();
 
             const file = await join(directory, 'prices.json');
 
@@ -31,10 +31,8 @@ export class DataService {
 
             const data = JSON.parse(text) as PricesFile;
 
-            if (data.schema !== 1) {
-                throw new Error(
-                    `Unsupported schema ${data.schema}.`
-                );
+            if (data) {
+                throw Error("Failed to locate prices.json");
             }
 
             this.dataStore.load(data);

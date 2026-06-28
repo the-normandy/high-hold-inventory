@@ -18,12 +18,15 @@ export class DataStore {
 
     }
 
-    craftData: Record<CraftCategory, Record<string, ItemData[]>> | [] = [];
     
     craftItems: CraftCategory[] = ['Alchemy', 'Blacksmithing', 'Leatherworking', 'Woodcarving'];
 
-    items: Record<Category, ItemData[]> | [] = []
-
+    items = {} as Record<Category, ItemData[]>;
+    craftData = {} as Record<CraftCategory, Record<string, ItemData[]>>;
+    alchemyItems = {} as Record<AlchemyCategory, ItemData[]>;
+    blacksmithingItems = {} as Record<BlacksmithingCategory, ItemData[]>;
+    leatherworkingItems = {} as Record<LeatherworkingCategory, ItemData[]>;
+    woodcarvingItems = {} as Record<WoodcarvingCategory, ItemData[]>;
 
 
 }
