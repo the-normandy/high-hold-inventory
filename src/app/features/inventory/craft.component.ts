@@ -68,19 +68,35 @@ export class CraftComponent {
         return this.data.craftItems;
     }
 
+    get alchemyItems() {
+        return this.data.craftData.Alchemy;
+    }
+
+    get blacksmithingItems() {
+        return this.data.craftData.Blacksmithing;
+    }
+
+    get leatherworkingItems() {
+        return this.data.craftData.Leatherworking;
+    }
+
+    get woodcarvingItems() {
+        return this.data.craftData.Woodcarving;
+    }
+
     getCategories(crafting: CraftCategory | undefined): string[] {
         if (!crafting) {
             return [];
         }
         switch(crafting) {
             case 'Alchemy':
-                return Object.keys(this.data.alchemyItems);
+                return Object.keys(this.alchemyItems);
             case 'Blacksmithing':
-                return Object.keys(this.data.blacksmithingItems);
+                return Object.keys(this.blacksmithingItems);
             case 'Leatherworking':
-                return Object.keys(this.data.leatherworkingItems);
+                return Object.keys(this.leatherworkingItems);
             case 'Woodcarving':
-                return Object.keys(this.data.woodcarvingItems);
+                return Object.keys(this.woodcarvingItems);
         }
     }
 
@@ -108,16 +124,16 @@ export class CraftComponent {
 
         switch (crafting) {
             case 'Alchemy':
-                return this.data.alchemyItems[category as AlchemyCategory];
+                return this.alchemyItems[category as AlchemyCategory];
 
             case 'Blacksmithing':
-                return this.data.blacksmithingItems[category as BlacksmithingCategory];
+                return this.blacksmithingItems[category as BlacksmithingCategory];
 
             case 'Leatherworking':
-                return this.data.leatherworkingItems[category as LeatherworkingCategory];
+                return this.leatherworkingItems[category as LeatherworkingCategory];
 
             case 'Woodcarving':
-                return this.data.woodcarvingItems[category as WoodcarvingCategory];
+                return this.woodcarvingItems[category as WoodcarvingCategory];
         }
     }
 
