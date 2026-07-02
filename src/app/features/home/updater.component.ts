@@ -46,6 +46,7 @@ export class UpdaterComponent implements OnInit {
         let phase;
         let downloaded = 0;
         let contentLength = 0;
+        this.renderMessage.set('Fetching update data...');
         this.renderState.set('progress');
 
         if (!this.updateData) { 
