@@ -19,37 +19,40 @@ html {
   );
 }
 
-html.violet {
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$violet-palette,
-        tertiary: mat.$magenta-palette,
-      )
+html.spring {
+  @include mat.theme((
+    color: (
+      primary: mat.$spring-green-palette,
+      tertiary: mat.$green-palette,
     )
-  )
+  ));
 }
 
-html.emerald {
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$green-palette,
-        tertiary: mat.$spring-green-palette,
-      )
+html.summer {
+  @include mat.theme((
+    color: (
+      primary: mat.$orange-palette,
+      tertiary: mat.$yellow-palette,
     )
-  )
+  ));
 }
 
-html.cyan {
-  @include mat.theme(
-    (
-      color: (
-        primary: mat.$cyan-palette,
-        tertiary: mat.$azure-palette,
-      )
+html.autumn {
+  @include mat.theme((
+    color: (
+      primary: mat.$orange-palette,
+      tertiary: mat.$red-palette,
     )
-  )
+  ));
+}
+
+html.winter {
+  @include mat.theme((
+    color: (
+      primary: mat.$cyan-palette,
+      tertiary: mat.$blue-palette,
+    )
+  ));
 }
 
 body {

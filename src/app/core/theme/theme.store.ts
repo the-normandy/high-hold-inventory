@@ -1,17 +1,18 @@
 import { effect, Injectable, signal } from '@angular/core';
 
 export type AccentTheme =
-  | 'azure'
-  | 'violet'
-  | 'emerald'
-  | 'cyan';
+  | 'default'
+  | 'summer'
+  | 'spring'
+  | 'autumn'
+  | 'winter';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeStore {
   readonly isDark = signal(false);
-  readonly accent = signal<AccentTheme>('azure');
+  readonly accent = signal<AccentTheme>('default');
 
   isAccentTheme(accent: AccentTheme) {
     const html = document.documentElement;
@@ -32,10 +33,11 @@ export class ThemeStore {
       const html = document.documentElement;
 
       html.classList.remove(
-        'azure',
-        'violet',
-        'emerald',
-        'cyan'
+        'default',
+        'summer',
+        'spring',
+        'autumn',
+        'winter'
       );
 
       html.classList.add(this.accent());
@@ -64,10 +66,11 @@ export class ThemeStore {
     }
 
     if (
-      savedAccent === 'azure' ||
-      savedAccent === 'violet' ||
-      savedAccent === 'emerald' ||
-      savedAccent === 'cyan'
+      savedAccent === 'default' ||
+      savedAccent === 'summer' ||
+      savedAccent === 'spring' ||
+      savedAccent === 'autumn' ||
+      savedAccent === 'winter'
     ) {
       this.accent.set(savedAccent);
     }

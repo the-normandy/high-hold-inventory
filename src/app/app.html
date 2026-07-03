@@ -7,10 +7,11 @@
     <span class="flex flex-row gap-4">
     <button matIconButton matTooltip="Color themes" [matMenuTriggerFor]="menu"><mat-icon>color_lens</mat-icon></button>
     <mat-menu #menu="matMenu" xPosition="before" class="rounded-md! w-36">
-        <button mat-menu-item (click)="mode.accent.set('azure')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('azure') ? 'check' : '' }}</mat-icon> Azure</button>
-        <button mat-menu-item (click)="mode.accent.set('emerald')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('emerald') ? 'check' : '' }}</mat-icon>Emerald</button>
-        <button mat-menu-item (click)="mode.accent.set('violet')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('violet') ? 'check' : '' }}</mat-icon>Violet</button>
-        <button mat-menu-item (click)="mode.accent.set('cyan')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('cyan') ? 'check' : '' }}</mat-icon>Cyan</button>
+        <button mat-menu-item (click)="mode.accent.set('default')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('default') ? 'check' : '' }}</mat-icon> Azure</button>
+        <button mat-menu-item (click)="mode.accent.set('summer')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('summer') ? 'check' : '' }}</mat-icon>Summer</button>
+        <button mat-menu-item (click)="mode.accent.set('spring')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('spring') ? 'check' : '' }}</mat-icon>Spring</button>
+        <button mat-menu-item (click)="mode.accent.set('autumn')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('autumn') ? 'check' : '' }}</mat-icon>Autumn</button>
+        <button mat-menu-item (click)="mode.accent.set('autumn')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('winter') ? 'check' : '' }}</mat-icon>Winter</button>
     </mat-menu>
     <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_open</mat-icon></button>
     </span>
