@@ -13,6 +13,11 @@ export class ThemeStore {
   readonly isDark = signal(false);
   readonly accent = signal<AccentTheme>('azure');
 
+  isAccentTheme(accent: AccentTheme) {
+    const html = document.documentElement;
+    return this.accent() === accent.toLowerCase();
+  }
+
   constructor() {
     this.applyTheme();
 
