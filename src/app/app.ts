@@ -11,10 +11,11 @@ import { DataService } from './core/data/data.service';
 import { openPath } from '@tauri-apps/plugin-opener';
 import { appLocalDataDir } from '@tauri-apps/api/path';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule, RouterLinkWithHref, MatSlideToggleModule, MatTooltipModule],
+  imports: [RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule, RouterLinkWithHref, MatSlideToggleModule, MatTooltipModule, MatMenuModule],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

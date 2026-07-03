@@ -4,7 +4,16 @@
     <span>{{title()}}</span>
 </a>
 <span class="ml-auto flex flex-row items-center justify-items-center gap-10">
+    <span class="flex flex-row gap-4">
+    <button matIconButton matTooltip="Color themes" [matMenuTriggerFor]="menu"><mat-icon>color_lens</mat-icon></button>
+    <mat-menu #menu="matMenu" xPosition="before" class="rounded-md! w-36">
+        <button mat-menu-item (click)="mode.accent.set('azure')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('azure') ? 'check' : '' }}</mat-icon> Azure</button>
+        <button mat-menu-item (click)="mode.accent.set('emerald')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('emerald') ? 'check' : '' }}</mat-icon>Emerald</button>
+        <button mat-menu-item (click)="mode.accent.set('violet')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('violet') ? 'check' : '' }}</mat-icon>Violet</button>
+        <button mat-menu-item (click)="mode.accent.set('cyan')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('cyan') ? 'check' : '' }}</mat-icon>Cyan</button>
+    </mat-menu>
     <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_open</mat-icon></button>
+    </span>
     <span class="flex flex-row items-center justify-items-center gap-2!">
         <mat-icon>light_mode</mat-icon>
         <mat-slide-toggle (change)="themeChange()" [checked]="getSliderPosition()"></mat-slide-toggle>
