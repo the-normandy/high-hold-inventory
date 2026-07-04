@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { DataStore } from "../../core/data/data.store";
-import { CraftCategory, ItemData } from "../../core/data/item.model";
+import { ItemData } from "../../core/data/item.model";
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +19,7 @@ export class CraftService {
             for (const [category, items] of Object.entries(categories)) {
                 for (const item of items) {
                     this.itemLookup.set(item.name.toLowerCase(), {
-                        craft: crafting as CraftCategory,
+                        craft: crafting as string,
                         category,
                         item
                     });
@@ -38,7 +38,7 @@ export class CraftService {
 }
 
 export interface CraftSearchableItem {
-    craft: CraftCategory;
+    craft: string;
     category: string;
     item: ItemData;
 }

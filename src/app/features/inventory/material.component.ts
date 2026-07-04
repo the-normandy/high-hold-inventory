@@ -7,7 +7,7 @@ import { MatInputModule } from "@angular/material/input";
 import { ActivatedRoute } from "@angular/router";
 import { DataStore } from "../../core/data/data.store";
 import { MatSelectModule } from "@angular/material/select";
-import { ItemData, Category } from "../../core/data/item.model";
+import { ItemData } from "../../core/data/item.model";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MaterialService, SearchableItem } from "./material.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
@@ -88,14 +88,14 @@ export class MaterialComponent implements OnInit {
         return this.mode() === 'deposit';
     }
 
-    get categories(): Category[] {
-        return Object.keys(this.data.items) as Category[];
+    get categories(): string[] {
+        return Object.keys(this.data.items) as string[];
     }
 
     getItemsFromRow(index: number): ItemData[] {
         const row = this.itemRows.at(index);
 
-        const category = row.get('category')?.value as Category | null;
+        const category = row.get('category')?.value as string | null;
 
         return category
             ? this.data.items[category]
@@ -106,7 +106,7 @@ export class MaterialComponent implements OnInit {
         return this.form().get('items') as FormArray;
     }
 
-    addNewItem(category: Category | null = null, item: ItemData | null = null) {
+    addNewItem(category: string | null = null, item: ItemData | null = null) {
         const group = this.fb.group({
             id: crypto.randomUUID(),
             category: [category, Validators.required],

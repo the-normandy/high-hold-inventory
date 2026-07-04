@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { Category, ItemData } from '../../core/data/item.model';
+import { ItemData } from '../../core/data/item.model';
 import { DataStore } from '../../core/data/data.store';
 
 export interface SearchableItem {
-    category: Category;
+    category: string;
     item: ItemData;
 }
 
@@ -24,7 +24,7 @@ export class MaterialService {
         for (const [category, items] of Object.entries(this.data.items)) {
             for (const item of items) {
                 this.itemLookup.set(item.name, {
-                    category: category as Category,
+                    category: category as string,
                     item
                 });
             }

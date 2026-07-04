@@ -4,7 +4,7 @@ import { MaterialComponent } from "./material.component";
 import { CraftComponent } from "./craft.component";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { Category, CraftCategory, ItemData } from "../../core/data/item.model";
+import { ItemData } from "../../core/data/item.model";
 import { DatePipe } from "@angular/common";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatButtonModule } from "@angular/material/button";
@@ -54,7 +54,7 @@ export class InventoryComponent implements OnInit {
             ownership: string | null;
             usage: string | null;
             items: {
-                category: Category | null;
+                category: string | null;
                 item: ItemData;
                 quantity: number;
             }[];
@@ -63,7 +63,7 @@ export class InventoryComponent implements OnInit {
         const craft = this.craftForm.getRawValue() as {
             purpose: string | null;
             items: {
-                category: CraftCategory | null;
+                category: string | null;
                 item: ItemData;
                 quantity: number;
                 laborOnly: boolean;

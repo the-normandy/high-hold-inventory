@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AlchemyCategory, BlacksmithingCategory, Category, CraftCategory, ItemData, LeatherworkingCategory, WoodcarvingCategory } from "./item.model";
+import { ItemData } from "./item.model";
 import { PricesFile } from "./data.service"
 
 @Injectable({
@@ -10,11 +10,11 @@ export class DataStore {
     load(data: PricesFile): void {
         this.items = data.materials;
         this.craftData = data.craft;
-        this.craftItems = Object.keys(data.craft) as CraftCategory[];
+        this.craftItems = Object.keys(data.craft) as string[];
     }
 
-    craftItems: CraftCategory[] = ['Alchemy', 'Blacksmithing', 'Leatherworking', 'Woodcarving'];
+    craftItems: string[] = [];
 
-    items = {} as Record<Category, ItemData[]>;
-    craftData = {} as Record<CraftCategory, Record<string, ItemData[]>>;
+    items = {} as Record<string, ItemData[]>;
+    craftData = {} as Record<string, Record<string, ItemData[]>>;
 }
