@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 
 import { readTextFile } from '@tauri-apps/plugin-fs';
-import { executableDir, join, appLocalDataDir, appDataDir, BaseDirectory } from '@tauri-apps/api/path';
+import { BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { Category, CraftCategory, ItemData } from './item.model';
 
@@ -34,5 +34,5 @@ export class DataService {
             throw new Error('Unable to load prices.json.');
         }
     }
-    
+
 }
