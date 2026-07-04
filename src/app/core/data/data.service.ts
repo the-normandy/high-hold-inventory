@@ -7,7 +7,6 @@ import { ItemData } from './item.model';
 
 export interface PricesFile {
     schema: number;
-
     materials: Record<string, ItemData[]>;
     craft: Record<string, Record<string, ItemData[]>>;
 }
