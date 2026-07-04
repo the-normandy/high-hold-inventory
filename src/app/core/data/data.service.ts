@@ -16,15 +16,11 @@ export interface PricesFile {
     providedIn: 'root'
 })
 export class DataService {
-
     private readonly dataStore = inject(DataStore);
 
     async load(): Promise<void> {
-
         try {
-
             const text = await readTextFile('prices.json', {baseDir: BaseDirectory.AppLocalData});
-
             const data = JSON.parse(text) as PricesFile;
 
             if (!data) {
@@ -34,14 +30,9 @@ export class DataService {
             this.dataStore.load(data);
 
         } catch (error) {
-
             console.error(error);
-
-            throw new Error(
-                'Unable to load prices.json.'
-            );
+            throw new Error('Unable to load prices.json.');
         }
-
     }
-
+    
 }
