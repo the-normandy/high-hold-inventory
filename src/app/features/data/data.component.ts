@@ -16,10 +16,11 @@ import { DataStore } from "../../core/data/data.store";
 export class DataComponent implements OnInit {
 
     ngOnInit(): void {
-        this.tree.set(this.data.getTree());
+        this.treeData.set(this.data.getTree());
     }
 
     private readonly data = inject(DataStore);
     readonly childrenAccessor = (node: TreeNode) => node.children ?? [];
-    tree = signal<TreeNode[]>([]);
+    hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
+    treeData = signal<TreeNode[]>([]);
 }
