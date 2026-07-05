@@ -11,6 +11,7 @@ import { RouterLink } from "@angular/router";
     selector: 'app-data',
     templateUrl: 'data.component.html',
     styles: `:host { @apply flex-1; }`,
+    styleUrl: 'data.component.css',
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
         RouterLink
@@ -26,4 +27,13 @@ export class DataComponent implements OnInit {
     readonly childrenAccessor = (node: TreeNode) => node.children ?? [];
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
     treeData = signal<TreeNode[]>([]);
+    selected: string[] = [];
+
+    isSelected(node: TreeNode): boolean {
+        return node.path == this.selected;
+    }
+
+    select(node: TreeNode) {
+        this.selected = node.path;
+    }
 }

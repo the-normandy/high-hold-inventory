@@ -1,17 +1,17 @@
 <div class="flex flex-1 flex-row gap-4">
     <mat-tree #tree [dataSource]="treeData()" [childrenAccessor]="childrenAccessor" class="min-w-72 h-[75vh] overflow-auto">
         <mat-nested-tree-node *matTreeNodeDef="let node">
-            <button class="flex items-center gap-2 cursor-pointer hover:bg-(--mat-sys-secondary-container) transition-colors duration-200 rounded-lg w-full px-10 my-1">
-                <mat-icon fontSet="">pageview</mat-icon>
+            <button (click)="select(node)" [class.active]="isSelected(node)" class="flex items-center gap-2 cursor-pointer hover:bg-(--mat-sys-secondary-container) transition-colors duration-200 rounded-lg w-full px-10 my-1">
+                <mat-icon>pageview</mat-icon>
                 {{node.name}}
             </button>
         </mat-nested-tree-node>
-        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodeToggle [cdkTreeNodeTypeaheadLabel]="node.name">
-            <div class="flex items-center gap-2 hover:cursor-pointer">
-                <button matIconButton matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+        <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" [cdkTreeNodeTypeaheadLabel]="node.name">
+            <div class="flex gap-2">
+                <button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name" class="inline-flex hover:cursor-pointer hover:bg-(--mat-sys-secondary-container) transition-colors duration-200 rounded-lg w-full items-center gap-2 px-2">
                     <mat-icon>{{ tree.isExpanded(node) ? 'folder_open' : 'folder' }}</mat-icon>
+                    {{ node.name }}
                 </button>
-                {{ node.name }}
             </div>
             <div class="ml-6 overflow-hidden transition-all duration-100 ease-linear" [class.overflow-hidden]="!tree.isExpanded(node)" [class.max-h-0]="!tree.isExpanded(node)" [class.max-h-96!]="tree.isExpanded(node)" role="group">
                 <ng-container matTreeNodeOutlet></ng-container>
