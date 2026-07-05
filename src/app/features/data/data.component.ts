@@ -4,13 +4,14 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTreeModule } from "@angular/material/tree";
 import { TreeNode } from './data.model'
 import { DataStore } from "../../core/data/data.store";
+import { MatDividerModule } from "@angular/material/divider";
 
 @Component({
     selector: 'app-data',
     templateUrl: 'data.component.html',
     styles: `:host { @apply flex-1; }`,
     imports: [
-        MatButtonModule, MatTreeModule, MatIconModule
+        MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule
     ]
 })
 export class DataComponent implements OnInit {
