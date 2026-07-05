@@ -8,5 +8,5 @@ export const routes: Routes = [
     {path: '', component: HomeComponent},
     {path: 'new', component: ActionsComponent},
     {path: 'new/:mode', component: InventoryComponent},
-    {path: '/data', component: DataComponent}
+    {path: 'data', component: DataComponent}
 ];
