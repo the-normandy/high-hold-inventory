@@ -1,8 +1,9 @@
-import { Component, signal } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTreeModule } from "@angular/material/tree";
 import { TreeNode } from './data.model'
+import { DataStore } from "../../core/data/data.store";
 
 @Component({
     selector: 'app-data',
@@ -12,7 +13,13 @@ import { TreeNode } from './data.model'
         MatButtonModule, MatTreeModule, MatIconModule
     ]
 })
-export class DataComponent {
+export class DataComponent implements OnInit {
 
-    treeNodes = signal<TreeNode[]>([]);
+    ngOnInit(): void {
+        this.tree.set(this.data.getTree());
+    }
+
+    private readonly data = inject(DataStore);
+    readonly childrenAccessor = (node: TreeNode) => node.children ?? [];
+    tree = signal<TreeNode[]>([]);
 }
