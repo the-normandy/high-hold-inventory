@@ -1,18 +1,20 @@
 <div class="flex flex-col flex-1 items-center justify-center gap-20">
     <h1 class="text-3xl">High Hold Storehouse</h1>
-    <mat-card class="p-4 w-sm">
-        <mat-card-header class="text-2xl pb-4!">Report</mat-card-header>
-        <mat-card-content class="py-8!">Generate report logs for depositing or withdrawal of materials and crafted items for the Storehouse.</mat-card-content>
-        <mat-card-actions class="justify-center!">
-            <a matButton="filled" routerLink="/new">Forms</a>
-        </mat-card-actions>
-    </mat-card>
-    <mat-card class="p-4 w-sm">
-        <mat-card-header class="text-2xl pb-4!">Data management</mat-card-header>
-        <mat-card-content class="py-8!">Edit the data used for items and prices, including creating new items or updating the prices of those already there. You probably shouldn't use it if you're not clan leadership.</mat-card-content>
-        <mat-card-actions class="justify-center!">
-            <a matButton="filled" routerLink="/data">Manage</a>
-        </mat-card-actions>
-    </mat-card>
+    <div class="flex flex-row gap-10 items-stretch justify-center">
+        <mat-card class="p-4 w-sm">
+            <mat-card-header class="text-2xl pb-4!">Report</mat-card-header>
+            <mat-card-content class="flex-1 py-8!">Generate report logs for depositing or withdrawal of materials and crafted items for the Storehouse.</mat-card-content>
+            <mat-card-actions class="justify-center!">
+                <a matButton="filled" routerLink="/new">Forms</a>
+            </mat-card-actions>
+        </mat-card>
+        <mat-card class="p-4 w-sm">
+            <mat-card-header class="text-2xl pb-4!">Data management</mat-card-header>
+            <mat-card-content class="flex-1 py-8!">Edit the data used for items and prices, including creating new items or updating the prices of those already there. You probably shouldn't use it if you're not clan leadership.</mat-card-content>
+            <mat-card-actions class="justify-center!">
+                <a matButton="filled" routerLink="/data">Manage</a>
+            </mat-card-actions>
+        </mat-card>
+    </div>
     <app-updater />
 </div>
