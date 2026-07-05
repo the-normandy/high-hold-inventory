@@ -5,13 +5,15 @@ import { MatTreeModule } from "@angular/material/tree";
 import { TreeNode } from './data.model'
 import { DataStore } from "../../core/data/data.store";
 import { MatDividerModule } from "@angular/material/divider";
+import { RouterLink } from "@angular/router";
 
 @Component({
     selector: 'app-data',
     templateUrl: 'data.component.html',
     styles: `:host { @apply flex-1; }`,
     imports: [
-        MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule
+        MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
+        RouterLink
     ]
 })
 export class DataComponent implements OnInit {
