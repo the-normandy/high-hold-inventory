@@ -16,7 +16,7 @@ export class DataStore {
     }
 
     craftItems: string[] = [];
-    schema: number | null = null;
+    schema: number = 1;
     items = {} as Record<string, ItemData[]>;
     craftData = {} as Record<string, Record<string, ItemData[]>>;
 
