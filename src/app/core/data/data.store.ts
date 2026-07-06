@@ -9,13 +9,14 @@ import { TreeNode } from "../../features/data/data.model";
 export class DataStore {
 
     load(data: PricesFile): void {
+        this.schema = data.schema;
         this.items = data.materials;
         this.craftData = data.craft;
         this.craftItems = Object.keys(data.craft) as string[];
     }
 
     craftItems: string[] = [];
-
+    schema: number | null = null;
     items = {} as Record<string, ItemData[]>;
     craftData = {} as Record<string, Record<string, ItemData[]>>;
 
