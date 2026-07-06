@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from "@angular/core";
+import { Component, computed, effect, inject, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTreeModule } from "@angular/material/tree";
@@ -8,6 +8,9 @@ import { MatDividerModule } from "@angular/material/divider";
 import { RouterLink } from "@angular/router";
 import { ItemData } from "../../core/data/item.model";
 import { PricesFile } from "../../core/data/data.service";
+import { MatInputModule } from "@angular/material/input";
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 @Component({
     selector: 'app-data',
@@ -16,7 +19,7 @@ import { PricesFile } from "../../core/data/data.service";
     styleUrl: 'data.component.css',
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
-        RouterLink
+        RouterLink, MatInputModule, ReactiveFormsModule, MatFormFieldModule
     ]
 })
 export class DataComponent implements OnInit {
@@ -31,11 +34,18 @@ export class DataComponent implements OnInit {
     }
 
     private readonly data = inject(DataStore);
+    private readonly formEffect = effect(() => {
+        this.rebuildForm(this.fieldSnapshot());
+    });
     readonly childrenAccessor = (node: TreeNode) => node.children ?? [];
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
     dataSnapshot = signal<PricesFile | null>(null);
     treeData = signal<TreeNode[]>([]);
     selected = signal<string[]>([]);
+    fb = inject(FormBuilder);
+    form = this.fb.group({
+        items: this.fb.array<FormGroup>([])
+    });
 
     fieldSnapshot = computed(() => {
     const data = this.dataSnapshot();
@@ -56,8 +66,27 @@ export class DataComponent implements OnInit {
     }
 
     return current as ItemData[];
-});
+    });
 
+    get items(): FormArray {
+        return this.form.get('items') as FormArray;
+    }
+
+    private createItemGroup(item: ItemData): FormGroup {
+        return this.fb.group({
+            name: [item.name],
+            price: [item.price],
+            labor: [item.labor]
+        });
+    }
+
+    private rebuildForm(items: ItemData[]) {
+        this.items.clear();
+        
+        for (const item of items) {
+            this.items.push(this.createItemGroup(item));
+        }
+    }
     isSelected(node: TreeNode): boolean {
         return node.path == this.selected();
     }
