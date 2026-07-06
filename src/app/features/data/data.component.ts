@@ -87,11 +87,30 @@ export class DataComponent implements OnInit {
             this.items.push(this.createItemGroup(item));
         }
     }
+
+    private saveCurrentForm(): void {
+        const data = this.dataSnapshot();
+
+        if (!data || this.selected().length === 0) {
+            return;
+        }
+
+        let current: any = data;
+        const path = this.selected();
+
+        for (let i = 0; i < path.length - 1; i++) {
+            current = current[path[i]];
+        }
+
+        current[path.at(-1)!] = this.items.getRawValue() as ItemData[];
+    }
+
     isSelected(node: TreeNode): boolean {
         return node.path == this.selected();
     }
 
     select(node: TreeNode) {
+        if (this.selected().length > 0) this.saveCurrentForm();
         this.selected.set(node.path);
     }
 }
