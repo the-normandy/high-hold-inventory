@@ -73,11 +73,19 @@ export class DataComponent implements OnInit {
     }
 
     private createItemGroup(item: ItemData): FormGroup {
-        return this.fb.group({
-            name: [item.name],
-            price: [item.price],
-            labor: [item.labor]
-        });
+        const group = new FormGroup({});
+
+        group.addControl('name', this.fb.control(item.name));
+        group.addControl('price', this.fb.control(item.price));
+
+        if (item.labor !== undefined) {
+            group.addControl(
+                'labor',
+                this.fb.control(item.labor)
+            );
+        }
+
+        return group;
     }
 
     private rebuildForm(items: ItemData[]) {
