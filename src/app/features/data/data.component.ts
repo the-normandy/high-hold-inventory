@@ -11,6 +11,7 @@ import { PricesFile } from "../../core/data/data.service";
 import { MatInputModule } from "@angular/material/input";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
     selector: 'app-data',
@@ -19,7 +20,8 @@ import { MatFormFieldModule } from "@angular/material/form-field";
     styleUrl: 'data.component.css',
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
-        RouterLink, MatInputModule, ReactiveFormsModule, MatFormFieldModule
+        RouterLink, MatInputModule, ReactiveFormsModule, MatFormFieldModule,
+        MatTooltipModule
     ]
 })
 export class DataComponent implements OnInit {
@@ -47,6 +49,8 @@ export class DataComponent implements OnInit {
         items: this.fb.array<FormGroup>([])
     });
 
+    isCraft = computed(() => this.selected()[0] === 'craft');
+
     fieldSnapshot = computed(() => {
     const data = this.dataSnapshot();
     const path = this.selected();
@@ -72,13 +76,13 @@ export class DataComponent implements OnInit {
         return this.form.get('items') as FormArray;
     }
 
-    private createItemGroup(item: ItemData): FormGroup {
+    private createItemGroup(item: ItemData, isCraft: boolean = false): FormGroup {
         const group = new FormGroup({});
 
         group.addControl('name', this.fb.control(item.name));
         group.addControl('price', this.fb.control(item.price));
 
-        if (item.labor !== undefined) {
+        if (item.labor !== undefined || isCraft) {
             group.addControl(
                 'labor',
                 this.fb.control(item.labor)
@@ -111,6 +115,22 @@ export class DataComponent implements OnInit {
         }
 
         current[path.at(-1)!] = this.items.getRawValue() as ItemData[];
+    }
+
+    addItem() {
+        this.items.push(
+            this.createItemGroup(
+                {
+                    name: '',
+                    price: 0
+                },
+                this.isCraft()
+            )
+        );
+    }
+
+    removeItem(index: number) {
+        this.items.removeAt(index);
     }
 
     isSelected(node: TreeNode): boolean {
