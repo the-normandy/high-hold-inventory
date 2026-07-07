@@ -26,7 +26,7 @@
                 <button type="button" matTooltip="Add new item" matIconButton (click)="addItem()"><mat-icon>add</mat-icon></button>
             </div>
             @for (group of items.controls; track group; let index = $index) {
-                <div [formGroupName]="$index" class="flex flex-row items-center justify-center gap-10">
+                <div [formGroupName]="index" class="flex flex-row items-center justify-center gap-10">
                     <mat-form-field>
                         <mat-label>Name</mat-label>
                         <input matInput formControlName="name">

@@ -96,11 +96,16 @@ export class DataComponent implements OnInit {
     }
 
     private rebuildForm(items: ItemData[]) {
-        this.items.clear();
-        
-        for (const item of items) {
-            this.items.push(this.createItemGroup(item));
-        }
+        this.form.setControl(
+            'items',
+            this.fb.array(items.map(item => this.createItemGroup(item, this.isCraft())))
+        );
+    }
+
+    private clearForm() {
+        this.form = this.fb.group({
+            items: this.fb.array<FormGroup>([])
+        });
     }
 
     private saveCurrentForm(): void {
@@ -161,12 +166,19 @@ export class DataComponent implements OnInit {
     async save() {
         try {
             this.saveCurrentForm();
+            this.clearForm();
+
             await this.dataService.save(this.dataSnapshot()!);
-            this.dataService.load();
+            await this.dataService.load();
+            
             this.refreshSnapshot();
-            this.snackBar.open('Prices saved successfully.', 'OK');
+            const selection = [...this.selected()];
+            this.selected.set([]);
+            this.rebuildForm(this.fieldSnapshot());
+            this.selected.set(selection);
+            this.snackBar.open('Prices saved successfully.', 'OK', {duration: 2000});
         } catch (e) {
-            this.snackBar.open('Failed to save prices.', 'OK');
+            this.snackBar.open('Failed to save prices.', 'OK', {duration: 2000});
         }
     }
 }
