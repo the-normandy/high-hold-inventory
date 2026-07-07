@@ -9,7 +9,7 @@ import { RouterLink } from "@angular/router";
 import { ItemData } from "../../core/data/item.model";
 import { DataService, PricesFile } from "../../core/data/data.service";
 import { MatInputModule } from "@angular/material/input";
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
