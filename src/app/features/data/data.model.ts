@@ -3,3 +3,7 @@ export interface TreeNode {
     path: string[];
     children?: TreeNode[];
 }
+
+export interface WebhookSettings {
+    url: string;
+}

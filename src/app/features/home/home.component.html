@@ -14,7 +14,7 @@
             <mat-card-content class="flex-1 py-8!">Edit the data used for items and prices, including creating new items or updating the prices of those already there. You probably shouldn't use it if you're not clan leadership.</mat-card-content>
             <mat-card-actions class="grid grid-cols-2 justify-self-center gap-10 place-content-center">
                 <a matButton="filled" routerLink="/data">Manage</a>
-                <a matButton="filled">Settings</a>
+                <a matButton="filled" (click)="dataSettings()">Settings</a>
             </mat-card-actions>
         </mat-card>
     </div>

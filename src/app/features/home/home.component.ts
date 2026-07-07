@@ -4,6 +4,9 @@ import { MatCardModule } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
 import { UpdaterComponent } from "./updater.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { DataService } from "../../core/data/data.service";
+import { firstValueFrom } from "rxjs";
+import { WebhookDialogComponent } from "../data/webhook-dialog.component";
 
 @Component({
     selector: 'app-home',
@@ -16,8 +19,19 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 })
 export class HomeComponent {
     dialog = inject(MatDialog);
+    dataService = inject(DataService);
 
-    dataSettings() {
-        // Implement
+    async dataSettings() {
+        const dialogRef = this.dialog.open(WebhookDialogComponent, {
+            width: '800px'
+        });
+
+        const url = await firstValueFrom(dialogRef.afterClosed());
+
+        if (!url) {
+            return;
+        }
+
+        await this.dataService.saveWebhook(url);
     }
 }

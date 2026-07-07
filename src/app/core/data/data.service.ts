@@ -46,4 +46,27 @@ export class DataService {
         );
     }
 
+    async saveWebhook(url: string): Promise<void> {
+        await writeTextFile(
+            'webhook.json',
+            JSON.stringify({ url }, null, 2),
+            {
+                baseDir: BaseDirectory.AppLocalData
+            }
+        );
+    }
+
+    async loadWebhook(): Promise<string> {
+        try {
+            const text = await readTextFile(
+                'webhook.json',
+                { baseDir: BaseDirectory.AppLocalData }
+            );
+
+            return JSON.parse(text).url ?? '';
+        } catch {
+            return '';
+        }
+    }
+
 }

@@ -36,6 +36,7 @@ export class App {
     } catch(error) {
       this.dataError.set("Failed to locate prices.json in folder.")
     }
+    await this.dataService.loadWebhook();
   }
 
   async retryLoadData() {

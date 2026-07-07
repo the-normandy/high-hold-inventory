@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Export data settings</h2>
+<mat-dialog-content>
+    <mat-form-field class="w-full">
+        <mat-label>Webhook URL</mat-label>
+        <input matInput [formControl]="url">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button class="w-24" matButton="tonal" mat-dialog-close>Cancel</button>
+    <button class="w-24" matButton="filled" [mat-dialog-close]="url.value">
+        Save
+    </button>
+</mat-dialog-actions>
