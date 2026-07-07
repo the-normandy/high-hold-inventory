@@ -141,4 +141,14 @@ export class DataComponent implements OnInit {
         if (this.selected().length > 0) this.saveCurrentForm();
         this.selected.set(node.path);
     }
+
+    discard() {
+        this.dataSnapshot.set({
+            schema: structuredClone(this.data.schema),
+            craft: structuredClone(this.data.craftData),
+            materials: structuredClone(this.data.items),
+        });
+
+        this.rebuildForm(this.fieldSnapshot());
+    }
 }
