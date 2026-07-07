@@ -203,14 +203,16 @@ export class DataComponent implements OnInit {
 
     async save(): Promise<void> {
         const snapshot = this.dataSnapshot()!;
-        
+
         if (Object.keys(snapshot.materials).length === 0 || Object.keys(snapshot.craft).length === 0) {
             throw new Error("Refusing to save an empty dataset.")
         }
 
         try {
-            this.saveCurrentForm();
-            this.clearForm();
+            if (this.selected().length > 0) {
+                this.saveCurrentForm();
+                this.clearForm();
+            }
             await this.persistSnapshot();
             this.refreshForm();
         } catch (e) {
