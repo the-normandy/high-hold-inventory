@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
-import { readTextFile } from '@tauri-apps/plugin-fs';
+import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { ItemData } from './item.model';
@@ -32,6 +32,18 @@ export class DataService {
             console.error(error);
             throw new Error('Unable to load prices.json.');
         }
+    }
+
+    async save(data: PricesFile): Promise<void> {
+        const json = JSON.stringify(data, null, 2);
+
+        await writeTextFile(
+            'prices.json',
+            json,
+            {
+                baseDir: BaseDirectory.AppLocalData
+            }
+        );
     }
 
 }

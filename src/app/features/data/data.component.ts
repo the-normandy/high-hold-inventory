@@ -7,11 +7,12 @@ import { DataStore } from "../../core/data/data.store";
 import { MatDividerModule } from "@angular/material/divider";
 import { RouterLink } from "@angular/router";
 import { ItemData } from "../../core/data/item.model";
-import { PricesFile } from "../../core/data/data.service";
+import { DataService, PricesFile } from "../../core/data/data.service";
 import { MatInputModule } from "@angular/material/input";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-data',
@@ -21,7 +22,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
         RouterLink, MatInputModule, ReactiveFormsModule, MatFormFieldModule,
-        MatTooltipModule
+        MatTooltipModule, MatSnackBarModule
     ]
 })
 export class DataComponent implements OnInit {
@@ -36,10 +37,12 @@ export class DataComponent implements OnInit {
     }
 
     private readonly data = inject(DataStore);
+    private readonly dataService = inject(DataService);
     private readonly formEffect = effect(() => {
         this.rebuildForm(this.fieldSnapshot());
     });
     readonly childrenAccessor = (node: TreeNode) => node.children ?? [];
+    snackBar = inject(MatSnackBar);
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
     dataSnapshot = signal<PricesFile | null>(null);
     treeData = signal<TreeNode[]>([]);
@@ -143,12 +146,27 @@ export class DataComponent implements OnInit {
     }
 
     discard() {
+        this.refreshSnapshot();
+        this.rebuildForm(this.fieldSnapshot());
+    }
+
+    private refreshSnapshot(): void {
         this.dataSnapshot.set({
             schema: structuredClone(this.data.schema),
             craft: structuredClone(this.data.craftData),
             materials: structuredClone(this.data.items),
         });
+    }
 
-        this.rebuildForm(this.fieldSnapshot());
+    async save() {
+        try {
+            this.saveCurrentForm();
+            await this.dataService.save(this.dataSnapshot()!);
+            this.dataService.load();
+            this.refreshSnapshot();
+            this.snackBar.open('Prices saved successfully.', 'OK');
+        } catch (e) {
+            this.snackBar.open('Failed to save prices.', 'OK');
+        }
     }
 }
