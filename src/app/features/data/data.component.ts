@@ -37,9 +37,12 @@ export class DataComponent implements OnInit {
             materials: structuredClone(this.data.items),
         });
         this.treeData.set(this.data.getTree());
+        if (!this.data.webhook()) {
+            this.snackBar.open("Failed to detect webhook data. It's highly recommended you set it up in Settings.", 'Dismiss', {duration: 5000});
+        }
     }
 
-    private readonly data = inject(DataStore);
+    protected readonly data = inject(DataStore);
     private readonly dataService = inject(DataService);
     http = inject(HttpClient);
     private readonly formEffect = effect(() => {
