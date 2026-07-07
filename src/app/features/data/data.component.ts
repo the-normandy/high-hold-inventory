@@ -162,23 +162,55 @@ export class DataComponent implements OnInit {
             materials: structuredClone(this.data.items),
         });
     }
+    private async persistSnapshot(): Promise<void> {
+        await this.dataService.save(this.dataSnapshot()!);
+        await this.dataService.load();
 
-    async save() {
+        this.refreshSnapshot();
+    }
+
+    private refreshForm(): void {
+        const selection = [...this.selected()];
+
+        this.selected.set([]);
+        this.rebuildForm(this.fieldSnapshot());
+        this.selected.set(selection);
+    }
+
+    async saveButton() {
+        try {
+            await this.save();
+            this.snackBar.open('Prices saved successfully.', 'OK', {duration: 2000});
+        } catch(e) {
+            this.snackBar.open('Failed to save prices.', 'OK', {duration: 2000});
+        }
+    }
+
+    async saveAndExportButton(): Promise<void> {
         try {
             this.saveCurrentForm();
             this.clearForm();
 
-            await this.dataService.save(this.dataSnapshot()!);
-            await this.dataService.load();
-            
-            this.refreshSnapshot();
-            const selection = [...this.selected()];
-            this.selected.set([]);
-            this.rebuildForm(this.fieldSnapshot());
-            this.selected.set(selection);
-            this.snackBar.open('Prices saved successfully.', 'OK', {duration: 2000});
+            await this.persistSnapshot();
+            await this.export();
+
+            this.refreshForm();
+
+            this.snackBar.open('Prices saved and exported successfully.', 'OK');
         } catch (e) {
-            this.snackBar.open('Failed to save prices.', 'OK', {duration: 2000});
+            this.snackBar.open('Failed to save and export.', 'OK');
         }
+    }
+
+    async save(): Promise<void> {
+        this.saveCurrentForm();
+        this.clearForm();
+
+        await this.persistSnapshot();
+        this.refreshForm();
+    }
+
+    async export() {
+        // Implementation
     }
 }
