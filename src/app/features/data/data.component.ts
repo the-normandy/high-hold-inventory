@@ -194,7 +194,7 @@ export class DataComponent implements OnInit {
         try {
             await this.save();
             await this.export();
-            this.snackBar.open('Prices saved and exported successfully.', 'OK', {duration: 2000});
+            this.snackBar.open('Data saved and exported successfully.', 'OK', {duration: 2000});
         } catch (e) {
             const err = e as Error;
             this.snackBar.open(err.message, 'OK', {duration: 3000});
@@ -223,8 +223,7 @@ export class DataComponent implements OnInit {
     async export() {
         const webhook = this.data.webhook();
         if (!webhook) {
-            this.snackBar.open("Webhook not detected in settings.", 'OK', {duration: 3000});
-            return;
+            throw new Error("Webhook not detected in settings.");
         }
         try {
             const bytes = await readFile('prices.json', { baseDir: BaseDirectory.AppLocalData });
@@ -232,7 +231,6 @@ export class DataComponent implements OnInit {
             const form = new FormData();
             form.append('files[0]', blob, 'prices.json');
             await firstValueFrom(this.http.post(webhook, form));
-            this.snackBar.open("Data uploaded to webhook successfully.", 'OK', {duration: 2000});
         } catch(e) {
             throw new Error("Failed to upload to webhook.");
         }

@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 
 import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { BaseDirectory } from '@tauri-apps/api/path';
@@ -16,21 +16,22 @@ export interface PricesFile {
 })
 export class DataService {
     private readonly dataStore = inject(DataStore);
+    private readonly loadError = signal<string | null>(null);
+
+    readonly error = this.loadError.asReadonly();
 
     async load(): Promise<void> {
         try {
             const text = await readTextFile('prices.json', {baseDir: BaseDirectory.AppLocalData});
             const data = JSON.parse(text) as PricesFile;
-
             if (!data) {
-                throw Error("Failed to locate prices.json");
+                throw Error("Failed to locate prices.json.");
             }
-
             this.dataStore.load(data);
-
+            this.loadError.set(null);
         } catch (error) {
             console.error(error);
-            throw new Error('Unable to load prices.json.');
+            this.loadError.set('Failed to locate prices.json.')
         }
     }
 

@@ -24,28 +24,14 @@ export class App {
   protected readonly title = computed(() => `Storehouse`);
   mode = inject(ThemeStore);
   dataService = inject(DataService);
-  dataError = signal<string | null>(null);
+  dataError = this.dataService.error;
 
   constructor() {
     this.updateWindow();
   }
-  
-  async ngOnInit(): Promise<void> {
-    try {
-      await this.dataService.load();
-    } catch(error) {
-      this.dataError.set("Failed to locate prices.json in folder.")
-    }
-    await this.dataService.loadWebhook();
-  }
 
   async retryLoadData() {
-    try {
-      await this.dataService.load();
-      this.dataError.set(null);
-    } catch(error) {
-      this.dataError.set("Failed to locate prices.json in folder.")
-    }
+    this.dataService.load();
   }
 
   async openDataFolder() {
