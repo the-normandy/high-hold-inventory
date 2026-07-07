@@ -50,7 +50,7 @@
     </form>
 </div>
 <div class="my-10 grid grid-cols-4 gap-20 justify-self-center">
-        <button matButton="filled">Save and Export</button>
+        <button matButton="filled" (click)="saveAndExportButton()">Save and Export</button>
         <button matButton="tonal" (click)="saveButton()">Save</button>
         <button matButton="tonal" (click)="discard()">Discard changes</button>
         <button matButton="tonal" routerLink="">Back</button>

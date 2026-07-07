@@ -13,6 +13,9 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
+import { HttpClient } from "@angular/common/http";
+import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
+import { firstValueFrom } from "rxjs";
 
 @Component({
     selector: 'app-data',
@@ -38,6 +41,7 @@ export class DataComponent implements OnInit {
 
     private readonly data = inject(DataStore);
     private readonly dataService = inject(DataService);
+    http = inject(HttpClient);
     private readonly formEffect = effect(() => {
         this.rebuildForm(this.fieldSnapshot());
     });
@@ -188,29 +192,41 @@ export class DataComponent implements OnInit {
 
     async saveAndExportButton(): Promise<void> {
         try {
-            this.saveCurrentForm();
-            this.clearForm();
-
-            await this.persistSnapshot();
+            await this.save();
             await this.export();
-
-            this.refreshForm();
-
-            this.snackBar.open('Prices saved and exported successfully.', 'OK');
+            this.snackBar.open('Prices saved and exported successfully.', 'OK', {duration: 2000});
         } catch (e) {
-            this.snackBar.open('Failed to save and export.', 'OK');
+            const err = e as Error;
+            this.snackBar.open(err.message, 'OK', {duration: 3000});
         }
     }
 
     async save(): Promise<void> {
-        this.saveCurrentForm();
-        this.clearForm();
-
-        await this.persistSnapshot();
-        this.refreshForm();
+        try {
+            this.saveCurrentForm();
+            this.clearForm();
+            await this.persistSnapshot();
+            this.refreshForm();
+        } catch (e) {
+            throw new Error("Failed to save prices.");
+        }
     }
 
     async export() {
-        // Implementation
+        const webhook = this.data.webhook();
+        if (!webhook) {
+            this.snackBar.open("Webhook not detected in settings.", 'OK', {duration: 3000});
+            return;
+        }
+        try {
+            const bytes = await readFile('prices.json', { baseDir: BaseDirectory.AppLocalData });
+            const blob = new Blob([bytes], {type: 'application/json'});
+            const form = new FormData();
+            form.append('files[0]', blob, 'prices.json');
+            await firstValueFrom(this.http.post(webhook, form));
+            this.snackBar.open("Data uploaded to webhook successfully.", 'OK', {duration: 2000});
+        } catch(e) {
+            throw new Error("Failed to upload to webhook.");
+        }
     }
 }
