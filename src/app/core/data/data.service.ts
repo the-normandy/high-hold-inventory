@@ -54,18 +54,19 @@ export class DataService {
                 baseDir: BaseDirectory.AppLocalData
             }
         );
+        await this.loadWebhook();
     }
 
-    async loadWebhook(): Promise<string> {
+    async loadWebhook(): Promise<void> {
         try {
             const text = await readTextFile(
                 'webhook.json',
                 { baseDir: BaseDirectory.AppLocalData }
             );
 
-            return JSON.parse(text).url ?? '';
+            this.dataStore.webhook.set(JSON.parse(text).url ?? null);
         } catch {
-            return '';
+            return;
         }
     }
 

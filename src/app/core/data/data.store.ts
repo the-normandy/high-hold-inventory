@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { ItemData } from "./item.model";
 import { PricesFile } from "./data.service"
 import { TreeNode } from "../../features/data/data.model";
@@ -19,6 +19,7 @@ export class DataStore {
     schema: number = 1;
     items = {} as Record<string, ItemData[]>;
     craftData = {} as Record<string, Record<string, ItemData[]>>;
+    webhook = signal<string | null>(null);
 
     getTree(): TreeNode[] {
         const materialRoot: TreeNode = {
