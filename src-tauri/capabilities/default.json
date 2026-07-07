@@ -12,6 +12,12 @@
     "fs:allow-appcache-read",
     "fs:allow-appcache-read-recursive",
     {
+      "identifier": "fs:allow-app-write",
+      "allow": [
+        {"path": "$APPLOCALDATA"}
+      ]
+    },
+    {
       "identifier": "opener:allow-open-path",
       "allow": [
         {"path": "$APPLOCALDATA" }
