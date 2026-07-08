@@ -16,6 +16,8 @@ import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClient } from "@angular/common/http";
 import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
 import { firstValueFrom } from "rxjs";
+import { MaterialService } from "../inventory/material.service";
+import { CraftService } from "../inventory/craft.service";
 
 @Component({
     selector: 'app-data',
@@ -44,6 +46,8 @@ export class DataComponent implements OnInit {
 
     protected readonly data = inject(DataStore);
     private readonly dataService = inject(DataService);
+    private readonly materialService = inject(MaterialService);
+    private readonly craftService = inject(CraftService);
     http = inject(HttpClient);
     private readonly formEffect = effect(() => {
         this.rebuildForm(this.fieldSnapshot());
@@ -217,6 +221,8 @@ export class DataComponent implements OnInit {
                 this.clearForm();
             }
             await this.persistSnapshot();
+            this.materialService.clearAndRebuild();
+            this.craftService.clearAndRebuild();
             this.refreshForm();
         } catch (e) {
             throw new Error("Failed to save prices.");

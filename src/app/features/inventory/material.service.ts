@@ -20,7 +20,7 @@ export class MaterialService {
         this.buildLookup();
     }
 
-    private buildLookup() {
+    buildLookup() {
         for (const [category, items] of Object.entries(this.data.items)) {
             for (const item of items) {
                 this.itemLookup.set(item.name, {
@@ -29,6 +29,11 @@ export class MaterialService {
                 });
             }
         }
+    }
+
+    clearAndRebuild() {
+        this.itemLookup.clear();
+        this.buildLookup();
     }
 
     getAllItems(): SearchableItem[] {

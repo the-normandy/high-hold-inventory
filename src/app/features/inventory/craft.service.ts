@@ -14,7 +14,7 @@ export class CraftService {
         this.buildLookup();
     }
     
-    private buildLookup() {
+    buildLookup() {
         for (const [crafting, categories] of Object.entries(this.data.craftData)) {
             for (const [category, items] of Object.entries(categories)) {
                 for (const item of items) {
@@ -26,6 +26,11 @@ export class CraftService {
                 }
             }
         }
+    }
+
+    clearAndRebuild() {
+        this.itemLookup.clear();
+        this.buildLookup();
     }
 
     getAllItems(): CraftSearchableItem[] {
