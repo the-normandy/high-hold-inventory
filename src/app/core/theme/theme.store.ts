@@ -5,7 +5,9 @@ export type AccentTheme =
   | 'summer'
   | 'spring'
   | 'autumn'
-  | 'winter';
+  | 'winter'
+  | 'duskwillow'
+  | 'high-hold';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +39,9 @@ export class ThemeStore {
         'summer',
         'spring',
         'autumn',
-        'winter'
+        'winter',
+        'duskwillow',
+        'high-hold'
       );
 
       html.classList.add(this.accent());
@@ -70,7 +74,8 @@ export class ThemeStore {
       savedAccent === 'summer' ||
       savedAccent === 'spring' ||
       savedAccent === 'autumn' ||
-      savedAccent === 'winter'
+      savedAccent === 'winter' ||
+      savedAccent === 'duskwillow'
     ) {
       this.accent.set(savedAccent);
     }

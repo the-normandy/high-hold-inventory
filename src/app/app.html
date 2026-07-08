@@ -6,12 +6,14 @@
 <span class="ml-auto flex flex-row items-center justify-items-center gap-10">
     <span class="flex flex-row gap-4">
     <button matIconButton matTooltip="Color themes" [matMenuTriggerFor]="menu"><mat-icon>color_lens</mat-icon></button>
-    <mat-menu #menu="matMenu" xPosition="before" class="rounded-md! w-36">
+    <mat-menu #menu="matMenu" xPosition="before" class="rounded-md! w-44!">
         <button mat-menu-item (click)="mode.accent.set('default')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('default') ? 'check' : 'star' }}</mat-icon>Default</button>
         <button mat-menu-item (click)="mode.accent.set('summer')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('summer') ? 'check' : 'brightness_5' }}</mat-icon>Summer</button>
         <button mat-menu-item (click)="mode.accent.set('spring')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('spring') ? 'check' : 'local_florist' }}</mat-icon>Spring</button>
         <button mat-menu-item (click)="mode.accent.set('autumn')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('autumn') ? 'check' : 'grass' }}</mat-icon>Autumn</button>
         <button mat-menu-item (click)="mode.accent.set('winter')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('winter') ? 'check' : 'ac_unit' }}</mat-icon>Winter</button>
+        <button mat-menu-item (click)="mode.accent.set('duskwillow')" class="rounded-md"><mat-icon>{{mode.isAccentTheme('duskwillow') ? 'check' : 'symptoms'}}</mat-icon>Fifth Season</button>
+        <button mat-menu-item (click)="mode.accent.set('high-hold')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('high-hold') ? 'check' : 'crown' }}</mat-icon>High Hold</button>
     </mat-menu>
     <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_managed</mat-icon></button>
     </span>

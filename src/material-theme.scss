@@ -6,6 +6,8 @@
 @use '@angular/material' as mat;
 @use './themes/autumn_theme-colors.scss' as autumn;
 @use './themes/summer_theme-colors.scss' as summer;
+@use './themes/duskwillow_theme-colors.scss' as duskwillow;
+@use './themes/high-hold_theme-colors.scss' as high-hold;
 
 html {
   height: 100%;
@@ -55,6 +57,24 @@ html.winter {
       tertiary: mat.$blue-palette,
     )
   ));
+}
+
+html.duskwillow {
+  @include mat.theme((
+    color: (
+      primary: duskwillow.$primary-palette,
+      tertiary: duskwillow.$tertiary-palette,
+    )
+  ));
+}
+
+html.high-hold {
+  @include mat.theme((
+    color: (
+      primary: high-hold.$primary-palette,
+      tertiary: high-hold.$tertiary-palette,
+    )
+  ))
 }
 
 body {
