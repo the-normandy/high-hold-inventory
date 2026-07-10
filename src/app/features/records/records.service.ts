@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { CraftSubmission, EntryType, MaterialSubmission, RecordEntry } from "./records.model";
+import { BaseDirectory, exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 
 @Injectable({
     providedIn: 'root'
 })
 export class RecordsService {
    
-
     private createMaterialRecord(material: MaterialSubmission, mode: string): RecordEntry {
         const entry = mode as EntryType;
 
@@ -80,8 +80,24 @@ export class RecordsService {
     }
 
     async writeRecord(entry: RecordEntry, filename: string): Promise<void> {
-        // Tauri write to file, to implement
+        let records: RecordEntry[] = [];
+
+        if (await exists(filename, { baseDir: BaseDirectory.AppLocalData })) {
+            const text = await readTextFile(filename, {
+                baseDir: BaseDirectory.AppLocalData
+            });
+
+            if (text.trim().length > 0) {
+                records = JSON.parse(text) as RecordEntry[];
+            }
+        }
+
+        records.push(entry);
+        records.sort(
+            (a, b) => 
+                new Date(a.timestamp).getTime() - new Date(a.timestamp).getTime()
+        )
+
+        await writeTextFile(filename, JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
     }
-
-
 }
