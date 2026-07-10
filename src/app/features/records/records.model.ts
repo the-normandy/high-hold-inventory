@@ -10,6 +10,7 @@ export interface RecordEntry {
 }
 
 export interface RecordItem {
+    category: string;
     name: string;
     quantity: number;
     value: number;
