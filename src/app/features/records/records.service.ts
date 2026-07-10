@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CraftSubmission, entryType, MaterialSubmission, RecordEntry } from "./records.model";
+import { CraftSubmission, EntryType, MaterialSubmission, RecordEntry } from "./records.model";
 
 @Injectable({
     providedIn: 'root'
@@ -8,7 +8,7 @@ export class RecordsService {
    
 
     private createMaterialRecord(material: MaterialSubmission, mode: string): RecordEntry {
-        const entry = mode as entryType;
+        const entry = mode as EntryType;
 
         return {
             id: crypto.randomUUID(),
@@ -28,7 +28,7 @@ export class RecordsService {
     }
 
     private createCraftRecord(craft: CraftSubmission, mode: string): RecordEntry {
-        const entry = mode as entryType;
+        const entry = mode as EntryType;
 
         return {
             id: crypto.randomUUID(),
@@ -52,21 +52,36 @@ export class RecordsService {
         };
     }
 
-    async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
-        if (mode !== 'deposit' && mode !== 'withdraw') {
-            return;
+    private getFileName(mode: string): string | null {
+        switch(mode) {
+            case 'deposit':
+                return 'ledger-deposit.json';
+            case 'withdraw':
+                return 'ledger-withdraw.json';
+            default:
+                return null;
         }
+    }
+
+    async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
+        const filename = this.getFileName(mode);
+        if (!filename) return;
 
         const entry = this.createMaterialRecord(material, mode);
-        
+        return this.writeRecord(entry, filename);
     }
 
     async recordCraftSubmission(craft: CraftSubmission, mode: string): Promise<void> {
-        if (mode !== 'deposit' && mode !== 'withdraw') {
-            return;
-        }
+        const filename = this.getFileName(mode);
+        if (!filename) return;
 
         const entry = this.createCraftRecord(craft, mode);
-
+        return this.writeRecord(entry, filename);
     }
+
+    async writeRecord(entry: RecordEntry, filename: string): Promise<void> {
+        // Tauri write to file, to implement
+    }
+
+
 }
