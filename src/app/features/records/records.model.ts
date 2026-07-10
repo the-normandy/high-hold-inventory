@@ -6,7 +6,7 @@ type RecordSource = 'material' | 'craft';
 export interface RecordEntry {
     id: string;
     entry: EntryType;
-    source: string;
+    source: RecordSource;
     timestamp: string;
     items: RecordItem[];
     totalValue: number;
