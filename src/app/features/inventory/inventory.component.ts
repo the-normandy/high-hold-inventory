@@ -9,6 +9,7 @@ import { DatePipe } from "@angular/common";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatButtonModule } from "@angular/material/button";
 import { CraftSubmission, MaterialSubmission } from "../records/records.model";
+import { RecordsService } from "../records/records.service";
 
 @Component({
     selector: 'app-inventory',
@@ -29,6 +30,7 @@ export class InventoryComponent implements OnInit {
     }
 
     route = inject(ActivatedRoute);
+    recordService = inject(RecordsService);
     mode = signal<string>('');
     fb = inject(FormBuilder);
     snackBar = inject(MatSnackBar);
@@ -75,11 +77,11 @@ export class InventoryComponent implements OnInit {
         const craftSubmission = this.craftForm.getRawValue() as CraftSubmission;
 
         if (matSubmission.items.length > 0) {
-            
+            await this.recordService.recordMaterialSubmission(matSubmission, this.mode());
         }
 
         if (craftSubmission.items.length > 0) {
-
+            await this.recordService.recordCraftSubmission(craftSubmission, this.mode());
         }
 
         const includeMaterial = this.shouldRenderMaterial();
