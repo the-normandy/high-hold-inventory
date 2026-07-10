@@ -133,7 +133,14 @@ export class DataComponent implements OnInit {
             current = current[path[i]];
         }
 
-        current[path.at(-1)!] = this.items.getRawValue() as ItemData[];
+        const items = [...(this.items.getRawValue() as ItemData[])]
+            .sort((a, b) =>
+                a.name.localeCompare(b.name, undefined, {
+                    sensitivity: 'base'
+                })
+            );
+
+        current[path.at(-1)!] = items;
     }
 
     addItem() {
