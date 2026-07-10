@@ -13,6 +13,7 @@ export class RecordsService {
         return {
             id: crypto.randomUUID(),
             entry: entry,
+            source: 'material',
             timestamp: new Date().toISOString(),
             totalValue: material.items.reduce(
                 (sum, item) => sum + item.item.price * item.quantity,
@@ -33,6 +34,7 @@ export class RecordsService {
         return {
             id: crypto.randomUUID(),
             entry: entry,
+            source: 'craft',
             timestamp: new Date().toISOString(),
             totalValue: craft.items.reduce(
                 (sum, item) =>
@@ -52,38 +54,29 @@ export class RecordsService {
         };
     }
 
-    private getFileName(mode: string): string | null {
-        switch(mode) {
-            case 'deposit':
-                return 'ledger-deposit.json';
-            case 'withdraw':
-                return 'ledger-withdraw.json';
-            default:
-                return null;
-        }
+    private validate(mode: string) {
+        return mode !== 'deposit' && mode !== 'withdraw';
     }
 
     async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
-        const filename = this.getFileName(mode);
-        if (!filename) return;
+        if (!this.validate(mode)) return;
 
         const entry = this.createMaterialRecord(material, mode);
-        return this.writeRecord(entry, filename);
+        return this.writeRecord(entry);
     }
 
     async recordCraftSubmission(craft: CraftSubmission, mode: string): Promise<void> {
-        const filename = this.getFileName(mode);
-        if (!filename) return;
+        if (!this.validate(mode)) return;
 
         const entry = this.createCraftRecord(craft, mode);
-        return this.writeRecord(entry, filename);
+        return this.writeRecord(entry);
     }
 
-    async writeRecord(entry: RecordEntry, filename: string): Promise<void> {
+    async writeRecord(entry: RecordEntry): Promise<void> {
         let records: RecordEntry[] = [];
 
-        if (await exists(filename, { baseDir: BaseDirectory.AppLocalData })) {
-            const text = await readTextFile(filename, {
+        if (await exists('ledger.json', { baseDir: BaseDirectory.AppLocalData })) {
+            const text = await readTextFile('ledger.json', {
                 baseDir: BaseDirectory.AppLocalData
             });
 
@@ -98,6 +91,6 @@ export class RecordsService {
                 new Date(a.timestamp).getTime() - new Date(a.timestamp).getTime()
         )
 
-        await writeTextFile(filename, JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
+        await writeTextFile('ledger.json', JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
     }
 }
