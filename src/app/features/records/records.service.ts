@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CraftSubmission, MaterialSubmission, RecordEntry } from "./records.model";
+import { CraftSubmission, entryType, MaterialSubmission, RecordEntry } from "./records.model";
 
 @Injectable({
     providedIn: 'root'
@@ -7,10 +7,12 @@ import { CraftSubmission, MaterialSubmission, RecordEntry } from "./records.mode
 export class RecordsService {
    
 
-    private createMaterialRecord(material: MaterialSubmission): RecordEntry {
+    private createMaterialRecord(material: MaterialSubmission, mode: string): RecordEntry {
+        const entry = mode as entryType;
+
         return {
             id: crypto.randomUUID(),
-            entry: 'deposit',
+            entry: entry,
             timestamp: new Date().toISOString(),
             totalValue: material.items.reduce(
                 (sum, item) => sum + item.item.price * item.quantity,
@@ -25,10 +27,12 @@ export class RecordsService {
         };
     }
 
-    private createCraftRecord(craft: CraftSubmission): RecordEntry {
+    private createCraftRecord(craft: CraftSubmission, mode: string): RecordEntry {
+        const entry = mode as entryType;
+
         return {
             id: crypto.randomUUID(),
-            entry: 'deposit',
+            entry: entry,
             timestamp: new Date().toISOString(),
             totalValue: craft.items.reduce(
                 (sum, item) =>
@@ -48,11 +52,21 @@ export class RecordsService {
         };
     }
 
-    async recordMaterialSubmission(material: MaterialSubmission): Promise<void> {
-        const entry = this.createMaterialRecord(material);
+    async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
+        if (mode !== 'deposit' && mode !== 'withdraw') {
+            return;
+        }
+
+        const entry = this.createMaterialRecord(material, mode);
+        
     }
 
-    async recordCraftSubmission(craft: CraftSubmission): Promise<void> {
-        const entry = this.createCraftRecord(craft);
+    async recordCraftSubmission(craft: CraftSubmission, mode: string): Promise<void> {
+        if (mode !== 'deposit' && mode !== 'withdraw') {
+            return;
+        }
+
+        const entry = this.createCraftRecord(craft, mode);
+
     }
 }
