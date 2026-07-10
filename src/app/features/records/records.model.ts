@@ -1,6 +1,6 @@
 import { ItemData } from "../../core/data/item.model";
 
-type entryType = 'deposit' | 'withdrawal'
+export type entryType = 'deposit' | 'withdraw'
 
 export interface RecordEntry {
     id: string;
