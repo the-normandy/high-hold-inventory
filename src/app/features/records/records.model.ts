@@ -1,10 +1,10 @@
 import { ItemData } from "../../core/data/item.model";
 
-export type entryType = 'deposit' | 'withdraw'
+export type EntryType = 'deposit' | 'withdraw'
 
 export interface RecordEntry {
     id: string;
-    entry: entryType;
+    entry: EntryType;
     timestamp: string;
     items: RecordItem[];
     totalValue: number;
