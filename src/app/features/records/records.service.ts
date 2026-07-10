@@ -6,7 +6,8 @@ import { CraftSubmission, MaterialSubmission, RecordEntry } from "./records.mode
 })
 export class RecordsService {
    
-    createMaterialRecord(material: MaterialSubmission): RecordEntry {
+
+    private createMaterialRecord(material: MaterialSubmission): RecordEntry {
         return {
             id: crypto.randomUUID(),
             entry: 'deposit',
@@ -24,7 +25,7 @@ export class RecordsService {
         };
     }
 
-    createCraftRecord(craft: CraftSubmission): RecordEntry {
+    private createCraftRecord(craft: CraftSubmission): RecordEntry {
         return {
             id: crypto.randomUUID(),
             entry: 'deposit',
@@ -45,5 +46,13 @@ export class RecordsService {
                     : item.item.price
             }))
         };
+    }
+
+    async recordMaterialSubmission(material: MaterialSubmission): Promise<void> {
+        const entry = this.createMaterialRecord(material);
+    }
+
+    async recordCraftSubmission(craft: CraftSubmission): Promise<void> {
+        const entry = this.createCraftRecord(craft);
     }
 }
