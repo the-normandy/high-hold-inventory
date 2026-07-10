@@ -8,6 +8,7 @@ import { ItemData } from "../../core/data/item.model";
 import { DatePipe } from "@angular/common";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatButtonModule } from "@angular/material/button";
+import { CraftSubmission, MaterialSubmission } from "../records/records.model";
 
 @Component({
     selector: 'app-inventory',
@@ -69,6 +70,17 @@ export class InventoryComponent implements OnInit {
                 laborOnly: boolean;
             }[];
         };
+
+        const matSubmission = this.materialForm.getRawValue() as MaterialSubmission;
+        const craftSubmission = this.craftForm.getRawValue() as CraftSubmission;
+
+        if (matSubmission.items.length > 0) {
+            
+        }
+
+        if (craftSubmission.items.length > 0) {
+
+        }
 
         const includeMaterial = this.shouldRenderMaterial();
         const includeCraft = this.shouldRenderCraft();

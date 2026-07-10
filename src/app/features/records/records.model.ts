@@ -1,3 +1,5 @@
+import { ItemData } from "../../core/data/item.model";
+
 type entryType = 'deposit' | 'withdrawal'
 
 export interface RecordEntry {
@@ -14,4 +16,30 @@ export interface RecordItem {
     name: string;
     quantity: number;
     value: number;
+}
+
+export interface MaterialSubmission {
+    purpose: string | null;
+    silver: number | null;
+    ownership: string | null;
+    usage: string | null;
+    items: MaterialSubmissionItem[];
+}
+
+export interface MaterialSubmissionItem {
+    category: string;
+    item: ItemData;
+    quantity: number;
+}
+
+export interface CraftSubmission {
+    purpose: string | null;
+    items: CraftSubmissionItem[];
+}
+
+export interface CraftSubmissionItem {
+    category: string;
+    item: ItemData;
+    quantity: number;
+    laborOnly: boolean;
 }
