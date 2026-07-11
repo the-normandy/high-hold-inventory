@@ -8,6 +8,7 @@ export class ColorsStore {
     theme = inject(ThemeStore);
     resolve = computed(() => {
         this.theme.isDark();
+        this.theme.accent();
 
         return {
             primary: this.resolveCssColor('--mat-sys-primary'),
