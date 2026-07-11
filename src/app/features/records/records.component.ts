@@ -59,7 +59,7 @@ export class RecordsComponent implements OnInit {
     }
 
 async deleteRecord(record: RecordEntry): Promise<void> {
-    const dialogRef = this.dialog.open(RecordDeleteComponent, {width: '800px'});
+    const dialogRef = this.dialog.open(RecordDeleteComponent, {width: '600px'});
 
     const confirm = await firstValueFrom(dialogRef.afterClosed());
     if (!confirm) return;
