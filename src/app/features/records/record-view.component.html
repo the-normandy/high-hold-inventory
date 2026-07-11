@@ -1,5 +1,5 @@
-<h2 mat-dialog-title>{{ record.timestamp | date: 'yyyy-MM-dd' }} {{record.entry}} of {{record.source}}</h2>
-<mat-dialog-content>
+<h2 mat-dialog-title>{{ record.timestamp | date: 'yyyy-MM-dd' }} {{entry}} of {{source}}</h2>
+<mat-dialog-content class="py-4!">
     <div class="grid grid-cols-4">
         <span class="text-lg font-medium">Name</span>
         <span class="text-lg font-medium">Category</span>
@@ -9,11 +9,13 @@
         <span>{{item.name}}</span>
         <span>{{item.category}}</span>
         <span>{{item.quantity}}</span>
-        <span>{{item.value}}</span>
+        <span>{{item.value*item.quantity}}</span>
         }
     </div>
 </mat-dialog-content>
-<mat-dialog-actions>
-    <button matButton="filled" class="w-24" (click)="copy()">Copy to Clipboard</button>
-    <button matButton="tonal" class="w-24" mat-dialog-close>Close</button>
+<mat-dialog-actions align="center">
+    <div class="flex gap-10">
+        <button matButton="filled" class="w-48" (click)="copy()">Copy to Clipboard</button>
+        <button matButton="tonal" class="w-48" mat-dialog-close>Close</button>
+    </div>
 </mat-dialog-actions>
