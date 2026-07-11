@@ -66,7 +66,7 @@ export class RecordsService {
     }
 
     async recordCraftSubmission(craft: CraftSubmission, mode: string): Promise<void> {
-        if (!this.validate(mode)) return;
+        if (this.validate(mode)) return;
 
         const entry = this.createCraftRecord(craft, mode);
         return this.writeRecord(entry);
