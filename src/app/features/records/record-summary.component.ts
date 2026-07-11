@@ -1,6 +1,6 @@
-import { Component, computed, inject, input, OnInit, signal } from "@angular/core";
+import { Component, computed, inject, input } from "@angular/core";
 import { MatCardModule } from "@angular/material/card";
-import { RecordEntry, RecordSummary } from "./records.model";
+import { RecordEntry } from "./records.model";
 import { RecordsService } from "./records.service";
 
 @Component({

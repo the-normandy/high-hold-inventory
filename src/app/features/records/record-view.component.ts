@@ -1,7 +1,6 @@
-import { Component, inject, input } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
-import { RecordEntry, RecordItem } from "./records.model";
-import { MatCardModule } from "@angular/material/card";
+import { RecordEntry } from "./records.model";
 import { DatePipe } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
