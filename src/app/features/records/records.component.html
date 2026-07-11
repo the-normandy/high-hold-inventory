@@ -1,0 +1,36 @@
+<div class="flex flex-row items-center justify-center gap-10">
+    <!-- Charts will go here -->
+</div>
+<table mat-table matSort [dataSource]="dataSource">
+    <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+        <td mat-cell *matCellDef="let record">{{record.timestamp | date:'yyyy-MM-dd' }}</td>
+    </ng-container>
+    <ng-container matColumnDef="entry" mat-sort-header>
+        <th mat-header-cell *matHeaderCellDef>Entry</th>
+        <td mat-cell *matCellDef="let record">{{record.entry}}</td>
+    </ng-container>
+    <ng-container matColumnDef="source" mat-sort-header>
+        <th mat-header-cell *matHeaderCellDef>Source</th>
+        <td mat-cell *matCellDef="let record">{{record.source}}</td>
+    </ng-container>
+    <ng-container matColumnDef="items">
+        <th mat-header-cell *matHeaderCellDef>Items</th>
+        <td mat-cell *matCellDef="let record">
+            <button matIconButton class="flex gap-4" (click)="viewRecord(record)">
+                {{record.item.length}}
+                <mat-icon>open_in_new</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="totalValue" mat-sort-header>
+        <th mat-header-cell *matHeaderCellDef>Value</th>
+        <td mat-cell *matCellDef="let record" class="text-right">{{record.totalValue}}</td>
+    </ng-container>
+    <ng-container matColumnDef="notes">
+        <th mat-header-cell *matHeaderCellDef>Notes</th>
+        <td mat-cell *matCellDef="let record">{{record.notes}}</td>
+    </ng-container>
+</table>
+<mat-paginator [pageSize]="50" [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons>
+</mat-paginator>
