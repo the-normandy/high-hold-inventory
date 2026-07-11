@@ -31,7 +31,7 @@ export class RecordsComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
     }
 
-    columnsToDisplay = ['date', 'entry', 'source', 'items', 'totalValue'];
+    columnsToDisplay = ['date', 'entry', 'source', 'items', 'totalValue', 'actions'];
     records = signal<RecordEntry[]>([]);
     dataSource: MatTableDataSource<RecordEntry> = new MatTableDataSource<RecordEntry>();
     dialog = inject(MatDialog);
@@ -48,6 +48,10 @@ export class RecordsComponent implements OnInit {
 
     viewRecord(record: RecordEntry) {
         const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px'})
+    }
+
+    deleteRecord(record: RecordEntry) {
+        
     }
 
 }
