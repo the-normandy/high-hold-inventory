@@ -12,6 +12,7 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { RecordViewComponent } from "./record-view.component";
 import { RecordsService } from "./records.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @Component({
     selector: 'app-records',
@@ -19,7 +20,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
     styles: `:host { @apply flex-1; }`,
     imports: [
         MatTableModule, MatPaginatorModule, MatCardModule, MatButtonModule, 
-        MatSortModule, DatePipe, MatIconModule, MatDialogModule
+        MatSortModule, DatePipe, MatIconModule, MatDialogModule, MatTooltipModule
     ]
 })
 export class RecordsComponent implements OnInit {
