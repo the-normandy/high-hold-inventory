@@ -43,11 +43,9 @@ export class RecordsComponent implements OnInit {
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     async loadData() {
-        this.records.set(JSON.parse(
-            await readTextFile('ledger.json', {baseDir: BaseDirectory.AppLocalData})
-        ) as RecordEntry[]);
-
-        this.dataSource.data = this.records();
+        const records = await this.recordService.load();
+        this.records.set(records);
+        this.dataSource.data = records;
     }
 
     viewRecord(record: RecordEntry) {
