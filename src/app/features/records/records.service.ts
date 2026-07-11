@@ -59,7 +59,7 @@ export class RecordsService {
     }
 
     async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
-        if (!this.validate(mode)) return;
+        if (this.validate(mode)) return;
 
         const entry = this.createMaterialRecord(material, mode);
         return this.writeRecord(entry);
