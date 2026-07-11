@@ -13,6 +13,8 @@ import { RecordViewComponent } from "./record-view.component";
 import { RecordsService } from "./records.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { RecordDeleteComponent } from "./record-delete.component";
+import { firstValueFrom } from "rxjs";
 
 @Component({
     selector: 'app-records',
@@ -50,10 +52,15 @@ export class RecordsComponent implements OnInit {
     }
 
     viewRecord(record: RecordEntry) {
-        const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px', data: record})
+        const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px', data: record});
     }
 
 async deleteRecord(record: RecordEntry): Promise<void> {
+    const dialogRef = this.dialog.open(RecordDeleteComponent, {width: '800px'});
+
+    const confirm = await firstValueFrom(dialogRef.afterClosed());
+    if (!confirm) return;
+    
     try {
         await this.recordService.delete(record.id);
         await this.loadData();
