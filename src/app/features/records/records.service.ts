@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CraftSubmission, EntryType, MaterialSubmission, RecordEntry } from "./records.model";
+import { CraftSubmission, EntryType, MaterialSubmission, RecordEntry, RecordSummary } from "./records.model";
 import { BaseDirectory, exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 
 @Injectable({
@@ -58,6 +58,39 @@ export class RecordsService {
         return mode !== 'deposit' && mode !== 'withdraw';
     }
 
+    private buildSummary(records: RecordEntry[]): RecordSummary {
+        const summary: RecordSummary = {
+            depositedSilver: 0,
+            withdrawnSilver: 0,
+            balanceSilver: 0,
+
+            depositedEntries: 0,
+            withdrawnEntries: 0,
+
+            materialEntries: 0,
+            craftEntries: 0
+        }
+
+        for (const record of records) {
+            if (record.entry === 'deposit') {
+                summary.depositedEntries++;
+                summary.depositedSilver += record.totalValue;
+            } else {
+                summary.withdrawnEntries++;
+                summary.withdrawnSilver += record.totalValue;
+            }
+
+            if (record.source === 'material') {
+                summary.materialEntries++;
+            } else {
+                summary.craftEntries++;
+            }
+        }
+        
+        summary.balanceSilver = summary.depositedSilver - summary.withdrawnSilver;
+        return summary;
+    }
+
     async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
         if (this.validate(mode)) return;
 
@@ -111,7 +144,7 @@ export class RecordsService {
 
         return JSON.parse(text) as RecordEntry[];
     }
-    
+
     async delete(id: string): Promise<void> {
         try {
             const text = await readTextFile('ledger.json', {

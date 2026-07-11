@@ -45,3 +45,12 @@ export interface CraftSubmissionItem {
     quantity: number;
     laborOnly: boolean;
 }
+export interface RecordSummary {
+    depositedSilver: number;
+    withdrawnSilver: number;
+    balanceSilver: number;
+    depositedEntries: number;
+    withdrawnEntries: number;
+    materialEntries: number;
+    craftEntries: number;
+}
