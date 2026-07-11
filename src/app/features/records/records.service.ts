@@ -94,6 +94,24 @@ export class RecordsService {
         await writeTextFile('ledger.json', JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
     }
 
+    async load(): Promise<RecordEntry[]> {
+        if (!(await exists('ledger.json', { baseDir: BaseDirectory.AppLocalData }))) {
+            await writeTextFile(
+                'ledger.json',
+                '[]',
+                { baseDir: BaseDirectory.AppLocalData }
+            );
+
+            return [];
+        }
+
+        const text = await readTextFile('ledger.json', {
+            baseDir: BaseDirectory.AppLocalData
+        });
+
+        return JSON.parse(text) as RecordEntry[];
+    }
+    
     async delete(id: string): Promise<void> {
         try {
             const text = await readTextFile('ledger.json', {
