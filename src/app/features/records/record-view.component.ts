@@ -16,16 +16,18 @@ import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 export class RecordViewComponent {
     record = inject<RecordEntry>(MAT_DIALOG_DATA);
     snackBar = inject(MatSnackBar);
+    entry = this.record.entry.charAt(0).toUpperCase() + this.record.entry.slice(1)
+    source = this.record.source.charAt(0).toUpperCase() + this.record.source.slice(1) 
 
     copy() {
         const record = this.record;
         const pad = (value: string | number, width: number) => String(value).padEnd(width);
 
         const lines = [
-            `${new Date(record.timestamp).toISOString().slice(0, 10)} ${record.entry} of ${record.source}`,
+            `${new Date(record.timestamp).toISOString().slice(0, 10)} ${this.entry} of ${this.source}`,
             '',
             `${pad('Name', 20)} ${pad('Category', 15)} ${pad('Qty', 5)} ${pad('Value', 10)}`,
-            ...record.items.map(item => `${pad(item.name, 20)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value, 10)}`)
+            ...record.items.map(item => `${pad(item.name, 20)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value*item.quantity, 10)}`)
         ];
 
         const text = ["```", ...lines, "```"].join("\n");
