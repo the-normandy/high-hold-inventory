@@ -15,6 +15,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RecordDeleteComponent } from "./record-delete.component";
 import { firstValueFrom } from "rxjs";
+import { RecordSummaryComponent } from "./record-summary.component";
 
 @Component({
     selector: 'app-records',
@@ -22,7 +23,7 @@ import { firstValueFrom } from "rxjs";
     styles: `:host { @apply flex-1; }`,
     imports: [
         MatTableModule, MatPaginatorModule, MatCardModule, MatButtonModule, 
-        MatSortModule, DatePipe, MatIconModule, MatDialogModule, MatTooltipModule
+        MatSortModule, DatePipe, MatIconModule, MatDialogModule, MatTooltipModule, RecordSummaryComponent
     ]
 })
 export class RecordsComponent implements OnInit {
@@ -42,20 +43,17 @@ export class RecordsComponent implements OnInit {
     dialog = inject(MatDialog);
     snackBar = inject(MatSnackBar);
     recordService = inject(RecordsService);
-    summary = signal<RecordSummary | undefined>(undefined);
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     async loadData() {
         const records = await this.recordService.load();
         this.records.set(records);
-        const summary = this.recordService.buildSummary(records);
-        this.summary.set(summary);
         this.dataSource.data = records;
     }
 
     viewRecord(record: RecordEntry) {
-        const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px', data: record});
+        this.dialog.open(RecordViewComponent, {width: '800px', data: record});
     }
 
 async deleteRecord(record: RecordEntry): Promise<void> {

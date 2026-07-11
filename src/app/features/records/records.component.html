@@ -1,6 +1,4 @@
-<div class="flex flex-row items-center justify-center gap-10">
-    <!-- Charts will go here -->
-</div>
+<record-summary [data]="records()"></record-summary>
 <table mat-table matSort [dataSource]="dataSource">
     <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
