@@ -10,6 +10,8 @@ import { DatePipe } from "@angular/common";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { RecordViewComponent } from "./record-view.component";
+import { RecordsService } from "./records.service";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-records',
@@ -35,6 +37,8 @@ export class RecordsComponent implements OnInit {
     records = signal<RecordEntry[]>([]);
     dataSource: MatTableDataSource<RecordEntry> = new MatTableDataSource<RecordEntry>();
     dialog = inject(MatDialog);
+    snackBar = inject(MatSnackBar);
+    recordService = inject(RecordsService);
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -50,8 +54,14 @@ export class RecordsComponent implements OnInit {
         const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px'})
     }
 
-    deleteRecord(record: RecordEntry) {
-        
+async deleteRecord(record: RecordEntry): Promise<void> {
+    try {
+        await this.recordService.delete(record.id);
+        await this.loadData();
+        this.snackBar.open('Record deleted successfully', 'OK', {duration: 2000});
+    } catch {
+        this.snackBar.open('Failed to delete record', 'OK', {duration: 2000});
     }
+}
 
 }

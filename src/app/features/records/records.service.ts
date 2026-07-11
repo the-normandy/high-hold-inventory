@@ -93,4 +93,26 @@ export class RecordsService {
 
         await writeTextFile('ledger.json', JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
     }
+
+    async delete(id: string): Promise<void> {
+        try {
+            const text = await readTextFile('ledger.json', {
+                baseDir: BaseDirectory.AppLocalData
+            });
+
+            const records = JSON.parse(text) as RecordEntry[];
+
+            const filtered = records.filter(record => record.id !== id);
+
+            await writeTextFile(
+                'ledger.json',
+                JSON.stringify(filtered, null, 2),
+                {
+                    baseDir: BaseDirectory.AppLocalData
+                }
+            );
+        } catch (e) {
+            throw new Error('Failed to delete ledger entry.');
+        }
+    }
 }
