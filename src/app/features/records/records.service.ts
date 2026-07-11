@@ -88,7 +88,7 @@ export class RecordsService {
         records.push(entry);
         records.sort(
             (a, b) => 
-                new Date(a.timestamp).getTime() - new Date(a.timestamp).getTime()
+                new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
         )
 
         await writeTextFile('ledger.json', JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
