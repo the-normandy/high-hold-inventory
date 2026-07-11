@@ -3,7 +3,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { RecordEntry, RecordItem } from "./records.model";
+import { RecordEntry, RecordItem, RecordSummary } from "./records.model";
 import { BaseDirectory, readTextFile } from "@tauri-apps/plugin-fs";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { DatePipe } from "@angular/common";
@@ -42,12 +42,15 @@ export class RecordsComponent implements OnInit {
     dialog = inject(MatDialog);
     snackBar = inject(MatSnackBar);
     recordService = inject(RecordsService);
+    summary = signal<RecordSummary | undefined>(undefined);
     @ViewChild(MatSort) sort!: MatSort;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     async loadData() {
         const records = await this.recordService.load();
         this.records.set(records);
+        const summary = this.recordService.buildSummary(records);
+        this.summary.set(summary);
         this.dataSource.data = records;
     }
 
@@ -60,7 +63,7 @@ async deleteRecord(record: RecordEntry): Promise<void> {
 
     const confirm = await firstValueFrom(dialogRef.afterClosed());
     if (!confirm) return;
-    
+
     try {
         await this.recordService.delete(record.id);
         await this.loadData();
