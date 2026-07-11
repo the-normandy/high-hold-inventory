@@ -51,7 +51,7 @@ export class RecordsComponent implements OnInit {
     }
 
     viewRecord(record: RecordEntry) {
-        const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px'})
+        const dialogRef = this.dialog.open(RecordViewComponent, {width: '800px', data: record})
     }
 
 async deleteRecord(record: RecordEntry): Promise<void> {

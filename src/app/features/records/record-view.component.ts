@@ -4,7 +4,7 @@ import { RecordEntry, RecordItem } from "./records.model";
 import { MatCardModule } from "@angular/material/card";
 import { DatePipe } from "@angular/common";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatDialogModule } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
 
 @Component({
     selector: 'record-view',
@@ -14,11 +14,11 @@ import { MatDialogModule } from "@angular/material/dialog";
     ]
 })
 export class RecordViewComponent {
-    record = input.required<RecordEntry>();
+    record = inject<RecordEntry>(MAT_DIALOG_DATA);
     snackBar = inject(MatSnackBar);
 
     copy() {
-        const record = this.record();
+        const record = this.record;
         const pad = (value: string | number, width: number) => String(value).padEnd(width);
 
         const lines = [
