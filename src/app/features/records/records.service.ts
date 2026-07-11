@@ -58,7 +58,7 @@ export class RecordsService {
         return mode !== 'deposit' && mode !== 'withdraw';
     }
 
-    private buildSummary(records: RecordEntry[]): RecordSummary {
+    buildSummary(records: RecordEntry[]): RecordSummary {
         const summary: RecordSummary = {
             depositedSilver: 0,
             withdrawnSilver: 0,
@@ -86,7 +86,7 @@ export class RecordsService {
                 summary.craftEntries++;
             }
         }
-        
+
         summary.balanceSilver = summary.depositedSilver - summary.withdrawnSilver;
         return summary;
     }
