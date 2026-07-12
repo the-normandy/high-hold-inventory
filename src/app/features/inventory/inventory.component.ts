@@ -76,7 +76,7 @@ export class InventoryComponent implements OnInit {
         const matSubmission = this.materialForm.getRawValue() as MaterialSubmission;
         const craftSubmission = this.craftForm.getRawValue() as CraftSubmission;
 
-        if (matSubmission.items.length > 0) {
+        if (matSubmission.items.length > 0 || (matSubmission.silver !== null && matSubmission.silver > 0)) {
             await this.recordService.recordMaterialSubmission(matSubmission, this.mode());
         }
 
