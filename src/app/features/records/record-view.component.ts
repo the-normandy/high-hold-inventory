@@ -26,7 +26,7 @@ export class RecordViewComponent {
             `${new Date(record.timestamp).toISOString().slice(0, 10)} ${this.entry} of ${this.source}`,
             '',
             `${pad('Name', 20)} ${pad('Category', 15)} ${pad('Qty', 5)} ${pad('Value', 10)}`,
-            ...(record.silver ? [`${pad('Silver', 20)} ${pad('Material', 15)} ${pad(record.silver, 5)} ${pad(record.silver, 10)}`] : []),
+            ...(record.silver ? [`${pad('Silver', 20)} ${pad('Currency', 15)} ${pad(record.silver, 5)} ${pad(record.silver, 10)}`] : []),
             ...record.items.map(item => `${pad(item.name, 20)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value*item.quantity, 10)}`)
         ];
 
