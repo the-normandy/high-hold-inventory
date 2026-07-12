@@ -22,12 +22,22 @@ export class RecordViewComponent {
         const record = this.record;
         const pad = (value: string | number, width: number) => String(value).padEnd(width);
 
+        let namePad = 0;
+
+        for (const item of record.items) {
+            if (item.name.length > namePad) {
+                namePad = item.name.length;
+            }
+        }
+
+        namePad += 5;
+
         const lines = [
             `${new Date(record.timestamp).toISOString().slice(0, 10)} ${this.entry} of ${this.source}`,
             '',
-            `${pad('Name', 30)} ${pad('Category', 15)} ${pad('Qty', 5)} ${pad('Value', 10)}`,
-            ...(record.silver ? [`${pad('Silver', 30)} ${pad('Currency', 15)} ${pad(record.silver, 5)} ${pad(record.silver, 10)}`] : []),
-            ...record.items.map(item => `${pad(item.name, 30)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value*item.quantity, 10)}`)
+            `${pad('Name', namePad)} ${pad('Category', 15)} ${pad('Qty', 5)} ${pad('Value', 10)}`,
+            ...(record.silver ? [`${pad('Silver', namePad)} ${pad('Currency', 15)} ${pad(record.silver, 5)} ${pad(record.silver, 10)}`] : []),
+            ...record.items.map(item => `${pad(item.name, namePad)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value*item.quantity, 10)}`)
         ];
 
         const text = ["```", ...lines, "```"].join("\n");
