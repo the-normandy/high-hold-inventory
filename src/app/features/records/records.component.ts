@@ -52,7 +52,7 @@ export class RecordsComponent implements OnInit {
     }
 
     viewRecord(record: RecordEntry) {
-        this.dialog.open(RecordViewComponent, {width: '800px', data: record});
+        this.dialog.open(RecordViewComponent, {width: '800px',  maxWidth: '100vw', data: record});
     }
 
 async deleteRecord(record: RecordEntry): Promise<void> {
