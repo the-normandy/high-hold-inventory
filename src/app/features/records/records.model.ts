@@ -9,6 +9,7 @@ export interface RecordEntry {
     source: RecordSource;
     timestamp: string;
     items: RecordItem[];
+    silver?: number;
     totalValue: number;
     note?: string;
 }

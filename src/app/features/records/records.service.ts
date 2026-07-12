@@ -9,16 +9,18 @@ export class RecordsService {
    
     private createMaterialRecord(material: MaterialSubmission, mode: string): RecordEntry {
         const entry = mode as EntryType;
+        const silver = material.silver ?? 0;
 
         return {
             id: crypto.randomUUID(),
             entry: entry,
             source: 'material',
             timestamp: new Date().toISOString(),
+            silver: silver,
             totalValue: material.items.reduce(
                 (sum, item) => sum + item.item.price * item.quantity,
                 0
-            ),
+            ) + silver,
             items: material.items.map(item => ({
                 name: item.item.name,
                 category: item.category,
