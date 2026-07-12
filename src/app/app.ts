@@ -12,6 +12,7 @@ import { openPath } from '@tauri-apps/plugin-opener';
 import { appLocalDataDir } from '@tauri-apps/api/path';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class App {
   mode = inject(ThemeStore);
   dataService = inject(DataService);
   dataError = this.dataService.error;
+  snackBar = inject(MatSnackBar);
 
   constructor() {
     this.updateWindow();
@@ -32,6 +34,15 @@ export class App {
 
   async retryLoadData() {
     this.dataService.load();
+  }
+
+  async refreshData() {
+    try {
+      await this.retryLoadData();
+      this.snackBar.open('Data synchronized successfully.', 'OK', {duration: 2000});
+    } catch {
+      this.snackBar.open('Failed to synchronize data.', 'OK', {duration: 2000});
+    }
   }
 
   async openDataFolder() {
