@@ -42,41 +42,45 @@ export class RecordSummaryComponent {
       this.entriesChartInstance = new Chart(entriesCanvas, {
         type: 'pie',
         data: this.entriesChart(),
-        options: this.pieChartOptions
+        options: this.pieChartOptions()
       });
 
       this.sourceChartInstance = new Chart(sourceCanvas, {
         type: 'pie',
         data: this.sourceChart(),
-        options: this.pieChartOptions
+        options: this.pieChartOptions()
       });
     });
   }
 
     pieChartColors = computed(() => this.theme.isDark()
-        ? [this.colors.resolve().secondaryContainer, this.colors.resolve().tertiaryContainer]
-        : [this.colors.resolve().secondary, this.colors.resolve().tertiary]
+        ? ['#60A5FA', '#FB923C']
+        : ['#2563EB', '#EA580C']
     );
 
-    pieChartOptions: ChartOptions<'pie'> = {
+    pieChartOptions = computed<ChartOptions<'pie'>>(() => {
+    const colors = this.colors.resolve();
+
+    return {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
         legend: {
             position: 'right',
             labels: {
-            color: this.colors.resolve().onSurface
+            color: colors.onSurface
             }
         },
         tooltip: {
-            backgroundColor: this.colors.resolve().surface,
-            titleColor: this.colors.resolve().onSurface,
-            bodyColor: this.colors.resolve().onSurface,
-            borderColor: this.colors.resolve().outline,
+            backgroundColor: colors.surface,
+            titleColor: colors.onSurface,
+            bodyColor: colors.onSurface,
+            borderColor: colors.outline,
             borderWidth: 1
         }
         }
     };
+    });
 
     entriesChart = computed<ChartData<'pie', number[], string>>(() => ({
     labels: ['Deposits', 'Withdrawals'],
