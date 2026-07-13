@@ -15,43 +15,12 @@ import { Chart, ChartData, ChartOptions } from "chart.js/auto";
 })
 export class RecordSummaryComponent {
 
-    entriesCanvas = viewChild<ElementRef<HTMLCanvasElement>>('entriesCanvas');
-    sourceCanvas = viewChild<ElementRef<HTMLCanvasElement>>('sourceCanvas');
-
-    private entriesChartInstance?: Chart;
-    private sourceChartInstance?: Chart;
-
     private readonly recordService = inject(RecordsService);
     private readonly colors = inject(ColorStore);
     theme = inject(ThemeStore);
     data = input.required<RecordEntry[]>();
     summary = computed(() => this.recordService.buildSummary(this.data()));
-
-  constructor() {
-    effect(() => {
-      const entriesCanvas = this.entriesCanvas()?.nativeElement;
-      const sourceCanvas = this.sourceCanvas()?.nativeElement;
-
-      if (!entriesCanvas || !sourceCanvas) {
-        return;
-      }
-
-      this.entriesChartInstance?.destroy();
-      this.sourceChartInstance?.destroy();
-
-      this.entriesChartInstance = new Chart(entriesCanvas, {
-        type: 'pie',
-        data: this.entriesChart(),
-        options: this.pieChartOptions()
-      });
-
-      this.sourceChartInstance = new Chart(sourceCanvas, {
-        type: 'pie',
-        data: this.sourceChart(),
-        options: this.pieChartOptions()
-      });
-    });
-  }
+    // history = computed(() => this.recordService.buildBalanceHistory(this.data(), this.period()));
 
     pieChartColors = computed(() => this.theme.isDark()
         ? ['#60A5FA', '#FB923C']
@@ -81,26 +50,4 @@ export class RecordSummaryComponent {
         }
     };
     });
-
-    entriesChart = computed<ChartData<'pie', number[], string>>(() => ({
-    labels: ['Deposits', 'Withdrawals'],
-    datasets: [{
-        data: [
-        this.summary().depositedEntries,
-        this.summary().withdrawnEntries
-        ],
-        backgroundColor: this.pieChartColors()
-    }]
-    }));
-
-    sourceChart = computed<ChartData<'pie', number[], string>>(() => ({
-    labels: ['Materials', 'Crafting'],
-    datasets: [{
-        data: [
-        this.summary().materialEntries,
-        this.summary().craftEntries
-        ],
-        backgroundColor: this.pieChartColors()
-    }]
-    }));
 }

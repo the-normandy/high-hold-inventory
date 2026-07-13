@@ -8,23 +8,17 @@
                 </span>
                 <div class="grid grid-cols-[min-content_1fr] gap-4">
                     <span class="text-base">Deposited:</span>
-                    <span class="text-base">{{summary().depositedSilver}} worth of silver</span>
+                    <span class="text-base">{{summary().depositedSilver}} worth of silver ({{summary().depositedEntries}} entries)</span>
                     <span class="text-base">Withdrawn:</span>
-                    <span class="text-base">{{summary().withdrawnSilver}} worth of silver</span>
+                    <span class="text-base">{{summary().withdrawnSilver}} worth of silver ({{summary().craftEntries}} entries)</span>
                 </div>
             </div>
         </mat-card-content>
     </mat-card>
-    <mat-card>
-        <mat-card-header class="text-xl">Entries</mat-card-header>
+    <mat-card class="col-span-2">
+        <mat-card-header class="text-xl">Balance analytics</mat-card-header>
         <mat-card-content class="h-36!">
-            <canvas #entriesCanvas></canvas>
-        </mat-card-content>
-    </mat-card>
-    <mat-card>
-        <mat-card-header class="text-xl">Sources</mat-card-header>
-        <mat-card-content class="h-36!">
-            <canvas #sourceCanvas></canvas>
+            <!-- Line chart goes here -->
         </mat-card-content>
     </mat-card>
 </div>
