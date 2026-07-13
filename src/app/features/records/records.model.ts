@@ -55,3 +55,10 @@ export interface RecordSummary {
     materialEntries: number;
     craftEntries: number;
 }
+export type BalancePeriod = 'day' | 'week' | 'month';
+
+export interface BalancePoint {
+    period: string;
+    label: string;
+    balance: number;
+}
