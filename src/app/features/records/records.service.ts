@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CraftSubmission, EntryType, MaterialSubmission, RecordEntry, RecordSummary } from "./records.model";
+import { BalancePeriod, BalancePoint, CraftSubmission, EntryType, MaterialSubmission, RecordEntry, RecordSummary } from "./records.model";
 import { BaseDirectory, exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 
 @Injectable({
@@ -91,6 +91,84 @@ export class RecordsService {
 
         summary.balanceSilver = summary.depositedSilver - summary.withdrawnSilver;
         return summary;
+    }
+
+    buildBalanceHistory(records: RecordEntry[], period: BalancePeriod): BalancePoint[] {
+        const sorted = [...records].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+        const buckets = new Map<string, number>();
+
+        let balance = 0;
+
+        for (const record of sorted) {
+            balance += record.entry === 'deposit'
+                ? record.totalValue
+                : -record.totalValue
+
+            const key = this.getBalanceKey(record.timestamp, period);
+            buckets.set(key, balance);
+        }
+
+        return [...buckets.entries()].map(([period, balance]) => ({
+            period,
+            label: this.getLabel(period),
+            balance
+        }));
+    }
+
+    private getBalanceKey(timestamp: string, period: BalancePeriod): string {
+
+        switch (period) {
+            case 'day':
+                return timestamp.slice(0, 10); // YYYY-MM-DD
+
+            case 'month':
+                return timestamp.slice(0, 7); // YYYY-MM
+
+            case 'week':
+                return this.getWeekKey(new Date(timestamp));
+        }
+    }
+
+    private getLabel(period: string): string {
+        if (period.includes('-W')) {
+            // 2026-W29 -> W29
+            return period.split('-')[1];
+        }
+
+        if (period.length === 7) {
+            // 2026-07 -> Jul
+            return new Date(`${period}-01`).toLocaleString(undefined, {
+                month: 'short'
+            });
+        }
+
+        if (period.length === 10) {
+            // 2026-07-13 -> Jul 13
+            return new Date(period).toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        return period;
+    }
+
+    private getWeekKey(date: Date): string {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        d.setDate(d.getDate() + 3 - ((d.getDay() + 6) % 7));
+
+        const weekYear = d.getFullYear();
+        const week1 = new Date(weekYear, 0, 4);
+
+        week1.setDate(week1.getDate() + 3 - ((week1.getDay() + 6) % 7));
+        const week = 1 +Math.round(
+                (d.getTime() - week1.getTime()) /
+                (7 * 24 * 60 * 60 * 1000)
+            );
+
+        return `${weekYear}-W${week.toString().padStart(2, '0')}`;
     }
 
     async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
