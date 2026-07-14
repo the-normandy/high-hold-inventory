@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { RouterLink } from "@angular/router";
@@ -7,6 +7,8 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { DataService } from "../../core/data/data.service";
 import { firstValueFrom } from "rxjs";
 import { WebhookDialogComponent } from "../data/webhook-dialog.component";
+import { SettingsService } from "../../core/settings/settings.service";
+import { SettingsDialogComponent } from "./settings.component";
 
 @Component({
     selector: 'app-home',
@@ -17,21 +19,35 @@ import { WebhookDialogComponent } from "../data/webhook-dialog.component";
         MatDialogModule
     ]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+
+    async ngOnInit(): Promise<void> {
+        await this.loadSettings();
+    }
+
     dialog = inject(MatDialog);
     dataService = inject(DataService);
+    settings = inject(SettingsService);
+
+    async loadSettings(): Promise<void> {
+        try {
+            this.settings.loadSettings();
+        } catch {
+            this.dialog.open(SettingsDialogComponent)
+        }
+    }
 
     async dataSettings() {
         const dialogRef = this.dialog.open(WebhookDialogComponent, {
-            width: '800px'
+            width: '500px'
         });
 
-        const url = await firstValueFrom(dialogRef.afterClosed());
+        const form = await firstValueFrom(dialogRef.afterClosed());
 
-        if (!url) {
-            return;
+        if (!form) {
+            // do something
         }
 
-        await this.dataService.saveWebhook(url);
+        await this.settings.saveSettings(form);
     }
 }

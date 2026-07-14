@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Set up your Storehouse</h2>
+<mat-dialog-content class="py-2!">
+    <span>Your app settings were not detected. Fill the information below; you only need to do this once.</span>
+    <form [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Clan name</mat-label>
+            <input matInput type="text" formControlName="clan" aria-label="Clan name">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Character name</mat-label>
+            <input matInput type="text" formControlName="character" aria-label="Character name">
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton="filled" class="w-24" [mat-dialog-close]="form">Confirm</button>
+    <button matButton="tonal" class="w-24">Cancel</button>
+</mat-dialog-actions>
