@@ -6,7 +6,6 @@ import { Settings } from "../data/settings.model";
     providedIn: 'root',
 })
 export class SettingsService {
-
     clan = signal<string>('');
     character = signal<string>('');
 
