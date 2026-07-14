@@ -1,0 +1,5 @@
+@references 'tailwindcss';
+
+.active {
+    @apply bg-(--mat-sys-primary-container)/50 text-(--mat-sys-on-surface)! outline-1 outline-(--mat-sys-primary);
+}

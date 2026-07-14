@@ -20,10 +20,17 @@
         <mat-card-content class="h-36! py-2!">
             <canvas #balanceChart></canvas>
         </mat-card-content>
-        <mat-card-actions class="gap-4">
-            <button matButton="outlined" (click)="updatePeriod('day')">Day</button>
-            <button matButton="outlined" (click)="updatePeriod('week')">Week</button>
-            <button matButton="outlined" (click)="updatePeriod('month')">Month</button>
+        <mat-card-actions class="gap-10">
+            <div class="grid grid-cols-3 gap-4">
+                <button matButton="outlined" (click)="updatePeriod('day')" [class.active]="period() === 'day'">Day</button>
+                <button matButton="outlined" (click)="updatePeriod('week')" [class.active]="period() === 'week'">Week</button>
+                <button matButton="outlined" (click)="updatePeriod('month')" [class.active]="period() === 'month'">Month</button>
+            </div>
+            <div class="ml-auto grid grid-cols-3 gap-4">
+                <button matButton="outlined">30 days</button>
+                <button matButton="outlined">90 days</button>
+                <button matButton="outlined">All</button>
+            </div>
         </mat-card-actions>
     </mat-card>
 </div>

@@ -10,6 +10,7 @@ import { MatButtonModule } from "@angular/material/button";
 @Component({
     selector: 'record-summary',
     templateUrl: 'record-summary.component.html',
+    styleUrl: 'record-summary.component.css', 
     imports: [
         MatCardModule, MatButtonModule
     ]
