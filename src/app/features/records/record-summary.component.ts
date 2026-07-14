@@ -5,12 +5,13 @@ import { RecordsService } from "./records.service";
 import { ThemeStore } from "../../core/theme/theme.store";
 import { ColorStore } from "../../shared/color.store";
 import { Chart, ChartData, ChartOptions } from "chart.js/auto";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
     selector: 'record-summary',
     templateUrl: 'record-summary.component.html',
     imports: [
-        MatCardModule
+        MatCardModule, MatButtonModule
     ]
 })
 export class RecordSummaryComponent {
@@ -22,6 +23,38 @@ export class RecordSummaryComponent {
   summary = computed(() => this.recordService.buildSummary(this.data()));
   period = signal<BalancePeriod>('day');
   history = computed(() => this.recordService.buildBalanceHistory(this.data(), this.period()));
+  canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('balanceChart');
+  private chart?: Chart<'line'>;
+
+  constructor() {
+    effect(() => {
+        this.history();
+        this.colors.resolve();
+
+        this.updateChart();
+    });
+  }
+
+  ngAfterViewInit() {
+      this.chart = new Chart(this.canvas().nativeElement, {
+          type: 'line',
+          data: {
+              labels: [],
+              datasets: [{
+                  label: 'Balance',
+                  data: [],
+                  borderColor: this.colors.resolve().primary,
+                  backgroundColor: this.colors.resolve().primary,
+                  borderWidth: 3,
+                  pointRadius: 4,
+                  pointHoverRadius: 6,
+                  tension: 0.3,
+                  fill: false
+              }]
+          },
+          options: this.lineChartOptions()
+      });
+  }
 
   lineChart = computed<ChartData<'line', number[], string>>(() => ({
       labels: this.history().map(p => p.label),
@@ -70,4 +103,25 @@ export class RecordSummaryComponent {
           }
       };
   });
+
+  updatePeriod(period: BalancePeriod) {
+    if (!this.chart) return;
+    this.period.set(period);
+    this.chart.update();
+  }
+
+  private updateChart() {
+      if (!this.chart) return;
+
+      const history = this.history();
+      const colors = this.colors.resolve();
+
+      this.chart.data.labels = history.map(x => x.label);
+      this.chart.data.datasets[0].data = history.map(x => x.balance);
+
+      this.chart.data.datasets[0].borderColor = colors.primary;
+      this.chart.data.datasets[0].backgroundColor = colors.primary;
+
+      this.chart.update();
+  }
 }
