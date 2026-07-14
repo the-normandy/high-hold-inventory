@@ -33,8 +33,8 @@
     <div class="self-center flex flex-row gap-8 p-6 mt-10 border border-(--mat-sys-error) bg-(--mat-sys-error-container)/50 text-(--mat-sys-on-error-container) rounded-md items-center">
         <mat-icon>cancel</mat-icon>
         <span>{{dataError()}}</span>
-        <button matButton="tonal" (click)="retryLoadData()">Retry</button>
-        <button matButton="tonal" (click)="openDataFolder()">Open folder</button>
+        <button matButton="outlined" (click)="retryLoadData()">Retry</button>
+        <button matButton="outlined" (click)="openDataFolder()">Open folder</button>
     </div>
 }
 </main>
