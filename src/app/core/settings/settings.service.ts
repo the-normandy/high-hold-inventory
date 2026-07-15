@@ -22,12 +22,13 @@ export class SettingsService {
     async saveSettings(form: FormGroup) {
         const data = (form?.getRawValue() ?? {}) as Settings;
 
-        if (!data.character) {
-            data.character = 'Unknown';
-        }
-        if (!data.clan) {
-            data.clan = 'Unnamed';
-        }
+        const normalize = (value?: string, fallback = '') => {
+            const text = value?.trim() || fallback;
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        };
+
+        data.character = normalize(data.character, 'Unknown');
+        data.clan = normalize(data.clan, 'Unnamed');
 
         try {
             await writeTextFile('settings.json', 
