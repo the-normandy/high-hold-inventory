@@ -93,12 +93,12 @@ export class RecordsService {
         return summary;
     }
 
-    buildBalanceHistory(records: RecordEntry[], period: BalancePeriod): BalancePoint[] {
+    buildBalanceHistory(records: RecordEntry[], period: BalancePeriod, startingBalance = 0): BalancePoint[] {
         const sorted = [...records].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
 
         const buckets = new Map<string, number>();
 
-        let balance = 0;
+        let balance = startingBalance;
 
         for (const record of sorted) {
             balance += record.entry === 'deposit'
@@ -116,31 +116,47 @@ export class RecordsService {
         }));
     }
 
-    sliceBalanceHistory(history: BalancePoint[], period: BalancePeriod, range: BalanceRange): BalancePoint[] {
+    sliceBalanceHistory(records: RecordEntry[], range: BalanceRange): { records: RecordEntry[]; startingBalance: number; } {
+        if (range === 'all') {
+            return {
+                records,
+                startingBalance: 0
+            };
+        }
+
+        const cutoff = new Date();
+        cutoff.setHours(0, 0, 0, 0);
+
         switch (range) {
             case '30d':
-                switch (period) {
-                    case 'day':
-                        return history.slice(-30);
-                    case 'week':
-                        return history.slice(-Math.ceil(30 / 7));
-                    case 'month':
-                        return history.slice(-1);
-                }
+                cutoff.setDate(cutoff.getDate() - 30);
+                break;
 
             case '90d':
-                switch (period) {
-                    case 'day':
-                        return history.slice(-90);
-                    case 'week':
-                        return history.slice(-Math.ceil(90 / 7));
-                    case 'month':
-                        return history.slice(-3);
-                }
-            case 'all':
-            default:
-                return history;
+                cutoff.setDate(cutoff.getDate() - 90);
+                break;
         }
+
+        let startingBalance = 0;
+
+        const visibleRecords = records.filter(record => {
+            const timestamp = new Date(record.timestamp);
+
+            if (timestamp < cutoff) {
+                startingBalance += record.entry === 'deposit'
+                    ? record.totalValue
+                    : -record.totalValue;
+
+                return false;
+            }
+
+            return true;
+        });
+
+        return {
+            records: visibleRecords,
+            startingBalance
+        };
     }
 
     private getBalanceKey(timestamp: string, period: BalancePeriod): string {
@@ -159,19 +175,40 @@ export class RecordsService {
 
     private getLabel(period: string): string {
         if (period.includes('-W')) {
-            // 2026-W29 -> W29
-            return period.split('-')[1];
+            // 2026-W29
+            const [year, week] = period.split('-W').map(Number);
+
+            const jan4 = new Date(year, 0, 4);
+            const day = jan4.getDay() || 7;
+
+            const monday = new Date(jan4);
+            monday.setDate(jan4.getDate() - day + 1 + (week - 1) * 7);
+
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+
+            const start = monday.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+
+            const end = sunday.toLocaleDateString('en-US', {
+                month: monday.getMonth() === sunday.getMonth() ? undefined : 'short',
+                day: 'numeric'
+            });
+
+            return `${start}–${end}`;
         }
 
         if (period.length === 7) {
-            // 2026-07 -> Jul
+            // 2026-07
             return new Date(`${period}-01`).toLocaleString(undefined, {
                 month: 'short'
             });
         }
 
         if (period.length === 10) {
-            // 2026-07-13 -> Jul 13
+            // 2026-07-13
             return new Date(period).toLocaleDateString(undefined, {
                 month: 'short',
                 day: 'numeric'
