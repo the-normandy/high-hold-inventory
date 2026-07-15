@@ -1,7 +1,6 @@
 <h2 mat-dialog-title>Set up your Storehouse</h2>
-<mat-dialog-content class="py-2!">
-    <span>Your app settings were not detected. Fill the information below; you only need to do this once.</span>
-    <form [formGroup]="form">
+<mat-dialog-content>
+    <form [formGroup]="form" class="flex flex-col gap-4">
         <mat-form-field>
             <mat-label>Clan name</mat-label>
             <input matInput type="text" formControlName="clan" aria-label="Clan name">
