@@ -26,13 +26,10 @@ export class RecordSummaryComponent {
     canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('balanceChart');
     private chart?: Chart<'line'>;
     history = computed(() => this.recordService.buildBalanceHistory(this.data(), this.period()));
-    visibleHistory = computed(() =>
-        this.recordService.sliceBalanceHistory(
-            this.history(),
-            this.period(),
-            this.range()
-        )
-    );
+    visibleHistory = computed(() => {
+        const sliced = this.recordService.sliceBalanceHistory(this.data(), this.range());
+        return this.recordService.buildBalanceHistory(sliced.records, this.period(), sliced.startingBalance);
+    });
 
     range = signal<BalanceRange>('30d');
 
@@ -40,6 +37,7 @@ export class RecordSummaryComponent {
         effect(() => {
             this.history();
             this.colors.resolve();
+            this.visibleHistory();
 
             this.updateChart();
         });
@@ -67,7 +65,7 @@ export class RecordSummaryComponent {
     }
 
     lineChart = computed<ChartData<'line', number[], string>>(() => ({
-        labels: this.history().map(p => p.label),
+        labels: this.visibleHistory().map(p => p.label),
         datasets: [{
             label: 'Balance',
             data: this.visibleHistory().map(p => p.balance),
