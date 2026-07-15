@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
         try {
             this.settings.loadSettings();
         } catch {
-            const dialogRef = this.dialog.open(SettingsDialogComponent);
+            const dialogRef = this.dialog.open(SettingsDialogComponent, { width: '500px' });
             const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup;
             this.settings.saveSettings(data);
         }
