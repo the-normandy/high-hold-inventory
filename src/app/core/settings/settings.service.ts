@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from "@angular/core";
-import { BaseDirectory, readTextFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { Settings } from "./settings.model";
 import { FormGroup } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
@@ -20,11 +20,23 @@ export class SettingsService {
     }
 
     async saveSettings(form: FormGroup) {
-        if (!form) {
-            this.snackBar.open('Something went wrong with the settings.', 'OK', {duration: 2000});
-            return;
+        const data = (form?.getRawValue() ?? {}) as Settings;
+
+        if (!data.character) {
+            data.character = 'Unknown';
+        }
+        if (!data.clan) {
+            data.clan = 'Unnamed';
         }
 
-        const data = form.getRawValue() as Settings;
+        try {
+            await writeTextFile('settings.json', 
+                JSON.stringify({ data }, null, 2), 
+                { baseDir: BaseDirectory.AppLocalData }
+            );
+            await this.loadSettings();
+        } catch {
+            this.snackBar.open('Something went wrong with the settings.', 'OK', {duration: 2000})
+        }
     }
 }
