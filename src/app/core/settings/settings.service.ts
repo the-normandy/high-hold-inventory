@@ -1,7 +1,8 @@
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { BaseDirectory, readTextFile } from "@tauri-apps/plugin-fs";
 import { Settings } from "./settings.model";
 import { FormGroup } from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Injectable({
     providedIn: 'root',
@@ -9,6 +10,7 @@ import { FormGroup } from "@angular/forms";
 export class SettingsService {
     clan = signal<string>('');
     character = signal<string>('');
+    snackBar = inject(MatSnackBar);
 
     async loadSettings() {
         const text = await readTextFile('settings.json', {baseDir: BaseDirectory.AppLocalData});
@@ -18,6 +20,11 @@ export class SettingsService {
     }
 
     async saveSettings(form: FormGroup) {
-        // do something
+        if (!form) {
+            this.snackBar.open('Something went wrong with the settings.', 'OK', {duration: 2000});
+            return;
+        }
+
+        const data = form.getRawValue() as Settings;
     }
 }
