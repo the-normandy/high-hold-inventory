@@ -57,6 +57,8 @@ export interface RecordSummary {
 }
 export type BalancePeriod = 'day' | 'week' | 'month';
 
+export type BalanceRange = '30d' | '90d' | 'all';
+
 export interface BalancePoint {
     period: string;
     label: string;
