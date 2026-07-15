@@ -48,12 +48,9 @@ export class DataService {
     }
 
     async saveWebhook(url: string): Promise<void> {
-        await writeTextFile(
-            'webhook.json',
-            JSON.stringify({ url }, null, 2),
-            {
-                baseDir: BaseDirectory.AppLocalData
-            }
+        await writeTextFile('webhook.json', 
+            JSON.stringify({ url }, null, 2), 
+            { baseDir: BaseDirectory.AppLocalData }
         );
         await this.loadWebhook();
     }
