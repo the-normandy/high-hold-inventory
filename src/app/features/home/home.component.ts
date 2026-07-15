@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
 
     async loadSettings(): Promise<void> {
         try {
-            this.settings.loadSettings();
+            await this.settings.loadSettings();
         } catch {
             const dialogRef = this.dialog.open(SettingsDialogComponent, { width: '500px' });
             const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup;

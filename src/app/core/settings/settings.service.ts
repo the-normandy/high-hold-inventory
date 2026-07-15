@@ -31,7 +31,7 @@ export class SettingsService {
 
         try {
             await writeTextFile('settings.json', 
-                JSON.stringify({ data }, null, 2), 
+                JSON.stringify(data, null, 2), 
                 { baseDir: BaseDirectory.AppLocalData }
             );
             await this.loadSettings();
