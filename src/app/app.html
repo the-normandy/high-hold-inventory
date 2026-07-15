@@ -15,8 +15,9 @@
         <button mat-menu-item (click)="mode.accent.set('duskwillow')" class="rounded-md"><mat-icon>{{mode.isAccentTheme('duskwillow') ? 'check' : 'symptoms'}}</mat-icon>Fifth Season</button>
         <button mat-menu-item (click)="mode.accent.set('high-hold')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('high-hold') ? 'check' : 'crown' }}</mat-icon>High Hold</button>
     </mat-menu>
-    <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_managed</mat-icon></button>
     <button matIconButton (click)="refreshData()" matTooltip="Synchronize prices"><mat-icon>sync</mat-icon></button>
+    <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_managed</mat-icon></button>
+    <button matIconButton (click)="openSettings()" matTooltip="Settings"><mat-icon>settings</mat-icon></button>
     </span>
     <span class="flex flex-row items-center justify-items-center gap-2!">
         <mat-icon>light_mode</mat-icon>

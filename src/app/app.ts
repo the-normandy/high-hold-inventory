@@ -13,6 +13,11 @@ import { appLocalDataDir } from '@tauri-apps/api/path';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { SettingsDialogComponent } from './features/home/settings.component';
+import { FormGroup } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
+import { SettingsService } from './core/settings/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +32,8 @@ export class App {
   dataService = inject(DataService);
   dataError = this.dataService.error;
   snackBar = inject(MatSnackBar);
+  dialog = inject(MatDialog);
+  settings = inject(SettingsService);
 
   constructor() {
     this.updateWindow();
@@ -43,6 +50,12 @@ export class App {
     } catch {
       this.snackBar.open('Failed to synchronize data.', 'OK', {duration: 2000});
     }
+  }
+
+  async openSettings() {
+    const dialogRef = this.dialog.open(SettingsDialogComponent);
+    const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup;
+    await this.settings.saveSettings(data);
   }
 
   async openDataFolder() {
