@@ -9,6 +9,7 @@ import { firstValueFrom } from "rxjs";
 import { WebhookDialogComponent } from "../data/webhook-dialog.component";
 import { SettingsService } from "../../core/settings/settings.service";
 import { SettingsDialogComponent } from "./settings.component";
+import { FormGroup } from "@angular/forms";
 
 @Component({
     selector: 'app-home',
@@ -33,7 +34,9 @@ export class HomeComponent implements OnInit {
         try {
             this.settings.loadSettings();
         } catch {
-            this.dialog.open(SettingsDialogComponent)
+            const dialogRef = this.dialog.open(SettingsDialogComponent);
+            const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup;
+            this.settings.saveSettings(data);
         }
     }
 
@@ -42,12 +45,12 @@ export class HomeComponent implements OnInit {
             width: '500px'
         });
 
-        const form = await firstValueFrom(dialogRef.afterClosed());
+        const url = await firstValueFrom(dialogRef.afterClosed());
 
-        if (!form) {
-            // do something
+        if (!url) {
+            return;
         }
 
-        await this.settings.saveSettings(form);
+        await this.dataService.saveWebhook(url);
     }
 }
