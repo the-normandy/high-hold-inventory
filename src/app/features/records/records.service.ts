@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BalancePeriod, BalancePoint, CraftSubmission, EntryType, MaterialSubmission, RecordEntry, RecordSummary } from "./records.model";
+import { BalancePeriod, BalancePoint, BalanceRange, CraftSubmission, EntryType, MaterialSubmission, RecordEntry, RecordSummary } from "./records.model";
 import { BaseDirectory, exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 
 @Injectable({
@@ -114,6 +114,33 @@ export class RecordsService {
             label: this.getLabel(period),
             balance
         }));
+    }
+
+    sliceBalanceHistory(history: BalancePoint[], period: BalancePeriod, range: BalanceRange): BalancePoint[] {
+        switch (range) {
+            case '30d':
+                switch (period) {
+                    case 'day':
+                        return history.slice(-30);
+                    case 'week':
+                        return history.slice(-Math.ceil(30 / 7));
+                    case 'month':
+                        return history.slice(-1);
+                }
+
+            case '90d':
+                switch (period) {
+                    case 'day':
+                        return history.slice(-90);
+                    case 'week':
+                        return history.slice(-Math.ceil(90 / 7));
+                    case 'month':
+                        return history.slice(-3);
+                }
+            case 'all':
+            default:
+                return history;
+        }
     }
 
     private getBalanceKey(timestamp: string, period: BalancePeriod): string {
