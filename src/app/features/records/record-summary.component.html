@@ -26,9 +26,9 @@
                 <button matButton="outlined" (click)="updatePeriod('month')" [class.active]="period() === 'month'">Month</button>
             </div>
             <div class="ml-auto grid grid-cols-3 gap-4">
-                <button matButton="outlined">30 days</button>
-                <button matButton="outlined">90 days</button>
-                <button matButton="outlined">All</button>
+                <button matButton="outlined" (click)="updateRange('30d')" [class.active]="range() === '30d'">30 days</button>
+                <button matButton="outlined" (click)="updateRange('90d')" [class.active]="range() === '90d'">90 days</button>
+                <button matButton="outlined" (click)="updateRange('all')" [class.active]="range() === 'all'">All</button>
             </div>
         </mat-card-actions>
     </mat-card>
