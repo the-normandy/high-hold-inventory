@@ -9,6 +9,7 @@ export interface PricesFile {
     schema: number;
     materials: ItemTree;
     craft: ItemTree;
+    [key: string]: ItemTree | number;
 }
 
 @Injectable({

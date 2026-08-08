@@ -104,20 +104,18 @@ export class DataComponent implements OnInit {
             }));
         };
 
-        return [
-            {
-                name: 'Materials',
-                path: ['materials'],
-                hasLeafChildren: Object.values(snapshot.materials).some(value => Array.isArray(value)),
-                children: buildTree(snapshot.materials, ['materials'])
-            },
-            {
-                name: 'Craft',
-                path: ['craft'],
-                hasLeafChildren: Object.values(snapshot.craft).some(value => Array.isArray(value)),
-                children: buildTree(snapshot.craft, ['craft'])
-            }
-        ];
+        return Object.entries(snapshot)
+            .filter(([key]) => key !== 'schema')
+            .map(([key, rootNode]) => {
+                const rootTree = rootNode as ItemTree;
+                return {
+                    name: key === 'materials' ? 'Materials' : key === 'craft' ? 'Craft' : key,
+                    path: [key],
+                    isLeafNode: false,
+                    hasLeafChildren: Object.values(rootTree).some(value => Array.isArray(value)),
+                    children: buildTree(rootTree, [key])
+                };
+            });
     }
 
     private setSnapshot(snapshot: PricesFile): void {
@@ -126,13 +124,15 @@ export class DataComponent implements OnInit {
     }
 
     // Returns the node located at the given tree path inside the snapshot.
-    // The path includes either 'materials' or 'craft' as the first segment.
     private getNodeAtPath(path: string[], data: PricesFile): ItemTree | ItemData[] | undefined {
         if (path.length === 0) {
             return undefined;
         }
 
-        let current: ItemTree | ItemData[] | undefined = path[0] === 'materials' ? data.materials : data.craft;
+        let current: ItemTree | ItemData[] | undefined = data[path[0]] as ItemTree | ItemData[] | undefined;
+        if (!current || path[0] === 'schema') {
+            return undefined;
+        }
 
         for (const key of path.slice(1)) {
             if (!current || Array.isArray(current)) {
@@ -150,7 +150,10 @@ export class DataComponent implements OnInit {
             return;
         }
 
-        let current: ItemTree | ItemData[] | undefined = path[0] === 'materials' ? data.materials : data.craft;
+        let current: ItemTree | ItemData[] | undefined = data[path[0]] as ItemTree | ItemData[] | undefined;
+        if (!current || path[0] === 'schema') {
+            return;
+        }
 
         for (let i = 1; i < path.length - 1; i++) {
             const key = path[i];
@@ -173,7 +176,10 @@ export class DataComponent implements OnInit {
             return;
         }
 
-        let current: ItemTree | ItemData[] | undefined = path[0] === 'materials' ? data.materials : data.craft;
+        let current: ItemTree | ItemData[] | undefined = data[path[0]] as ItemTree | ItemData[] | undefined;
+        if (!current || path[0] === 'schema') {
+            return;
+        }
 
         for (let i = 1; i < path.length - 1; i++) {
             const key = path[i];
@@ -305,6 +311,25 @@ export class DataComponent implements OnInit {
         }
 
         parent[name] = {};
+        this.setSnapshot(snapshot);
+    }
+
+    async addRootFolder() {
+        const name = await this.runCategoryDialog();
+        if (!name) {
+            return;
+        }
+
+        const snapshot = structuredClone(this.dataSnapshot());
+        if (!snapshot) {
+            return;
+        }
+
+        if (snapshot[name] !== undefined || name === 'schema') {
+            return;
+        }
+
+        (snapshot as any)[name] = {};
         this.setSnapshot(snapshot);
     }
 
