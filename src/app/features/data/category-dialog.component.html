@@ -1,0 +1,16 @@
+<div class="p-6">
+    <h2 class="text-xl mb-4">Category Name</h2>
+    <form [formGroup]="form" class="flex flex-col gap-4">
+        <mat-form-field>
+            <mat-label>Category name</mat-label>
+            <input matInput formControlName="name" />
+            @if (this.nameControl.invalid) {
+                <mat-error>Name is required</mat-error>
+            }
+        </mat-form-field>
+        <div class="flex justify-end gap-2">
+            <button type="button" mat-button="text" (click)="cancel()">Cancel</button>
+            <button type="button" mat-button="raised" [disabled]="form.invalid" (click)="submit()">OK</button>
+        </div>
+    </form>
+</div>

@@ -1,12 +1,13 @@
 import { Component, computed, effect, inject, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTreeModule } from "@angular/material/tree";
 import { TreeNode } from './data.model'
 import { DataStore } from "../../core/data/data.store";
 import { MatDividerModule } from "@angular/material/divider";
 import { RouterLink } from "@angular/router";
-import { ItemData } from "../../core/data/item.model";
+import { ItemData, ItemTree } from "../../core/data/item.model";
 import { DataService, PricesFile } from "../../core/data/data.service";
 import { MatInputModule } from "@angular/material/input";
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
@@ -18,6 +19,8 @@ import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
 import { firstValueFrom } from "rxjs";
 import { MaterialService } from "../inventory/material.service";
 import { CraftService } from "../inventory/craft.service";
+import { CategoryDialogComponent } from "./category-dialog.component";
+import { CategoryDeleteDialogComponent } from "./category-delete-dialog.component";
 
 @Component({
     selector: 'app-data',
@@ -27,18 +30,13 @@ import { CraftService } from "../inventory/craft.service";
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
         RouterLink, MatInputModule, ReactiveFormsModule, MatFormFieldModule,
-        MatTooltipModule, MatSnackBarModule
+        MatTooltipModule, MatSnackBarModule, MatDialogModule
     ]
 })
 export class DataComponent implements OnInit {
 
     ngOnInit(): void {
-        this.dataSnapshot.set({
-            schema: structuredClone(this.data.schema),
-            craft: structuredClone(this.data.craftData),
-            materials: structuredClone(this.data.items),
-        });
-        this.treeData.set(this.data.getTree());
+        this.refreshSnapshot();
         if (!this.data.webhook()) {
             this.snackBar.open("Failed to detect webhook data. It's highly recommended you set it up in Settings.", 'Dismiss', {duration: 5000});
         }
@@ -48,6 +46,7 @@ export class DataComponent implements OnInit {
     private readonly dataService = inject(DataService);
     private readonly materialService = inject(MaterialService);
     private readonly craftService = inject(CraftService);
+    private readonly dialog = inject(MatDialog);
     http = inject(HttpClient);
     private readonly formEffect = effect(() => {
         this.rebuildForm(this.fieldSnapshot());
@@ -90,6 +89,95 @@ export class DataComponent implements OnInit {
         return this.form.get('items') as FormArray;
     }
 
+    private buildTreeFromSnapshot(snapshot: PricesFile): TreeNode[] {
+        const buildTree = (node: ItemTree | ItemData[], path: string[]): TreeNode[] | undefined => {
+            if (Array.isArray(node)) {
+                return undefined;
+            }
+
+            return Object.entries(node).map(([name, child]) => ({
+                name,
+                path: [...path, name],
+                children: buildTree(child, [...path, name])
+            }));
+        };
+
+        return [
+            { name: 'Materials', path: ['materials'], children: buildTree(snapshot.materials, ['materials']) },
+            { name: 'Craft', path: ['craft'], children: buildTree(snapshot.craft, ['craft']) }
+        ];
+    }
+
+    private setSnapshot(snapshot: PricesFile): void {
+        this.dataSnapshot.set(snapshot);
+        this.treeData.set(this.buildTreeFromSnapshot(snapshot));
+    }
+
+    // Returns the node located at the given tree path inside the snapshot.
+    // The path includes either 'materials' or 'craft' as the first segment.
+    private getNodeAtPath(path: string[], data: PricesFile): ItemTree | ItemData[] | undefined {
+        if (path.length === 0) {
+            return undefined;
+        }
+
+        let current: ItemTree | ItemData[] | undefined = path[0] === 'materials' ? data.materials : data.craft;
+
+        for (const key of path.slice(1)) {
+            if (!current || Array.isArray(current)) {
+                return undefined;
+            }
+            current = current[key];
+        }
+
+        return current;
+    }
+
+    // Replaces an existing node or leaf at the given path with a new value.
+    private setNodeAtPath(path: string[], data: PricesFile, value: ItemTree | ItemData[]): void {
+        if (path.length === 0) {
+            return;
+        }
+
+        let current: ItemTree | ItemData[] | undefined = path[0] === 'materials' ? data.materials : data.craft;
+
+        for (let i = 1; i < path.length - 1; i++) {
+            const key = path[i];
+            if (!current || Array.isArray(current)) {
+                return;
+            }
+            current = current[key] as ItemTree;
+        }
+
+        if (!current || Array.isArray(current)) {
+            return;
+        }
+
+        current[path.at(-1)!] = value;
+    }
+
+    // Removes the node or subtree located at the specified path.
+    private removeNodeAtPath(path: string[], data: PricesFile): void {
+        if (path.length === 0) {
+            return;
+        }
+
+        let current: ItemTree | ItemData[] | undefined = path[0] === 'materials' ? data.materials : data.craft;
+
+        for (let i = 1; i < path.length - 1; i++) {
+            const key = path[i];
+            if (!current || Array.isArray(current)) {
+                return;
+            }
+            current = current[key] as ItemTree;
+        }
+
+        if (!current || Array.isArray(current)) {
+            return;
+        }
+
+        delete current[path.at(-1)!];
+    }
+
     private createItemGroup(item: ItemData, isCraft: boolean = false): FormGroup {
         const group = new FormGroup({});
 
@@ -126,11 +214,11 @@ export class DataComponent implements OnInit {
             return;
         }
 
-        let current: any = data;
         const path = this.selected();
+        const node = this.getNodeAtPath(path.slice(0, -1), data);
 
-        for (let i = 0; i < path.length - 1; i++) {
-            current = current[path[i]];
+        if (!node || Array.isArray(node)) {
+            return;
         }
 
         const items = [...(this.items.getRawValue() as ItemData[])]
@@ -140,7 +228,7 @@ export class DataComponent implements OnInit {
                 })
             );
 
-        current[path.at(-1)!] = items;
+        node[path.at(-1)!] = items;
     }
 
     addItem() {
@@ -159,6 +247,119 @@ export class DataComponent implements OnInit {
         this.items.removeAt(index);
     }
 
+    addCategoryToNode(node: TreeNode) {
+        return this.addCategoryToPath(node.path);
+    }
+
+    renameCategoryNode(node: TreeNode) {
+        return this.renameCategoryAtPath(node.path);
+    }
+
+    removeCategoryNode(node: TreeNode) {
+        return this.removeCategoryAtPath(node.path);
+    }
+
+    private async runCategoryDialog(): Promise<string | null> {
+        const dialogRef = this.dialog.open(CategoryDialogComponent, {
+            width: '400px'
+        });
+
+        return await firstValueFrom(dialogRef.afterClosed()) as string | null;
+    }
+
+    private async addCategoryToPath(path: string[]): Promise<void> {
+        const name = await this.runCategoryDialog();
+        if (!name) {
+            return;
+        }
+
+        const snapshot = structuredClone(this.dataSnapshot());
+        if (!snapshot) {
+            return;
+        }
+
+        const parent = this.getNodeAtPath(path, snapshot);
+        if (!parent || Array.isArray(parent)) {
+            return;
+        }
+
+        parent[name] = {};
+        this.setSnapshot(snapshot);
+    }
+
+    private async renameCategoryAtPath(path: string[]): Promise<void> {
+        const newName = await this.runCategoryDialog();
+        if (!newName) {
+            return;
+        }
+
+        const snapshot = structuredClone(this.dataSnapshot());
+        if (!snapshot) {
+            return;
+        }
+
+        const lastKey = path.at(-1);
+        const parentPath = path.slice(0, -1);
+        const parent = this.getNodeAtPath(parentPath, snapshot);
+
+        if (!parent || Array.isArray(parent) || !lastKey) {
+            return;
+        }
+
+        const node = parent[lastKey];
+        if (node === undefined) {
+            return;
+        }
+
+        delete parent[lastKey];
+        parent[newName] = node;
+        this.selected.set([...parentPath, newName]);
+        this.setSnapshot(snapshot);
+    }
+
+    private async removeCategoryAtPath(path: string[]): Promise<void> {
+        const dialogRef = this.dialog.open(CategoryDeleteDialogComponent, {
+            width: '400px'
+        });
+
+        const confirmed = await firstValueFrom(dialogRef.afterClosed()) as boolean | null;
+        if (!confirmed) {
+            return;
+        }
+
+        const snapshot = structuredClone(this.dataSnapshot());
+        if (!snapshot) {
+            return;
+        }
+
+        const lastKey = path.at(-1);
+        const parentPath = path.slice(0, -1);
+        const parent = this.getNodeAtPath(parentPath, snapshot);
+
+        if (!parent || Array.isArray(parent) || !lastKey) {
+            return;
+        }
+
+        delete parent[lastKey];
+        this.selected.set(parentPath);
+        this.setSnapshot(snapshot);
+        this.snackBar.open('Category deleted.', 'OK', { duration: 2000 });
+    }
+
+    async addCategory() {
+        await this.addCategoryToPath(this.selected());
+    }
+
+    // Renames the currently selected category or subtree key.
+    async renameCategory() {
+        await this.renameCategoryAtPath(this.selected());
+    }
+
+    // Removes the currently selected category or subtree.
+    async removeCategory() {
+        await this.removeCategoryAtPath(this.selected());
+    }
+
     isSelected(node: TreeNode): boolean {
         return node.path == this.selected();
     }
@@ -174,7 +375,7 @@ export class DataComponent implements OnInit {
     }
 
     private refreshSnapshot(): void {
-        this.dataSnapshot.set({
+        this.setSnapshot({
             schema: structuredClone(this.data.schema),
             craft: structuredClone(this.data.craftData),
             materials: structuredClone(this.data.items),

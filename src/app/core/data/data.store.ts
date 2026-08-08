@@ -21,11 +21,11 @@ export class DataStore {
     craftData: ItemTree = {};
     webhook = signal<string | null>(null);
 
-    private isLeaf(node: ItemTree): node is ItemData[] {
+    private isLeaf(node: ItemTree | ItemData[]): node is ItemData[] {
         return Array.isArray(node);
     }
 
-    private traversePath(path: string[], node: ItemTree): ItemTree | ItemData[] | undefined {
+    private traversePath(path: string[], node: ItemTree | ItemData[]): ItemTree | ItemData[] | undefined {
         let current: ItemTree | ItemData[] | undefined = node;
 
         for (const segment of path) {
