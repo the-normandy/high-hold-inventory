@@ -81,6 +81,8 @@ export class DataStore {
         return Object.entries(node).map(([name, child]) => ({
             name,
             path: [...path, name],
+            isLeafNode: this.isLeaf(child),
+            hasLeafChildren: !this.isLeaf(child) && Object.values(child).some(value => this.isLeaf(value)),
             children: this.isLeaf(child) ? undefined : this.buildTree(child, [...path, name])
         }));
     }

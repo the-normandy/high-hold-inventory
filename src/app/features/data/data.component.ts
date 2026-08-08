@@ -98,13 +98,25 @@ export class DataComponent implements OnInit {
             return Object.entries(node).map(([name, child]) => ({
                 name,
                 path: [...path, name],
-                children: buildTree(child, [...path, name])
+                isLeafNode: Array.isArray(child),
+                hasLeafChildren: !Array.isArray(child) && Object.values(child).some(value => Array.isArray(value)),
+                children: Array.isArray(child) ? undefined : buildTree(child, [...path, name])
             }));
         };
 
         return [
-            { name: 'Materials', path: ['materials'], children: buildTree(snapshot.materials, ['materials']) },
-            { name: 'Craft', path: ['craft'], children: buildTree(snapshot.craft, ['craft']) }
+            {
+                name: 'Materials',
+                path: ['materials'],
+                hasLeafChildren: Object.values(snapshot.materials).some(value => Array.isArray(value)),
+                children: buildTree(snapshot.materials, ['materials'])
+            },
+            {
+                name: 'Craft',
+                path: ['craft'],
+                hasLeafChildren: Object.values(snapshot.craft).some(value => Array.isArray(value)),
+                children: buildTree(snapshot.craft, ['craft'])
+            }
         ];
     }
 
@@ -267,6 +279,11 @@ export class DataComponent implements OnInit {
         return await firstValueFrom(dialogRef.afterClosed()) as string | null;
     }
 
+    private canAddCategoryOnSnapshot(path: string[], snapshot: PricesFile): boolean {
+        const parent = this.getNodeAtPath(path, snapshot);
+        return !!parent && !Array.isArray(parent);
+    }
+
     private async addCategoryToPath(path: string[]): Promise<void> {
         const name = await this.runCategoryDialog();
         if (!name) {
@@ -275,6 +292,10 @@ export class DataComponent implements OnInit {
 
         const snapshot = structuredClone(this.dataSnapshot());
         if (!snapshot) {
+            return;
+        }
+
+        if (!this.canAddCategoryOnSnapshot(path, snapshot)) {
             return;
         }
 
@@ -346,7 +367,37 @@ export class DataComponent implements OnInit {
         this.snackBar.open('Category deleted.', 'OK', { duration: 2000 });
     }
 
+    private getTreeNodeByPath(path: string[], nodes: TreeNode[] = this.treeData()): TreeNode | undefined {
+        if (path.length === 0) {
+            return undefined;
+        }
+
+        for (const node of nodes) {
+            if (node.path.length === path.length && node.path.every((segment, index) => segment === path[index])) {
+                return node;
+            }
+
+            if (node.children) {
+                const childResult = this.getTreeNodeByPath(path, node.children);
+                if (childResult) {
+                    return childResult;
+                }
+            }
+        }
+
+        return undefined;
+    }
+
+    canAddCategoryAtPath(path: string[]): boolean {
+        const node = this.getTreeNodeByPath(path);
+        return !!node && !node.isLeafNode;
+    }
+
     async addCategory() {
+        if (!this.canAddCategoryAtPath(this.selected())) {
+            return;
+        }
+
         await this.addCategoryToPath(this.selected());
     }
 

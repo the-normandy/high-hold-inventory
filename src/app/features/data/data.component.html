@@ -7,7 +7,9 @@
                     {{ node.name }}
                 </button>
                 <div class="flex items-center gap-1">
-                    <button type="button" matTooltip="Add subcategory" matIconButton (click)="addCategoryToNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">create_new_folder</mat-icon></button>
+                    @if (!node.isLeafNode) {
+                        <button type="button" matTooltip="Add subcategory" matIconButton (click)="addCategoryToNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">create_new_folder</mat-icon></button>
+                    }
                     @if (node.path.length > 1) {
                         <button type="button" matTooltip="Rename category" matIconButton (click)="renameCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">bookmark_manager</mat-icon></button>
                         <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">folder_delete</mat-icon></button>
@@ -24,7 +26,9 @@
                     </button>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button type="button" matTooltip="Add subcategory" matIconButton (click)="addCategoryToNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">create_new_folder</mat-icon></button>
+                    @if (!node.isLeafNode) {
+                        <button type="button" matTooltip="Add subcategory" matIconButton (click)="addCategoryToNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">create_new_folder</mat-icon></button>
+                    }
                     @if (node.path.length > 1) {
                         <button type="button" matTooltip="Rename category" matIconButton (click)="renameCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">bookmark_manager</mat-icon></button>
                         <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">folder_delete</mat-icon></button>
@@ -43,11 +47,6 @@
                 @if (this.selected().length > 0) {
                 <h2>Category: {{this.selected().at(-1)}}</h2>
                 <button type="button" matTooltip="Add new item" matIconButton (click)="addItem()"><mat-icon>add</mat-icon></button>
-                <button type="button" matTooltip="Add new category" matIconButton (click)="addCategory()"><mat-icon>create_new_folder</mat-icon></button>
-                @if (this.selected().length > 1) {
-                    <button type="button" matTooltip="Rename category" matIconButton (click)="renameCategory()"><mat-icon>bookmark_manager</mat-icon></button>
-                    <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategory()"><mat-icon>folder_delete</mat-icon></button>
-                }
                 }
             </div>
             @for (group of items.controls; track group; let index = $index) {
