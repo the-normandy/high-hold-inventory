@@ -9,6 +9,15 @@
 @use './themes/duskwillow_theme-colors.scss' as duskwillow;
 @use './themes/high-hold_theme-colors.scss' as high-hold;
 
+app-data .node-action {
+  @include mat.icon-button-overrides((
+    icon-size: 23px,
+    state-layer-size: 24px,
+    touch-target-size: 24px,
+    touch-target-display: none,
+  ));
+}
+
 html {
   height: 100%;
   @include mat.theme(
