@@ -84,7 +84,7 @@ export class DataComponent implements OnInit {
         }
     }
 
-    return current as ItemData[];
+    return Array.isArray(current) ? current as ItemData[] : [];
     });
 
     get items(): FormArray {
@@ -255,9 +255,14 @@ export class DataComponent implements OnInit {
         }
 
         const path = this.selected();
-        const node = this.getNodeAtPath(path.slice(0, -1), data);
+        const parent = this.getNodeAtPath(path.slice(0, -1), data);
 
-        if (!node || Array.isArray(node)) {
+        if (!parent || Array.isArray(parent)) {
+            return;
+        }
+
+        const current = parent[path.at(-1)!];
+        if (!Array.isArray(current)) {
             return;
         }
 
@@ -268,7 +273,7 @@ export class DataComponent implements OnInit {
                 })
             );
 
-        node[path.at(-1)!] = items;
+        parent[path.at(-1)!] = items;
     }
 
     addItem() {
