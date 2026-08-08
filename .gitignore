@@ -16,6 +16,9 @@ latest.json
 npm-debug.log
 yarn-error.log
 
+# Coding Agents
+.github/*.md
+
 # IDEs and editors
 .idea/
 .project
