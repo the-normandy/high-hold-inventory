@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ItemData } from '../../core/data/item.model';
+import { ItemData, ItemTree } from '../../core/data/item.model';
 import { DataStore } from '../../core/data/data.store';
 
 export interface SearchableItem {
@@ -21,14 +21,23 @@ export class MaterialService {
     }
 
     buildLookup() {
-        for (const [category, items] of Object.entries(this.data.items)) {
-            for (const item of items) {
-                this.itemLookup.set(item.name, {
-                    category: category as string,
-                    item
-                });
+        const traverse = (node: ItemTree | ItemData[], path: string[]) => {
+            if (Array.isArray(node)) {
+                for (const item of node) {
+                    this.itemLookup.set(item.name, {
+                        category: path.join('/') || '',
+                        item
+                    });
+                }
+                return;
             }
-        }
+
+            for (const [key, child] of Object.entries(node)) {
+                traverse(child, [...path, key]);
+            }
+        };
+
+        traverse(this.data.items, []);
     }
 
     clearAndRebuild() {

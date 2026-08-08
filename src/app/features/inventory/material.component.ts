@@ -89,7 +89,7 @@ export class MaterialComponent implements OnInit {
     }
 
     get categories(): string[] {
-        return Object.keys(this.data.items) as string[];
+        return this.data.getChildKeys(['materials']);
     }
 
     getItemsFromRow(index: number): ItemData[] {
@@ -98,7 +98,7 @@ export class MaterialComponent implements OnInit {
         const category = row.get('category')?.value as string | null;
 
         return category
-            ? this.data.items[category]
+            ? this.data.getLeaf(['materials', category]) ?? []
             : [];
     }
 

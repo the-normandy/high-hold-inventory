@@ -72,7 +72,7 @@ export class CraftComponent {
         if (!crafting) {
             return [];
         }
-        return Object.keys(this.data.craftData[crafting] ?? {});
+        return this.data.getChildKeys(['craft', crafting]);
     }
 
     get itemRows(): FormArray {
@@ -97,7 +97,7 @@ export class CraftComponent {
             return [];
         }
 
-        return this.data.craftData[crafting]?.[category] ?? [];
+        return this.data.getLeaf(['craft', crafting, category]) ?? [];
     }
 
     addNewItem(crafting: string | null = null, category: string | null = null, item: ItemData | null = null) {

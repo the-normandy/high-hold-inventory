@@ -3,12 +3,12 @@ import { Injectable, inject, signal } from '@angular/core';
 import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
-import { ItemData } from './item.model';
+import { ItemData, ItemTree } from './item.model';
 
 export interface PricesFile {
     schema: number;
-    materials: Record<string, ItemData[]>;
-    craft: Record<string, Record<string, ItemData[]>>;
+    materials: ItemTree;
+    craft: ItemTree;
 }
 
 @Injectable({

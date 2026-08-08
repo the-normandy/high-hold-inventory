@@ -3,3 +3,7 @@ export interface ItemData {
     price: number;
     labor?: number;
 }
+
+export interface ItemTree {
+    [key: string]: ItemTree | ItemData[];
+}

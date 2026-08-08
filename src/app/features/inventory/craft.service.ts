@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { DataStore } from "../../core/data/data.store";
-import { ItemData } from "../../core/data/item.model";
+import { ItemData, ItemTree } from "../../core/data/item.model";
 
 @Injectable({
     providedIn: 'root'
@@ -15,16 +15,25 @@ export class CraftService {
     }
     
     buildLookup() {
-        for (const [crafting, categories] of Object.entries(this.data.craftData)) {
-            for (const [category, items] of Object.entries(categories)) {
-                for (const item of items) {
+        const traverse = (node: ItemTree | ItemData[], craft: string, path: string[]) => {
+            if (Array.isArray(node)) {
+                for (const item of node) {
                     this.itemLookup.set(item.name.toLowerCase(), {
-                        craft: crafting as string,
-                        category,
+                        craft,
+                        category: path.join('/') || '',
                         item
                     });
                 }
+                return;
             }
+
+            for (const [key, child] of Object.entries(node)) {
+                traverse(child, craft, [...path, key]);
+            }
+        };
+
+        for (const [crafting, categories] of Object.entries(this.data.craftData)) {
+            traverse(categories, crafting as string, []);
         }
     }
 
