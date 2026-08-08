@@ -2,7 +2,8 @@ import { Component, computed, effect, inject, OnInit, signal } from "@angular/co
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { MatTreeModule } from "@angular/material/tree";
+import { MatTreeModule, MatTreeNestedDataSource } from "@angular/material/tree";
+import { NestedTreeControl } from "@angular/cdk/tree";
 import { TreeNode } from './data.model'
 import { DataStore } from "../../core/data/data.store";
 import { MatDividerModule } from "@angular/material/divider";
@@ -51,7 +52,8 @@ export class DataComponent implements OnInit {
     private readonly formEffect = effect(() => {
         this.rebuildForm(this.fieldSnapshot());
     });
-    readonly childrenAccessor = (node: TreeNode) => node.children ?? [];
+    treeControl = new NestedTreeControl<TreeNode>(node => node.children ?? []);
+    dataSource = new MatTreeNestedDataSource<TreeNode>();
     snackBar = inject(MatSnackBar);
     hasChild = (_: number, node: TreeNode) => !!node.children && node.children.length > 0;
     dataSnapshot = signal<PricesFile | null>(null);
@@ -118,9 +120,29 @@ export class DataComponent implements OnInit {
             });
     }
 
+    private captureExpandedNodePaths(): string[][] {
+        return (this.treeControl.expansionModel.selected as TreeNode[] | undefined ?? [])
+            .map(node => node.path);
+    }
+
+    private restoreExpandedNodes(expandedPaths: string[][]): void {
+        const sortedPaths = expandedPaths.slice().sort((a, b) => a.length - b.length);
+        for (const path of sortedPaths) {
+            const node = this.getTreeNodeByPath(path, this.treeData());
+            if (node) {
+                this.treeControl.expand(node);
+            }
+        }
+    }
+
     private setSnapshot(snapshot: PricesFile): void {
+        const expandedPaths = this.captureExpandedNodePaths();
         this.dataSnapshot.set(snapshot);
-        this.treeData.set(this.buildTreeFromSnapshot(snapshot));
+        const tree = this.buildTreeFromSnapshot(snapshot);
+        this.treeData.set(tree);
+        this.dataSource.data = tree;
+        this.treeControl.dataNodes = tree;
+        Promise.resolve().then(() => this.restoreExpandedNodes(expandedPaths));
     }
 
     // Returns the node located at the given tree path inside the snapshot.

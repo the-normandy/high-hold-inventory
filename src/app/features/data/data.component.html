@@ -4,7 +4,7 @@
         <span class="text-lg font-medium">Folders</span>
         <button mat-flat-button color="primary" type="button" (click)="addRootFolder()">New root folder</button>
     </div>
-    <mat-tree #tree [dataSource]="treeData()" [childrenAccessor]="childrenAccessor" class="flex-1 overflow-auto">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="flex-1 overflow-auto">
         <mat-nested-tree-node *matTreeNodeDef="let node">
             <div class="flex items-center justify-between gap-2 rounded-lg w-full px-4 py-2 my-1 hover:bg-(--mat-sys-secondary-container)">
                 <button type="button" (click)="select(node)" [class.active]="isSelected(node)" class="text-sm flex items-center gap-2 cursor-pointer px-2 rounded-md">
@@ -26,7 +26,7 @@
             <div class="flex items-center justify-between gap-2 rounded-lg w-full px-4 py-2 my-1 hover:bg-(--mat-sys-secondary-container)">
                 <div class="flex items-center gap-2">
                     <button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name" class="text-sm inline-flex hover:cursor-pointer transition-colors duration-200 rounded-lg items-center gap-2">
-                        <mat-icon>{{ tree.isExpanded(node) ? 'folder_open' : 'folder' }}</mat-icon>
+                        <mat-icon>{{ treeControl.isExpanded(node) ? 'folder_open' : 'folder' }}</mat-icon>
                         {{ node.name }}
                     </button>
                 </div>
@@ -40,7 +40,7 @@
                     }
                 </div>
             </div>
-            <div class="ml-6 overflow-hidden transition-all duration-100 ease-linear" [class.overflow-hidden]="!tree.isExpanded(node)" [class.max-h-0]="!tree.isExpanded(node)" [class.max-h-96!]="tree.isExpanded(node)" role="group">
+            <div class="ml-6 overflow-hidden transition-all duration-100 ease-linear" [class.overflow-hidden]="!treeControl.isExpanded(node)" [class.max-h-0]="!treeControl.isExpanded(node)" [class.max-h-96!]="treeControl.isExpanded(node)" role="group">
                 <ng-container matTreeNodeOutlet></ng-container>
             </div>
         </mat-nested-tree-node>
