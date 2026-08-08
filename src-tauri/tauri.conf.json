@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "High Hold Storehouse",
+  "productName": "Storehouse",
   "version": "1.5.0",
   "identifier": "com.high-hold.storehouse",
   "plugins": {
@@ -20,7 +20,7 @@
   "app": {
     "windows": [
       {
-        "title": "High Hold Storehouse",
+        "title": "Storehouse",
         "width": 1400,
         "height": 850,
         "resizable": true,
