@@ -341,25 +341,6 @@ export class DataComponent implements OnInit {
         this.setSnapshot(snapshot);
     }
 
-    async addRootFolder() {
-        const name = await this.runCategoryDialog();
-        if (!name) {
-            return;
-        }
-
-        const snapshot = structuredClone(this.dataSnapshot());
-        if (!snapshot) {
-            return;
-        }
-
-        if (snapshot[name] !== undefined || name === 'schema') {
-            return;
-        }
-
-        (snapshot as any)[name] = {};
-        this.setSnapshot(snapshot);
-    }
-
     private async renameCategoryAtPath(path: string[]): Promise<void> {
         const newName = await this.runCategoryDialog();
         if (!newName) {
@@ -445,6 +426,10 @@ export class DataComponent implements OnInit {
         return !!node && !node.isLeafNode;
     }
 
+    canEditSelectedItems(): boolean {
+        return this.getTreeNodeByPath(this.selected())?.isLeafNode === true;
+    }
+
     async addCategory() {
         if (!this.canAddCategoryAtPath(this.selected())) {
             return;
@@ -464,7 +449,9 @@ export class DataComponent implements OnInit {
     }
 
     isSelected(node: TreeNode): boolean {
-        return node.path == this.selected();
+        const selectedPath = this.selected();
+        return node.path.length === selectedPath.length
+            && node.path.every((segment, index) => segment === selectedPath[index]);
     }
 
     select(node: TreeNode) {
