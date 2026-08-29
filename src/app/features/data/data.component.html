@@ -1,13 +1,12 @@
 <div class="flex flex-1 flex-row gap-4">
     <div class="min-w-48 h-[75vh] flex-col">
-    <div class="flex w-full items-center justify-between mb-4">
+    <div class="flex w-full items-center mb-4 px-2">
         <span class="text-lg font-medium">Folders</span>
-        <button mat-flat-button color="primary" type="button" (click)="addRootFolder()">New root folder</button>
     </div>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="flex-1 overflow-auto">
         <mat-nested-tree-node *matTreeNodeDef="let node">
-            <div class="flex items-center justify-between gap-2 rounded-lg w-full px-4 py-2 my-1 hover:bg-(--mat-sys-secondary-container)">
-                <button type="button" (click)="select(node)" [class.active]="isSelected(node)" class="text-sm flex items-center gap-2 cursor-pointer px-2 rounded-md">
+            <div class="tree-row" [class.active]="isSelected(node)">
+                <button type="button" (click)="select(node)" class="tree-label">
                     <mat-icon>table_rows</mat-icon>
                     {{ node.name }}
                 </button>
@@ -23,9 +22,12 @@
             </div>
         </mat-nested-tree-node>
         <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild" [cdkTreeNodeTypeaheadLabel]="node.name">
-            <div class="flex items-center justify-between gap-2 rounded-lg w-full px-4 py-2 my-1 hover:bg-(--mat-sys-secondary-container)">
-                <div class="flex items-center gap-2">
-                    <button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name" class="text-sm inline-flex hover:cursor-pointer transition-colors duration-200 rounded-lg items-center gap-2">
+            <div class="tree-row" [class.active]="isSelected(node)">
+                <div class="flex min-w-0 flex-1 items-center gap-1">
+                    <button type="button" matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name" class="tree-toggle">
+                        <mat-icon class="tree-chevron">{{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+                    </button>
+                    <button type="button" (click)="select(node)" class="tree-label">
                         <mat-icon>{{ treeControl.isExpanded(node) ? 'folder_open' : 'folder' }}</mat-icon>
                         {{ node.name }}
                     </button>
@@ -40,8 +42,10 @@
                     }
                 </div>
             </div>
-            <div class="ml-6 overflow-hidden transition-all duration-100 ease-linear" [class.overflow-hidden]="!treeControl.isExpanded(node)" [class.max-h-0]="!treeControl.isExpanded(node)" [class.max-h-96!]="treeControl.isExpanded(node)" role="group">
-                <ng-container matTreeNodeOutlet></ng-container>
+            <div class="tree-children" [class.expanded]="treeControl.isExpanded(node)" role="group">
+                <div class="min-h-0 ml-6">
+                    <ng-container matTreeNodeOutlet></ng-container>
+                </div>
             </div>
         </mat-nested-tree-node>
     </mat-tree>
@@ -51,8 +55,10 @@
         <div formArrayName="items">
             <div class="flex flex-row gap-10 items-center justify-center mb-10 text-2xl">
                 @if (this.selected().length > 0) {
-                <h2>Category: {{this.selected().at(-1)}}</h2>
-                <button type="button" matTooltip="Add new item" matIconButton (click)="addItem()"><mat-icon>add</mat-icon></button>
+                <h2>{{canEditSelectedItems() ? 'Category' : 'Folder'}}: {{this.selected().at(-1)}}</h2>
+                @if (canEditSelectedItems()) {
+                    <button type="button" matTooltip="Add new item" matIconButton (click)="addItem()"><mat-icon>add</mat-icon></button>
+                }
                 }
             </div>
             @for (group of items.controls; track group; let index = $index) {
