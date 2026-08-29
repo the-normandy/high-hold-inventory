@@ -102,11 +102,11 @@ export class InventoryComponent implements OnInit {
         const itemLines = [
             ...materialRows.map(
                 row =>
-                    `* ${row.quantity}x ${row.item.name} [${row.path.join(' / ')}] (${row.quantity * row.item.price})`
+                    `* ${row.quantity}x ${row.item.name} (${row.quantity * row.item.price})`
             ),
             ...craftRows.map(
                 row =>
-                    `* ${row.quantity}x ${row.item.name} [${row.path.join(' / ')}] (${
+                    `* ${row.quantity}x ${row.item.name} (${
                         row.quantity *
                         (row.laborOnly ? row.item.labor! : row.item.price)
                     })`

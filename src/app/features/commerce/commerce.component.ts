@@ -162,9 +162,8 @@ export class CommerceComponent implements OnInit {
     private buildClipboardReport(submission: CommerceSubmission): string {
         const pastTense = this.type() === 'sale' ? 'sold' : 'purchased';
         const lines = submission.items.map(item => {
-            const root = item.source === 'material' ? 'Materials' : 'Craft';
             const total = item.quantity * item.unitPrice;
-            return `* ${item.quantity}x ${item.item.name} [${root} / ${this.formatPath(item.path)}] @ ${item.unitPrice} each (${total})`;
+            return `* ${item.quantity}x ${item.item.name} (${total})`;
         });
         const total = submission.items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
         const sections = [
