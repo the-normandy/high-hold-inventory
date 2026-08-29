@@ -6,7 +6,6 @@ import { MatTreeModule, MatTreeNestedDataSource } from "@angular/material/tree";
 import { NestedTreeControl } from "@angular/cdk/tree";
 import { TreeNode } from './data.model'
 import { DataStore } from "../../core/data/data.store";
-import { MatDividerModule } from "@angular/material/divider";
 import { RouterLink } from "@angular/router";
 import { ItemData, ItemTree } from "../../core/data/item.model";
 import { DataService, PricesFile } from "../../core/data/data.service";
@@ -27,9 +26,8 @@ import { CategoryDeleteDialogComponent } from "./category-delete-dialog.componen
     styles: `:host { @apply flex-1; }`,
     styleUrl: 'data.component.css',
     imports: [
-        MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
-        RouterLink, ReactiveFormsModule, MatTooltipModule, MatSnackBarModule,
-        MatDialogModule
+        MatButtonModule, MatTreeModule, MatIconModule, RouterLink,
+        ReactiveFormsModule, MatTooltipModule, MatSnackBarModule, MatDialogModule
     ]
 })
 export class DataComponent implements OnInit {
@@ -275,6 +273,11 @@ export class DataComponent implements OnInit {
     }
 
     addItem() {
+        if (!this.canEditSelectedItems()) {
+            this.initializeSelectedItemCategory();
+            return;
+        }
+
         this.items.push(
             this.createItemGroup(
                 {
@@ -284,6 +287,30 @@ export class DataComponent implements OnInit {
                 this.isCraft()
             )
         );
+    }
+
+    private initializeSelectedItemCategory(): void {
+        const snapshot = structuredClone(this.dataSnapshot());
+        const path = this.selected();
+        const lastKey = path.at(-1);
+
+        if (!snapshot || path.length <= 1 || !lastKey) {
+            return;
+        }
+
+        const parent = this.getNodeAtPath(path.slice(0, -1), snapshot);
+        if (!parent || Array.isArray(parent)) {
+            return;
+        }
+
+        const current = parent[lastKey];
+        if (!current || Array.isArray(current) || Object.keys(current).length > 0) {
+            return;
+        }
+
+        parent[lastKey] = [{ name: '', price: 0 }];
+        this.setSnapshot(snapshot);
+        this.rebuildForm(this.fieldSnapshot());
     }
 
     removeItem(index: number) {
@@ -426,6 +453,21 @@ export class DataComponent implements OnInit {
 
     canEditSelectedItems(): boolean {
         return this.getTreeNodeByPath(this.selected())?.isLeafNode === true;
+    }
+
+    canAddItemToSelected(): boolean {
+        if (this.canEditSelectedItems()) {
+            return true;
+        }
+
+        const path = this.selected();
+        const snapshot = this.dataSnapshot();
+        if (!snapshot || path.length <= 1) {
+            return false;
+        }
+
+        const node = this.getNodeAtPath(path, snapshot);
+        return !!node && !Array.isArray(node) && Object.keys(node).length === 0;
     }
 
     async addCategory() {

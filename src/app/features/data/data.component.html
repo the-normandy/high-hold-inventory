@@ -1,9 +1,26 @@
-<div class="flex flex-1 flex-row gap-4">
-    <div class="min-w-48 h-[75vh] flex-col">
-    <div class="flex w-full items-center mb-4 px-2">
-        <span class="text-lg font-medium">Folders</span>
+<section class="flex w-full min-w-0 flex-col gap-4">
+<header class="flex min-h-16 flex-wrap items-center justify-between gap-6">
+    <div>
+        <h1 class="text-2xl font-medium">Item data</h1>
+        <p class="text-sm opacity-60">Organize categories, prices, and crafting labor</p>
     </div>
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="flex-1 overflow-auto">
+    <div class="flex flex-wrap justify-end gap-2 max-md:w-full max-md:justify-start">
+        <button type="button" matButton="tonal" routerLink=""><mat-icon>arrow_back</mat-icon>Back</button>
+        <button type="button" matButton="tonal" (click)="discard()"><mat-icon>undo</mat-icon>Discard</button>
+        <button type="button" matButton="tonal" (click)="saveAndExportButton()"><mat-icon>upload</mat-icon>Save and export</button>
+        <button type="button" matButton="filled" (click)="saveButton()"><mat-icon>save</mat-icon>Save</button>
+    </div>
+</header>
+
+<div class="data-workspace">
+    <aside class="tree-panel" aria-label="Data folders">
+    <div class="tree-panel-header">
+        <div>
+            <div class="text-sm font-medium">Data explorer</div>
+            <div class="text-xs opacity-60">Craft and Materials</div>
+        </div>
+    </div>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree-scroll">
         <mat-nested-tree-node *matTreeNodeDef="let node">
             <div class="tree-row" [class.active]="isSelected(node)">
                 <button type="button" (click)="select(node)" class="tree-label">
@@ -49,25 +66,43 @@
             </div>
         </mat-nested-tree-node>
     </mat-tree>
-    </div>
-    <mat-divider [vertical]="true"></mat-divider>
-    <form [formGroup]="form" class="flex min-w-0 flex-1 flex-col px-6">
-        <div formArrayName="items" class="mx-auto flex w-full max-w-4xl flex-col">
-            <div class="mb-6 flex min-h-10 items-center justify-between gap-4">
-                @if (this.selected().length > 0) {
-                    <div class="min-w-0">
-                        <div class="text-sm opacity-60">{{canEditSelectedItems() ? 'Category' : 'Folder'}}</div>
-                        <h2 class="truncate text-2xl">{{this.selected().at(-1)}}</h2>
-                    </div>
-                    @if (canEditSelectedItems()) {
-                        <button type="button" matButton="filled" (click)="addItem()"><mat-icon>add</mat-icon>Add item</button>
-                    }
+    </aside>
+    <section class="item-panel">
+        <header class="item-panel-header">
+            @if (this.selected().length > 0) {
+                <div class="min-w-0">
+                    <div class="text-xs font-medium uppercase opacity-60">{{canAddItemToSelected() ? 'Item category' : 'Folder'}}</div>
+                    <h2 class="truncate text-xl">{{this.selected().at(-1)}}</h2>
+                </div>
+                @if (canAddItemToSelected()) {
+                    <button type="button" matButton="filled" (click)="addItem()"><mat-icon>add</mat-icon>Add item</button>
                 }
-            </div>
-            @if (canEditSelectedItems() && items.length === 0) {
-                <div class="rounded-lg border border-dashed border-(--mat-sys-outline-variant) px-6 py-10 text-center">
+            } @else {
+                <div>
+                    <div class="text-xs font-medium uppercase opacity-60">Editor</div>
+                    <h2 class="text-xl">Select a category</h2>
+                </div>
+            }
+        </header>
+        <form [formGroup]="form" class="item-editor-scroll">
+            <div formArrayName="items" class="mx-auto flex w-full max-w-4xl flex-col">
+            @if (this.selected().length === 0) {
+                <div class="flex min-h-60 flex-col items-center justify-center rounded-lg border border-(--mat-sys-outline-variant) p-8 text-center">
+                    <mat-icon class="mb-3 size-8! text-3xl! text-(--mat-sys-primary)">account_tree</mat-icon>
+                    <p class="font-medium">Choose a category from the explorer</p>
+                    <p class="text-sm opacity-60">Item details will appear here.</p>
+                </div>
+            } @else if (!canAddItemToSelected()) {
+                <div class="flex min-h-60 flex-col items-center justify-center rounded-lg border border-(--mat-sys-outline-variant) p-8 text-center">
+                    <mat-icon class="mb-3 size-8! text-3xl! text-(--mat-sys-primary)">folder</mat-icon>
+                    <p class="font-medium">This folder contains categories</p>
+                    <p class="text-sm opacity-60">Select an item category, or add a subcategory from the explorer.</p>
+                </div>
+            } @else if (items.length === 0) {
+                <div class="flex min-h-60 flex-col items-center justify-center rounded-lg border border-dashed border-(--mat-sys-outline-variant) p-8 text-center">
+                    <mat-icon class="mb-3 size-8! text-3xl! text-(--mat-sys-primary)">inventory_2</mat-icon>
                     <p class="font-medium">No items in this category</p>
-                    <p class="mt-1 text-sm opacity-60">Add an item to start defining prices.</p>
+                    <p class="text-sm opacity-60">Add an item to start defining prices.</p>
                 </div>
             } @else {
                 <div class="flex flex-col gap-2">
@@ -92,12 +127,8 @@
                     }
                 </div>
             }
-        </div>
-    </form>
+            </div>
+        </form>
+    </section>
 </div>
-<div class="my-10 grid grid-cols-4 gap-20 justify-self-center">
-        <button matButton="filled" (click)="saveAndExportButton()">Save and Export</button>
-        <button matButton="tonal" (click)="saveButton()">Save</button>
-        <button matButton="tonal" (click)="discard()">Discard changes</button>
-        <button matButton="tonal" routerLink="">Back</button>
-</div>
+</section>
