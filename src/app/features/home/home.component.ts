@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
-import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
 import { UpdaterComponent } from "./updater.component";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
@@ -16,9 +16,9 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 @Component({
     selector: 'app-home',
     templateUrl: 'home.component.html',
-    styles: `:host { @apply flex-1; }`,
+    styleUrls: ['./home.component.css'],
     imports: [
-        MatCardModule, MatButtonModule, RouterLink, UpdaterComponent,
+        MatButtonModule, MatIconModule, RouterLink, UpdaterComponent,
         MatDialogModule
     ]
 })

@@ -1,32 +1,57 @@
-<div class="flex flex-col flex-1 items-center justify-center gap-20">
-    <h1 class="text-3xl">{{settings.clan()}} Storehouse</h1>
-    <div class="grid grid-cols-1 gap-10 items-stretch lg:grid-cols-3">
-        <mat-card class="p-4 w-sm">
-            <mat-card-header class="text-2xl pb-4!">Reports</mat-card-header>
-            <mat-card-content class="flex-1 py-8!">Generate report logs for depositing or withdrawing materials and crafted items for the Storehouse, or see a ledger with analytics of the reports generated over time.</mat-card-content>
-            <mat-card-actions class="grid grid-cols-3 justify-self-center gap-10 place-content-center">
-                <a matButton="filled" routerLink="/new/withdraw">Withdraw</a>
-                <a matButton="filled" routerLink="/new/deposit">Deposit</a>
-                <a matButton="filled" routerLink="/records">Ledger</a>
-            </mat-card-actions>
-        </mat-card>
-        <mat-card class="p-4 w-sm">
-            <mat-card-header class="text-2xl pb-4!">Commerce</mat-card-header>
-            <mat-card-content class="flex-1 py-8!">Record purchases and sales with customers using actual transaction prices, or review external trade history and net cash flow.</mat-card-content>
-            <mat-card-actions class="grid grid-cols-3 justify-self-center gap-6 place-content-center">
-                <a matButton="filled" routerLink="/commerce/purchase">Purchase</a>
-                <a matButton="filled" routerLink="/commerce/sale">Sale</a>
-                <a matButton="filled" routerLink="/commerce/ledger">Ledger</a>
-            </mat-card-actions>
-        </mat-card>
-        <mat-card class="p-4 w-sm">
-            <mat-card-header class="text-2xl pb-4!">Data management</mat-card-header>
-            <mat-card-content class="flex-1 py-8!">Edit the data used for items and prices, including creating new items or updating the prices of those already there. You probably shouldn't use it if you're not clan leadership.</mat-card-content>
-            <mat-card-actions class="grid grid-cols-2 justify-self-center gap-10 place-content-center">
-                <a matButton="filled" routerLink="/data">Manage</a>
-                <a matButton="filled" (click)="dataSettings()">Settings</a>
-            </mat-card-actions>
-        </mat-card>
+<main class="home-page">
+    <header class="home-header">
+        <div>
+            <p class="home-eyebrow">Storehouse operations</p>
+            <h1>{{settings.clan() || 'High Hold'}} <span>Storehouse</span></h1>
+        </div>
+        <p class="home-status"><span aria-hidden="true"></span>Local workspace</p>
+    </header>
+
+    <div class="operation-grid">
+        <section class="operation-panel reports-panel">
+            <div class="panel-heading">
+                <div class="panel-icon" aria-hidden="true"><mat-icon>inventory_2</mat-icon></div>
+                <div>
+                    <p class="panel-kicker">Internal inventory</p>
+                    <h2>Reports</h2>
+                </div>
+                <a matButton="tonal" routerLink="/records" class="ledger-link">Ledger<mat-icon>arrow_forward</mat-icon></a>
+            </div>
+            <div class="panel-actions">
+                <a matButton="filled" routerLink="/new/deposit"><mat-icon>add</mat-icon>Deposit</a>
+                <a matButton="outlined" routerLink="/new/withdraw"><mat-icon>remove</mat-icon>Withdraw</a>
+            </div>
+        </section>
+
+        <section class="operation-panel commerce-panel">
+            <div class="panel-heading">
+                <div class="panel-icon" aria-hidden="true"><mat-icon>currency_exchange</mat-icon></div>
+                <div>
+                    <p class="panel-kicker">External trade</p>
+                    <h2>Commerce</h2>
+                </div>
+                <a matButton="tonal" routerLink="/commerce/ledger" class="ledger-link">Ledger<mat-icon>arrow_forward</mat-icon></a>
+            </div>
+            <div class="panel-actions">
+                <a matButton="filled" routerLink="/commerce/sale"><mat-icon>trending_up</mat-icon>Sale</a>
+                <a matButton="outlined" routerLink="/commerce/purchase"><mat-icon>trending_down</mat-icon>Purchase</a>
+            </div>
+        </section>
     </div>
+
+    <section class="utility-panel">
+        <div class="utility-title">
+            <mat-icon aria-hidden="true">database</mat-icon>
+            <div>
+                <p class="panel-kicker">Workspace</p>
+                <h2>Data management</h2>
+            </div>
+        </div>
+        <div class="utility-actions">
+            <a matButton="tonal" routerLink="/data"><mat-icon>edit</mat-icon>Manage data</a>
+            <button matButton="text" type="button" (click)="dataSettings()"><mat-icon>link</mat-icon>Webhook</button>
+        </div>
+    </section>
+
     <app-updater />
-</div>
+</main>
