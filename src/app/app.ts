@@ -53,8 +53,15 @@ export class App {
   }
 
   async openSettings() {
-    const dialogRef = this.dialog.open(SettingsDialogComponent, { width: '400px' });
-    const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup;
+    const dialogRef = this.dialog.open(SettingsDialogComponent, {
+      width: '400px',
+      data: {
+        clan: this.settings.clan(),
+        character: this.settings.character()
+      }
+    });
+    const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup | undefined;
+    if (!data) return;
     await this.settings.saveSettings(data);
   }
 
