@@ -1,6 +1,7 @@
 <h2 mat-dialog-title>Set up your Storehouse</h2>
-<mat-dialog-content class="mt-4!">
-    <form [formGroup]="form" class="flex flex-col gap-4">
+<form [formGroup]="form" class="contents" (submit)="$event.preventDefault()">
+    <mat-dialog-content class="mt-4!">
+        <div class="flex flex-col gap-4">
         <mat-form-field>
             <mat-label>Clan name</mat-label>
             <input matInput type="text" formControlName="clan" aria-label="Clan name">
@@ -9,9 +10,10 @@
             <mat-label>Character name</mat-label>
             <input matInput type="text" formControlName="character" aria-label="Character name">
         </mat-form-field>
-    </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-    <button matButton="filled" class="w-24" [mat-dialog-close]="form">Confirm</button>
-    <button matButton="tonal" class="w-24" [mat-dialog-close]>Cancel</button>
-</mat-dialog-actions>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="submit" matButton="filled" class="w-24" [mat-dialog-close]="form">Confirm</button>
+        <button type="button" matButton="tonal" class="w-24" [mat-dialog-close]>Cancel</button>
+    </mat-dialog-actions>
+</form>
