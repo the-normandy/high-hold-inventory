@@ -1,15 +1,17 @@
-<section class="flex flex-1 flex-col self-center items-center justify-center">
-    <h2 class="text-2xl text-center pb-10">Crafted Items</h2>
-    <form [formGroup]="form()" class="flex flex-col">
-        <h3 class="text-xl text-center pb-4">General Information</h3>
-        <mat-form-field class="w-2xl self-center justify-self-center">
-            <mat-label>Purpose</mat-label>
-            <input matInput type="text" formControlName="purpose" aria-label="purpose">
-        </mat-form-field>
+<section class="w-full rounded-lg border border-(--mat-sys-outline-variant) px-6 py-6">
+    <form [formGroup]="form()" class="flex flex-col gap-6">
+        <div>
+            <h2 class="text-2xl">Crafted Items</h2>
+            <p class="text-sm opacity-70">Finished goods and crafting labor</p>
+        </div>
+        <label class="flex w-full flex-col gap-1 text-sm font-medium">
+            <span>Comment <span class="font-normal opacity-60">(optional)</span></span>
+            <textarea formControlName="comment" rows="2" class="min-h-10 resize-y rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 py-2 font-normal outline-none transition-colors focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)"></textarea>
+        </label>
         <div formArrayName="items" class="pb-4">
-            <div class="flex flex-col items-center gap-3 pb-6">
-                    <h3 class="text-xl">Items</h3>
-                    <input type="text" id="craft-item-search" placeholder="Find and add an item" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Find and add a crafted item" class="w-full max-w-xl py-2 rounded-full px-4 outline focus:outline-(--mat-sys-primary) focus:outline-2" />
+            <div class="flex flex-col items-center gap-3 pb-5">
+                    <h3 class="text-lg font-medium">Items</h3>
+                    <input type="text" id="craft-item-search" placeholder="Find and add an item" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Find and add a crafted item" class="h-10 w-full max-w-xl rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 outline-none transition-colors focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)" />
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="onQuickAdd($event.option.value)" >
                         @for (searchable of filteredItems(); track searchable.path.join('/') + searchable.item.name) {
                             <mat-option [value]="searchable">
@@ -20,17 +22,17 @@
                     </mat-autocomplete>
             </div>
             @for (row of itemRows.controls; track row.value.id) {
-                <div class="flex flex-wrap gap-4 items-center justify-center" [formGroupName]="$index">
-                    <div class="w-80 min-w-0 mb-5">
+                <div class="flex flex-wrap gap-4 items-center justify-center border-t border-(--mat-sys-outline-variant) pt-4" [formGroupName]="$index">
+                    <div class="w-80 min-w-0 flex-1">
                         <div class="font-medium truncate">{{row.value.item.name}}</div>
                         <div class="text-sm opacity-70 truncate" [title]="formatPath(row.value.path)">{{formatPath(row.value.path)}}</div>
                     </div>
-                    <mat-form-field>
-                        <mat-label>Quantity</mat-label>
-                        <input matInput type="number" formControlName="quantity" aria-label="Quantity">
-                    </mat-form-field>
-                    <mat-checkbox class="mb-5" formControlName="laborOnly">Labor only?</mat-checkbox>
-                    <button type="button" class="mb-5" matIconButton (click)="removeItem($index)" aria-label="Remove item"><mat-icon>delete</mat-icon></button>
+                    <label class="flex flex-col gap-1 text-xs font-medium">
+                        Quantity
+                        <input type="number" formControlName="quantity" min="1" class="h-9 w-24 rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 text-sm font-normal outline-none focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)" />
+                    </label>
+                    <mat-checkbox formControlName="laborOnly">Labor only?</mat-checkbox>
+                    <button type="button" matIconButton (click)="removeItem($index)" aria-label="Remove item"><mat-icon>delete</mat-icon></button>
                 </div>
             }
         </div>

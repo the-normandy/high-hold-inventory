@@ -1,15 +1,23 @@
-<h2 class="text-3xl text-center pb-4">{{this.mode() === 'deposit' ? 'Deposit' : 'Withdrawal'}} Form</h2>
-<div class="flex items-center justify-center gap-10 self-center justify-self-center pb-10">
-    <mat-checkbox [checked]="shouldRenderMaterial()" (change)="shouldRenderMaterial.set($event.checked)">Materials Form</mat-checkbox>
-    <mat-checkbox [checked]="shouldRenderCraft()" (change)="shouldRenderCraft.set($event.checked)">Crafted Items Form</mat-checkbox>
-</div>
-@if (shouldRenderMaterial()) {
-    <app-material [form]="materialForm" [mode]="mode()"></app-material>
-}
-@if (shouldRenderCraft()) {
-    <app-craft [form]="craftForm" [mode]="mode()"></app-craft>
-}
-<div class="flex items-center justify-center gap-6 self-center justify-self-center">
-    <button matButton="filled" (click)="submit()" class="w-44">Generate</button>
-    <button type="button" matButton="tonal" class="w-44" routerLink="">Back</button>
-</div>
+<main class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pb-8">
+    <header class="text-center">
+        <h2 class="text-3xl">{{mode() === 'deposit' ? 'Deposit' : 'Withdrawal'}} Report</h2>
+    </header>
+
+    <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 rounded-lg bg-(--mat-sys-surface-container) px-6 py-4">
+        <span class="font-medium">Include in report</span>
+        <mat-checkbox [checked]="shouldRenderMaterial()" (change)="shouldRenderMaterial.set($event.checked)">Material Form</mat-checkbox>
+        <mat-checkbox [checked]="shouldRenderCraft()" (change)="shouldRenderCraft.set($event.checked)">Crafted Items Form</mat-checkbox>
+    </div>
+
+    @if (shouldRenderMaterial()) {
+        <app-material [form]="materialForm"></app-material>
+    }
+    @if (shouldRenderCraft()) {
+        <app-craft [form]="craftForm"></app-craft>
+    }
+
+    <div class="sticky bottom-0 flex items-center justify-center gap-6 border-t border-(--mat-sys-outline-variant) bg-(--mat-sys-surface) py-4">
+        <button matButton="filled" (click)="submit()" [disabled]="!shouldRenderMaterial() && !shouldRenderCraft()" class="w-44">Generate</button>
+        <button type="button" matButton="tonal" class="w-44" routerLink="">Back</button>
+    </div>
+</main>

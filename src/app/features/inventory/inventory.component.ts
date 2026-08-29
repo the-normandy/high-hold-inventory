@@ -37,15 +37,13 @@ export class InventoryComponent implements OnInit {
     shouldRenderCraft = signal<boolean>(false);
 
     craftForm = this.fb.group({
-        purpose: this.fb.control<string | null>(null),
+        comment: this.fb.control<string | null>(null),
         items: this.fb.array<FormGroup<any>>([])
     });
 
     materialForm = this.fb.group({
-        purpose: this.fb.control<string | null>(null),
+        comment: this.fb.control<string | null>(null),
         silver: this.fb.control<number | null>(null),
-        ownership: this.fb.control<string | null>(null),
-        usage: this.fb.control<string | null>(null),
         items: this.fb.array<FormGroup<any>>([])
     });
 
@@ -146,22 +144,16 @@ ${matSubmission.silver}`);
         sections.push(`**Total Silver:**
 ${grandTotal}`);
 
-        if (includeMaterial && matSubmission.purpose) {
-            sections.push(`**Purpose of Materials:**
-    ${matSubmission.purpose}`);
+        const materialComment = matSubmission.comment?.trim();
+        if (includeMaterial && materialComment) {
+            sections.push(`**Materials Comment:**
+${materialComment}`);
         }
 
-        if (includeCraft && craftSubmission.purpose) {
-            sections.push(`**Purpose of Crafting:**
-    ${craftSubmission.purpose}`);
-        }
-
-        if (includeMaterial && this.mode() === 'withdraw') {
-            sections.push(`**Personal Use/Clan/Profit?**
-${matSubmission.usage ?? ''}
-
-**For You, the Clan, or Militia Member?**
-${matSubmission.ownership ?? ''}`);
+        const craftComment = craftSubmission.comment?.trim();
+        if (includeCraft && craftComment) {
+            sections.push(`**Crafting Comment:**
+${craftComment}`);
         }
 
         const output = sections.join('\n\n');

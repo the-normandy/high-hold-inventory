@@ -18,6 +18,12 @@
         <span>{{item.value*item.quantity}}</span>
         }
     </div>
+    @if (record.note) {
+        <div class="mt-6 border-t border-(--mat-sys-outline-variant) pt-4">
+            <div class="font-medium">Comment</div>
+            <p class="mt-1 whitespace-pre-wrap">{{record.note}}</p>
+        </div>
+    }
 </mat-dialog-content>
 <mat-dialog-actions align="center">
     <div class="flex gap-10">

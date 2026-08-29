@@ -17,6 +17,7 @@ export class RecordsService {
             source: 'material',
             timestamp: new Date().toISOString(),
             silver: silver,
+            note: material.comment?.trim() || undefined,
             totalValue: material.items.reduce(
                 (sum, item) => sum + item.item.price * item.quantity,
                 0
@@ -38,6 +39,7 @@ export class RecordsService {
             entry: entry,
             source: 'craft',
             timestamp: new Date().toISOString(),
+            note: craft.comment?.trim() || undefined,
             totalValue: craft.items.reduce(
                 (sum, item) =>
                     sum +

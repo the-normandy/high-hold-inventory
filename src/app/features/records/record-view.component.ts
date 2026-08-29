@@ -37,7 +37,8 @@ export class RecordViewComponent {
             '',
             `${pad('Name', namePad)} ${pad('Category', 15)} ${pad('Qty', 5)} ${pad('Value', 10)}`,
             ...(record.silver ? [`${pad('Silver', namePad)} ${pad('Currency', 15)} ${pad(record.silver, 5)} ${pad(record.silver, 10)}`] : []),
-            ...record.items.map(item => `${pad(item.name, namePad)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value*item.quantity, 10)}`)
+            ...record.items.map(item => `${pad(item.name, namePad)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.value*item.quantity, 10)}`),
+            ...(record.note ? ['', `Comment: ${record.note}`] : [])
         ];
 
         const text = ["```", ...lines, "```"].join("\n");

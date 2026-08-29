@@ -1,11 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
 import { MatButtonModule } from "@angular/material/button";
 import { ItemData } from "../../core/data/item.model";
-import { RouterModule } from "@angular/router";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { CraftService, CraftSearchableItem } from "./craft.service";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -17,13 +14,12 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
     styles: `:host { @apply flex-1; }`,
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
-    MatFormFieldModule, ReactiveFormsModule, MatIconModule, MatInputModule,
-    MatButtonModule, RouterModule, MatCheckboxModule, MatAutocompleteModule
+    ReactiveFormsModule, MatIconModule, MatButtonModule, MatCheckboxModule,
+    MatAutocompleteModule
 ]
 })
 export class CraftComponent {
     service = inject(CraftService);
-    mode = input.required<string>();
     fb = inject(FormBuilder);
     form = input.required<FormGroup>();
 

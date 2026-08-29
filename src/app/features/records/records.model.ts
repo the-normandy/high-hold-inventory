@@ -22,10 +22,8 @@ export interface RecordItem {
 }
 
 export interface MaterialSubmission {
-    purpose: string | null;
+    comment: string | null;
     silver: number | null;
-    ownership: string | null;
-    usage: string | null;
     items: MaterialSubmissionItem[];
 }
 
@@ -36,7 +34,7 @@ export interface MaterialSubmissionItem {
 }
 
 export interface CraftSubmission {
-    purpose: string | null;
+    comment: string | null;
     items: CraftSubmissionItem[];
 }
 

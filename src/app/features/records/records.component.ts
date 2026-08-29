@@ -36,7 +36,7 @@ export class RecordsComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
     }
 
-    columnsToDisplay = ['timestamp', 'entry', 'source', 'items', 'totalValue', 'actions'];
+    columnsToDisplay = ['timestamp', 'entry', 'source', 'items', 'totalValue', 'notes', 'actions'];
     records = signal<RecordEntry[]>([]);
     dataSource: MatTableDataSource<RecordEntry> = new MatTableDataSource<RecordEntry>();
     dialog = inject(MatDialog);
