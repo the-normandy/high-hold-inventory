@@ -15,6 +15,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { RecordDeleteComponent } from "./record-delete.component";
 import { firstValueFrom } from "rxjs";
 import { RecordSummaryComponent } from "./record-summary.component";
+import { RouterLink } from "@angular/router";
 
 @Component({
     selector: 'app-records',
@@ -22,7 +23,7 @@ import { RecordSummaryComponent } from "./record-summary.component";
     styles: `:host { @apply flex-1; }`,
     imports: [
         MatTableModule, MatPaginatorModule, MatCardModule, MatButtonModule, 
-        MatSortModule, DatePipe, MatIconModule, MatDialogModule, MatTooltipModule, RecordSummaryComponent
+        MatSortModule, DatePipe, MatIconModule, MatDialogModule, MatTooltipModule, RecordSummaryComponent, RouterLink
     ]
 })
 export class RecordsComponent implements OnInit {

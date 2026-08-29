@@ -1,4 +1,18 @@
+<main class="flex min-w-0 flex-1 flex-col gap-8 pb-8">
+<header class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+        <p class="text-sm font-medium opacity-60">Reports</p>
+        <h1 class="text-3xl">Reports ledger</h1>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        <a matButton="tonal" routerLink="/"><mat-icon>arrow_back</mat-icon>Back</a>
+        <a matButton="filled" routerLink="/new/deposit"><mat-icon>add</mat-icon>New deposit</a>
+        <a matButton="filled" routerLink="/new/withdraw"><mat-icon>remove</mat-icon>New withdrawal</a>
+    </div>
+</header>
+
 <record-summary [data]="records()"></record-summary>
+<div class="overflow-auto rounded-lg border border-(--mat-sys-outline-variant)">
 <table mat-table matSort [dataSource]="dataSource">
     <ng-container matColumnDef="timestamp">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
@@ -22,7 +36,7 @@
     </ng-container>
     <ng-container matColumnDef="notes">
         <th mat-header-cell *matHeaderCellDef>Comment</th>
-        <td mat-cell *matCellDef="let record">{{record.note}}</td>
+        <td mat-cell *matCellDef="let record" class="max-w-64 truncate">{{record.note}}</td>
     </ng-container>
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
@@ -33,6 +47,11 @@
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
     <tr mat-row *matRowDef="let record; columns: columnsToDisplay"></tr>
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell p-8! text-center" [attr.colspan]="columnsToDisplay.length">No report entries yet.</td>
+    </tr>
 </table>
 <mat-paginator [pageSize]="50" [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons>
 </mat-paginator>
+</div>
+</main>

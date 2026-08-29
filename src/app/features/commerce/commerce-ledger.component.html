@@ -1,0 +1,56 @@
+<main class="flex min-w-0 flex-1 flex-col gap-8 pb-8">
+    <header class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <p class="text-sm font-medium opacity-60">Commerce</p>
+            <h1 class="text-3xl">Commerce ledger</h1>
+        </div>
+        <div class="flex flex-wrap gap-2">
+            <a matButton="tonal" routerLink="/"><mat-icon>arrow_back</mat-icon>Back</a>
+            <a matButton="filled" routerLink="/commerce/sale"><mat-icon>add</mat-icon>New sale</a>
+        </div>
+    </header>
+
+    <commerce-summary [data]="entries()"></commerce-summary>
+
+    <div class="overflow-auto rounded-lg border border-(--mat-sys-outline-variant)">
+        <table mat-table matSort [dataSource]="dataSource">
+            <ng-container matColumnDef="timestamp">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+                <td mat-cell *matCellDef="let entry">{{entry.timestamp | date:'yyyy-MM-dd hh:mm a'}}</td>
+            </ng-container>
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+                <td mat-cell *matCellDef="let entry" class="capitalize">{{entry.type}}</td>
+            </ng-container>
+            <ng-container matColumnDef="customer">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer</th>
+                <td mat-cell *matCellDef="let entry">{{entry.customer}}</td>
+            </ng-container>
+            <ng-container matColumnDef="items">
+                <th mat-header-cell *matHeaderCellDef>Items</th>
+                <td mat-cell *matCellDef="let entry">{{entry.items.length}} items</td>
+            </ng-container>
+            <ng-container matColumnDef="totalValue">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Value</th>
+                <td mat-cell *matCellDef="let entry" class="text-right">{{entry.totalValue}}</td>
+            </ng-container>
+            <ng-container matColumnDef="comment">
+                <th mat-header-cell *matHeaderCellDef>Comment</th>
+                <td mat-cell *matCellDef="let entry" class="max-w-64 truncate">{{entry.comment}}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let entry">
+                    <button matIconButton matTooltip="View details" (click)="viewEntry(entry)"><mat-icon>visibility</mat-icon></button>
+                    <button matIconButton matTooltip="Delete entry" (click)="deleteEntry(entry)"><mat-icon>delete</mat-icon></button>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row *matRowDef="let row; columns: columns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell p-8! text-center" [attr.colspan]="columns.length">No commerce entries yet.</td>
+            </tr>
+        </table>
+        <mat-paginator [pageSize]="50" [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+    </div>
+</main>

@@ -7,14 +7,15 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { DatePipe } from "@angular/common";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
 import { CraftSubmission, MaterialSubmission } from "../records/records.model";
 import { RecordsService } from "../records/records.service";
 
 @Component({
     selector: 'app-inventory',
     templateUrl: 'inventory.component.html',
-    styles: `:host { @apply flex-1; }`,
-    imports: [MaterialComponent, CraftComponent, MatCheckboxModule, MatButtonModule, RouterModule]
+    styleUrl: 'inventory.component.css',
+    imports: [MaterialComponent, CraftComponent, MatCheckboxModule, MatButtonModule, MatIconModule, RouterModule]
 })
 export class InventoryComponent implements OnInit {
 

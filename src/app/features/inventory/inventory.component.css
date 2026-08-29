@@ -1,0 +1,45 @@
+:host {
+    flex: 1;
+}
+
+.report-page {
+    width: min(100%, 72rem);
+    margin: 0 auto;
+    padding: 1rem 0 2rem;
+}
+
+.report-header,
+.report-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.report-header {
+    margin-bottom: 1.5rem;
+}
+
+.report-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: var(--mat-sys-surface-container);
+}
+
+.report-actions {
+    position: sticky;
+    bottom: 0;
+    justify-content: flex-end;
+    padding: 0.75rem 0;
+    background: var(--mat-sys-surface);
+}

@@ -1,24 +1,22 @@
 <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-10">
     <mat-card>
-        <mat-card-header class="text-xl">Balance</mat-card-header>
+        <mat-card-header class="text-xl">Net balance</mat-card-header>
         <mat-card-content>
             <div class="flex flex-col gap-2">
-                <span class="text-4xl self-center justify-self-center pt-4 pb-8" [class.text-green-500]="summary().balanceSilver > 0" [class.text-red-500]="summary().balanceSilver < 0">
-                    {{summary().balanceSilver}}
+                <span class="self-center pb-8 pt-4 text-4xl" [class.text-green-500]="summary().netBalance > 0" [class.text-red-500]="summary().netBalance < 0">
+                    {{summary().netBalance}}
                 </span>
                 <div class="grid grid-cols-[min-content_1fr] gap-4">
-                    <span class="text-base">Deposited:</span>
-                    <span class="text-base">{{summary().depositedSilver}} worth of silver ({{summary().depositedEntries}} entries)</span>
-                    <span class="text-base">Withdrawn:</span>
-                    <span class="text-base">{{summary().withdrawnSilver}} worth of silver ({{summary().craftEntries}} entries)</span>
+                    <span>Sales:</span>
+                    <span>{{summary().soldValue}} silver ({{summary().saleEntries}} entries)</span>
+                    <span>Purchases:</span>
+                    <span>{{summary().purchasedValue}} silver ({{summary().purchaseEntries}} entries)</span>
                 </div>
             </div>
         </mat-card-content>
     </mat-card>
     <mat-card class="lg:col-span-2">
-        <mat-card-content class="h-44 overflow-hidden">
-            <canvas #balanceChart></canvas>
-        </mat-card-content>
+        <mat-card-content class="h-44 overflow-hidden"><canvas #balanceChart></canvas></mat-card-content>
         <mat-card-actions class="mt-2! flex-wrap gap-2">
             <div class="grid grid-cols-3 gap-2">
                 <button matButton="outlined" (click)="updatePeriod('day')" [class.active]="period() === 'day'">Day</button>

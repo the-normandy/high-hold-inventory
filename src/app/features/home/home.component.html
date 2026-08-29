@@ -1,6 +1,6 @@
 <div class="flex flex-col flex-1 items-center justify-center gap-20">
     <h1 class="text-3xl">{{settings.clan()}} Storehouse</h1>
-    <div class="grid grid-cols-2 gap-10 items-stretch">
+    <div class="grid grid-cols-1 gap-10 items-stretch lg:grid-cols-3">
         <mat-card class="p-4 w-sm">
             <mat-card-header class="text-2xl pb-4!">Reports</mat-card-header>
             <mat-card-content class="flex-1 py-8!">Generate report logs for depositing or withdrawing materials and crafted items for the Storehouse, or see a ledger with analytics of the reports generated over time.</mat-card-content>
@@ -8,6 +8,15 @@
                 <a matButton="filled" routerLink="/new/withdraw">Withdraw</a>
                 <a matButton="filled" routerLink="/new/deposit">Deposit</a>
                 <a matButton="filled" routerLink="/records">Ledger</a>
+            </mat-card-actions>
+        </mat-card>
+        <mat-card class="p-4 w-sm">
+            <mat-card-header class="text-2xl pb-4!">Commerce</mat-card-header>
+            <mat-card-content class="flex-1 py-8!">Record purchases and sales with customers using actual transaction prices, or review external trade history and net cash flow.</mat-card-content>
+            <mat-card-actions class="grid grid-cols-3 justify-self-center gap-6 place-content-center">
+                <a matButton="filled" routerLink="/commerce/purchase">Purchase</a>
+                <a matButton="filled" routerLink="/commerce/sale">Sale</a>
+                <a matButton="filled" routerLink="/commerce/ledger">Ledger</a>
             </mat-card-actions>
         </mat-card>
         <mat-card class="p-4 w-sm">

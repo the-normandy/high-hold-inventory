@@ -11,7 +11,7 @@ import { MatAutocompleteModule } from "@angular/material/autocomplete";
 @Component({
     selector: 'app-craft',
     templateUrl: 'craft.component.html',
-    styles: `:host { @apply flex-1; }`,
+    styleUrl: 'report-section.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
     ReactiveFormsModule, MatIconModule, MatButtonModule, MatCheckboxModule,
@@ -41,7 +41,7 @@ export class CraftComponent {
     });
 
     displayItem(item: CraftSearchableItem | null): string {
-        return item?.item.name ?? '';
+        return item?.item?.name ?? '';
     }
 
     onQuickAdd(searchable: CraftSearchableItem) {

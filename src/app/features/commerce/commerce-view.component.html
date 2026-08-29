@@ -1,0 +1,29 @@
+<h2 mat-dialog-title class="capitalize">{{entry.type}} with {{entry.customer}}</h2>
+<mat-dialog-content class="py-4!">
+    <div class="mb-5 flex flex-wrap gap-x-10 gap-y-2">
+        <div><span class="text-sm opacity-60">Date</span><div>{{entry.timestamp | date:'yyyy-MM-dd hh:mm a'}}</div></div>
+        <div><span class="text-sm opacity-60">Total</span><div class="text-lg font-medium">{{entry.totalValue}} silver</div></div>
+    </div>
+    <div class="overflow-auto rounded-md border border-(--mat-sys-outline-variant)">
+        <div class="grid min-w-2xl grid-cols-[1fr_1fr_auto_auto_auto] gap-x-5 gap-y-2 p-4">
+            <span class="font-medium">Item</span><span class="font-medium">Category</span><span class="font-medium">Qty</span><span class="font-medium">Price</span><span class="font-medium">Total</span>
+            @for (item of entry.items; track item.source + item.category + item.name) {
+                <span>{{item.name}}</span>
+                <span>{{item.source === 'material' ? 'Materials' : 'Craft'}} / {{item.category}}</span>
+                <span class="text-right">{{item.quantity}}</span>
+                <span class="text-right">{{item.unitPrice}}</span>
+                <span class="text-right">{{item.quantity * item.unitPrice}}</span>
+            }
+        </div>
+    </div>
+    @if (entry.comment) {
+        <div class="mt-5 border-t border-(--mat-sys-outline-variant) pt-4">
+            <div class="font-medium">Comment</div>
+            <p class="mt-1 whitespace-pre-wrap">{{entry.comment}}</p>
+        </div>
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button matButton="filled" (click)="copy()">Copy to clipboard</button>
+    <button matButton="tonal" mat-dialog-close>Close</button>
+</mat-dialog-actions>

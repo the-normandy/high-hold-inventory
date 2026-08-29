@@ -10,7 +10,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 @Component({
     selector: 'app-material',
     templateUrl: 'material.component.html',
-    styles: `:host { @apply flex-1; }`,
+    styleUrl: 'report-section.component.css',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
     ReactiveFormsModule, MatIconModule, MatButtonModule, MatAutocompleteModule

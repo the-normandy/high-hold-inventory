@@ -1,43 +1,42 @@
-<section class="w-full rounded-lg border border-(--mat-sys-outline-variant) px-6 py-6">
-    <form [formGroup]="form()" class="flex flex-col gap-6">
-        <div>
-            <h2 class="text-2xl">Materials</h2>
-            <p class="text-sm opacity-70">Currency and raw inventory items</p>
-        </div>
-        <div class="flex flex-wrap gap-4 items-start">
-            <label class="flex w-full flex-col gap-1 text-sm font-medium sm:w-48">
-                Silver
-                <input type="number" formControlName="silver" min="0" class="h-10 rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 font-normal outline-none transition-colors focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)" />
-            </label>
-            <label class="flex min-w-72 flex-1 flex-col gap-1 text-sm font-medium">
-                <span>Comment <span class="font-normal opacity-60">(optional)</span></span>
-                <textarea formControlName="comment" rows="2" class="min-h-10 resize-y rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 py-2 font-normal outline-none transition-colors focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)"></textarea>
-            </label>
-        </div>
-        <div formArrayName="items">
-            <div class="flex flex-col items-center gap-3 pb-5">
-                <h3 class="text-lg font-medium">Items</h3>
-                <input type="text" id="material-item-search" placeholder="Find and add an item" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Find and add a material" class="h-10 w-full max-w-xl rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 outline-none transition-colors focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)" />
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="onQuickAdd($event.option.value)" >
-                    @for (searchable of filteredItems(); track searchable.path.join('/') + searchable.item.name) {
-                         <mat-option [value]="searchable">
-                            <span>{{searchable.item.name}}</span>
-                            <span class="ml-3 text-sm opacity-70">{{formatPath(searchable.path)}}</span>
-                         </mat-option>
-                    }
-                </mat-autocomplete>
+<section class="report-section">
+    <form [formGroup]="form()">
+        <div class="section-heading">
+            <div>
+                <h2 class="text-xl">Materials</h2>
+                <p class="text-sm opacity-60">Currency and raw inventory items</p>
             </div>
+            <input type="text" id="material-item-search" placeholder="Find and add a material" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Find and add a material" class="item-search" />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="onQuickAdd($event.option.value)">
+                @for (searchable of filteredItems(); track searchable.path.join('/') + searchable.item.name) {
+                    <mat-option [value]="searchable">
+                        <span>{{searchable.item.name}}</span>
+                        <span class="ml-3 text-sm opacity-60">{{formatPath(searchable.path)}}</span>
+                    </mat-option>
+                }
+            </mat-autocomplete>
+        </div>
+        <div class="section-details material-details">
+            <label class="report-field">
+                <span>Silver</span>
+                <input type="number" formControlName="silver" min="0" />
+            </label>
+            <label class="report-field">
+                <span>Comment <span class="font-normal opacity-60">(optional)</span></span>
+                <textarea formControlName="comment" rows="2" placeholder="Add context for these materials"></textarea>
+            </label>
+        </div>
+        <div formArrayName="items" class="report-rows">
+            @if (itemRows.length === 0) {
+                <p class="empty-items">Search above to add materials.</p>
+            }
             @for (row of itemRows.controls; track row.value.id) {
-                <div class="flex flex-wrap gap-4 items-center justify-center border-t border-(--mat-sys-outline-variant) pt-4" [formGroupName]="$index">
-                    <div class="w-80 min-w-0 flex-1">
-                        <div class="font-medium truncate">{{row.value.item.name}}</div>
-                        <div class="text-sm opacity-70 truncate" [title]="formatPath(row.value.path)">{{formatPath(row.value.path)}}</div>
+                <div class="report-row material-row" [formGroupName]="$index">
+                    <div class="item-identity">
+                        <span>{{row.value.item.name}}</span>
+                        <small [title]="formatPath(row.value.path)">{{formatPath(row.value.path)}}</small>
                     </div>
-                    <label class="flex flex-col gap-1 text-xs font-medium">
-                        Quantity
-                        <input type="number" formControlName="quantity" min="1" class="h-9 w-24 rounded-md border border-(--mat-sys-outline) bg-(--mat-sys-surface) px-3 text-sm font-normal outline-none focus:border-(--mat-sys-primary) focus:outline-2 focus:outline-(--mat-sys-primary)" />
-                    </label>
-                    <button type="button" matIconButton (click)="removeItem($index)" aria-label="Remove item"><mat-icon>delete</mat-icon></button>
+                    <label class="row-field"><span>Quantity</span><input type="number" formControlName="quantity" min="1" /></label>
+                    <button type="button" matIconButton (click)="removeItem($index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
                 </div>
             }
         </div>

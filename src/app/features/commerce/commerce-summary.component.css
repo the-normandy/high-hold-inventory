@@ -1,0 +1,5 @@
+.active {
+    background: color-mix(in srgb, var(--mat-sys-primary-container) 50%, transparent);
+    color: var(--mat-sys-on-surface) !important;
+    outline: 1px solid var(--mat-sys-primary);
+}

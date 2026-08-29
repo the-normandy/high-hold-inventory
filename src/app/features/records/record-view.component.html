@@ -1,22 +1,19 @@
-<h2 mat-dialog-title>{{ record.timestamp | date: 'yyyy-MM-dd' }} {{entry}} of {{source}}</h2>
+<h2 mat-dialog-title>{{entry}} of {{source}}</h2>
 <mat-dialog-content class="py-4!">
-    <div class="grid grid-cols-4">
-        <span class="text-lg font-medium">Name</span>
-        <span class="text-lg font-medium">Category</span>
-        <span class="text-lg font-medium">Quantity</span>
-        <span class="text-lg font-medium">Total Value</span>
-        @if (record.silver && record.silver > 0) {
-        <span>Silver</span>
-        <span>Currency</span>
-        <span>{{record.silver}}</span>
-        <span>{{record.silver}}</span>
-        }
-        @for (item of record.items; track item.name) {
-        <span>{{item.name}}</span>
-        <span>{{item.category}}</span>
-        <span>{{item.quantity}}</span>
-        <span>{{item.value*item.quantity}}</span>
-        }
+    <div class="mb-5 flex flex-wrap gap-x-10 gap-y-2">
+        <div><span class="text-sm opacity-60">Date</span><div>{{record.timestamp | date:'yyyy-MM-dd hh:mm a'}}</div></div>
+        <div><span class="text-sm opacity-60">Total</span><div class="text-lg font-medium">{{record.totalValue}} silver</div></div>
+    </div>
+    <div class="overflow-auto rounded-md border border-(--mat-sys-outline-variant)">
+        <div class="grid min-w-xl grid-cols-[1fr_1fr_auto_auto] gap-x-5 gap-y-2 p-4">
+            <span class="font-medium">Item</span><span class="font-medium">Category</span><span class="font-medium">Qty</span><span class="font-medium">Total</span>
+            @if (record.silver && record.silver > 0) {
+                <span>Silver</span><span>Currency</span><span class="text-right">{{record.silver}}</span><span class="text-right">{{record.silver}}</span>
+            }
+            @for (item of record.items; track item.name) {
+                <span>{{item.name}}</span><span>{{item.category}}</span><span class="text-right">{{item.quantity}}</span><span class="text-right">{{item.value * item.quantity}}</span>
+            }
+        </div>
     </div>
     @if (record.note) {
         <div class="mt-6 border-t border-(--mat-sys-outline-variant) pt-4">
@@ -25,9 +22,7 @@
         </div>
     }
 </mat-dialog-content>
-<mat-dialog-actions align="center">
-    <div class="flex gap-10">
-        <button matButton="filled" class="w-48" (click)="copy()">Copy to Clipboard</button>
-        <button matButton="tonal" class="w-48" mat-dialog-close>Close</button>
-    </div>
+<mat-dialog-actions align="end">
+    <button matButton="filled" (click)="copy()">Copy to clipboard</button>
+    <button matButton="tonal" mat-dialog-close>Close</button>
 </mat-dialog-actions>

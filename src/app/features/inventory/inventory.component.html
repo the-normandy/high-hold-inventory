@@ -1,12 +1,17 @@
-<main class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pb-8">
-    <header class="text-center">
-        <h2 class="text-3xl">{{mode() === 'deposit' ? 'Deposit' : 'Withdrawal'}} Report</h2>
+<main class="report-page">
+    <header class="report-header">
+        <div>
+            <p class="text-sm font-medium opacity-60">Reports</p>
+            <h1 class="text-3xl">{{mode() === 'deposit' ? 'Deposit' : 'Withdrawal'}} report</h1>
+        </div>
+        <a matButton="tonal" routerLink="/"><mat-icon>arrow_back</mat-icon>Back</a>
     </header>
 
-    <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 rounded-lg bg-(--mat-sys-surface-container) px-6 py-4">
+    <div class="report-content">
+    <div class="section-switcher">
         <span class="font-medium">Include in report</span>
-        <mat-checkbox [checked]="shouldRenderMaterial()" (change)="shouldRenderMaterial.set($event.checked)">Material Form</mat-checkbox>
-        <mat-checkbox [checked]="shouldRenderCraft()" (change)="shouldRenderCraft.set($event.checked)">Crafted Items Form</mat-checkbox>
+        <mat-checkbox [checked]="shouldRenderMaterial()" (change)="shouldRenderMaterial.set($event.checked)">Materials</mat-checkbox>
+        <mat-checkbox [checked]="shouldRenderCraft()" (change)="shouldRenderCraft.set($event.checked)">Crafted items</mat-checkbox>
     </div>
 
     @if (shouldRenderMaterial()) {
@@ -16,8 +21,9 @@
         <app-craft [form]="craftForm"></app-craft>
     }
 
-    <div class="sticky bottom-0 flex items-center justify-center gap-6 border-t border-(--mat-sys-outline-variant) bg-(--mat-sys-surface) py-4">
-        <button matButton="filled" (click)="submit()" [disabled]="!shouldRenderMaterial() && !shouldRenderCraft()" class="w-44">Generate</button>
-        <button type="button" matButton="tonal" class="w-44" routerLink="">Back</button>
+    <div class="report-actions">
+        <a matButton="tonal" routerLink="/records">View ledger</a>
+        <button matButton="filled" (click)="submit()" [disabled]="!shouldRenderMaterial() && !shouldRenderCraft()">Generate report</button>
+    </div>
     </div>
 </main>

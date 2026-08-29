@@ -1,0 +1,108 @@
+<main class="commerce-page">
+    <header class="commerce-header">
+        <div>
+            <p class="text-sm font-medium opacity-60">Commerce</p>
+            <h1 class="text-3xl">{{title()}}</h1>
+        </div>
+        <a matButton="tonal" routerLink="/"><mat-icon>arrow_back</mat-icon>Back</a>
+    </header>
+
+    <form [formGroup]="form" class="flex flex-col gap-6">
+        <section class="transaction-details">
+            <label class="commerce-field">
+                <span>Customer</span>
+                <input type="text" formControlName="customer" autocomplete="off" placeholder="Who is this transaction with?" />
+                @if (form.controls.customer.touched && form.controls.customer.invalid) {
+                    <small>Customer is required.</small>
+                }
+            </label>
+            <label class="commerce-field">
+                <span>Comment <span class="font-normal opacity-60">(optional)</span></span>
+                <textarea formControlName="comment" rows="2" placeholder="Add context for this transaction"></textarea>
+            </label>
+        </section>
+
+        <div class="section-switcher">
+            <span class="font-medium">Items in this transaction</span>
+            <mat-checkbox [checked]="includeMaterials()" (change)="toggleMaterials($event.checked)">Materials</mat-checkbox>
+            <mat-checkbox [checked]="includeCraft()" (change)="toggleCraft($event.checked)">Crafted items</mat-checkbox>
+        </div>
+
+        @if (includeMaterials()) {
+            <section class="commerce-section">
+                <div class="section-heading">
+                    <div>
+                        <h2 class="text-xl">Materials</h2>
+                        <p class="text-sm opacity-60">Raw materials purchased or sold</p>
+                    </div>
+                    <input type="text" placeholder="Find and add a material" aria-label="Find and add a material" [formControl]="materialSearch" [matAutocomplete]="materialAuto" class="item-search" />
+                    <mat-autocomplete #materialAuto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="addMaterial($event.option.value)">
+                        @for (searchable of filteredMaterials(); track searchable.path.join('/') + searchable.item.name) {
+                            <mat-option [value]="searchable">
+                                <span>{{searchable.item.name}}</span>
+                                <span class="ml-3 text-sm opacity-60">{{formatPath(searchable.path)}}</span>
+                            </mat-option>
+                        }
+                    </mat-autocomplete>
+                </div>
+                <div formArrayName="materials" class="commerce-rows">
+                    @if (materialRows.length === 0) {
+                        <p class="empty-items">Search above to add materials.</p>
+                    }
+                    @for (row of materialRows.controls; track row.value.id; let index = $index) {
+                        <div [formGroupName]="index" class="commerce-row">
+                            <div class="item-identity">
+                                <span>{{row.value.item.name}}</span>
+                                <small [title]="formatPath(row.value.path)">{{formatPath(row.value.path)}}</small>
+                            </div>
+                            <label class="row-field"><span>Quantity</span><input type="number" min="1" formControlName="quantity" /></label>
+                            <label class="row-field price-field"><span>Price each</span><input type="number" min="0" formControlName="unitPrice" placeholder="0" /></label>
+                            <button type="button" matIconButton (click)="removeItem('material', index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (includeCraft()) {
+            <section class="commerce-section">
+                <div class="section-heading">
+                    <div>
+                        <h2 class="text-xl">Crafted items</h2>
+                        <p class="text-sm opacity-60">Finished goods purchased or sold</p>
+                    </div>
+                    <input type="text" placeholder="Find and add a crafted item" aria-label="Find and add a crafted item" [formControl]="craftSearch" [matAutocomplete]="craftAuto" class="item-search" />
+                    <mat-autocomplete #craftAuto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="addCraft($event.option.value)">
+                        @for (searchable of filteredCraft(); track searchable.path.join('/') + searchable.item.name) {
+                            <mat-option [value]="searchable">
+                                <span>{{searchable.item.name}}</span>
+                                <span class="ml-3 text-sm opacity-60">{{formatPath(searchable.path)}}</span>
+                            </mat-option>
+                        }
+                    </mat-autocomplete>
+                </div>
+                <div formArrayName="craft" class="commerce-rows">
+                    @if (craftRows.length === 0) {
+                        <p class="empty-items">Search above to add crafted items.</p>
+                    }
+                    @for (row of craftRows.controls; track row.value.id; let index = $index) {
+                        <div [formGroupName]="index" class="commerce-row">
+                            <div class="item-identity">
+                                <span>{{row.value.item.name}}</span>
+                                <small [title]="formatPath(row.value.path)">{{formatPath(row.value.path)}}</small>
+                            </div>
+                            <label class="row-field"><span>Quantity</span><input type="number" min="1" formControlName="quantity" /></label>
+                            <label class="row-field price-field"><span>Price each</span><input type="number" min="0" formControlName="unitPrice" placeholder="0" /></label>
+                            <button type="button" matIconButton (click)="removeItem('craft', index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        <div class="commerce-actions">
+            <a matButton="tonal" routerLink="/commerce/ledger">View ledger</a>
+            <button type="button" matButton="filled" (click)="submit()">{{actionLabel()}}</button>
+        </div>
+    </form>
+</main>
