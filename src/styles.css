@@ -1,3 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+	-webkit-backdrop-filter: blur(3px);
+	backdrop-filter: blur(3px);
+}
