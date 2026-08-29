@@ -51,33 +51,45 @@
     </mat-tree>
     </div>
     <mat-divider [vertical]="true"></mat-divider>
-    <form [formGroup]="form" class="flex flex-1 flex-col items-center">
-        <div formArrayName="items">
-            <div class="flex flex-row gap-10 items-center justify-center mb-10 text-2xl">
+    <form [formGroup]="form" class="flex min-w-0 flex-1 flex-col px-6">
+        <div formArrayName="items" class="mx-auto flex w-full max-w-4xl flex-col">
+            <div class="mb-6 flex min-h-10 items-center justify-between gap-4">
                 @if (this.selected().length > 0) {
-                <h2>{{canEditSelectedItems() ? 'Category' : 'Folder'}}: {{this.selected().at(-1)}}</h2>
-                @if (canEditSelectedItems()) {
-                    <button type="button" matTooltip="Add new item" matIconButton (click)="addItem()"><mat-icon>add</mat-icon></button>
-                }
+                    <div class="min-w-0">
+                        <div class="text-sm opacity-60">{{canEditSelectedItems() ? 'Category' : 'Folder'}}</div>
+                        <h2 class="truncate text-2xl">{{this.selected().at(-1)}}</h2>
+                    </div>
+                    @if (canEditSelectedItems()) {
+                        <button type="button" matButton="filled" (click)="addItem()"><mat-icon>add</mat-icon>Add item</button>
+                    }
                 }
             </div>
-            @for (group of items.controls; track group; let index = $index) {
-                <div [formGroupName]="index" class="flex flex-row items-center justify-center gap-10">
-                    <mat-form-field>
-                        <mat-label>Name</mat-label>
-                        <input matInput formControlName="name">
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Price</mat-label>
-                        <input matInput type="number" formControlName="price">
-                    </mat-form-field>
-                    @if (group.get('labor')) {
-                    <mat-form-field>
-                        <mat-label>Labor</mat-label>
-                        <input matInput type="number" formControlName="labor">
-                    </mat-form-field>
+            @if (canEditSelectedItems() && items.length === 0) {
+                <div class="rounded-lg border border-dashed border-(--mat-sys-outline-variant) px-6 py-10 text-center">
+                    <p class="font-medium">No items in this category</p>
+                    <p class="mt-1 text-sm opacity-60">Add an item to start defining prices.</p>
+                </div>
+            } @else {
+                <div class="flex flex-col gap-2">
+                    @for (group of items.controls; track group; let index = $index) {
+                        <div [formGroupName]="index" class="item-row" [class.has-labor]="group.get('labor')">
+                            <label class="item-field item-name">
+                                <span>Name</span>
+                                <input type="text" formControlName="name" autocomplete="off" />
+                            </label>
+                            <label class="item-field item-number">
+                                <span>Price</span>
+                                <input type="number" formControlName="price" min="0" inputmode="decimal" />
+                            </label>
+                            @if (group.get('labor')) {
+                                <label class="item-field item-number">
+                                    <span>Labor</span>
+                                    <input type="number" formControlName="labor" min="0" inputmode="decimal" />
+                                </label>
+                            }
+                            <button type="button" matTooltip="Delete item" matIconButton (click)="removeItem(index)" class="item-delete" [attr.aria-label]="'Delete ' + (group.get('name')?.value || 'item')"><mat-icon>delete</mat-icon></button>
+                        </div>
                     }
-                    <button type="button" matTooltip="Delete item" matIconButton (click)="removeItem(index)" class="mb-5"><mat-icon>delete</mat-icon></button>
                 </div>
             }
         </div>

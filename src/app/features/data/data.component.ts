@@ -10,9 +10,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { RouterLink } from "@angular/router";
 import { ItemData, ItemTree } from "../../core/data/item.model";
 import { DataService, PricesFile } from "../../core/data/data.service";
-import { MatInputModule } from "@angular/material/input";
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular/forms";
-import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClient } from "@angular/common/http";
@@ -30,8 +28,8 @@ import { CategoryDeleteDialogComponent } from "./category-delete-dialog.componen
     styleUrl: 'data.component.css',
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, MatDividerModule,
-        RouterLink, MatInputModule, ReactiveFormsModule, MatFormFieldModule,
-        MatTooltipModule, MatSnackBarModule, MatDialogModule
+        RouterLink, ReactiveFormsModule, MatTooltipModule, MatSnackBarModule,
+        MatDialogModule
     ]
 })
 export class DataComponent implements OnInit {
