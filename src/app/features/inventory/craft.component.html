@@ -7,57 +7,30 @@
             <input matInput type="text" formControlName="purpose" aria-label="purpose">
         </mat-form-field>
         <div formArrayName="items" class="pb-4">
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center pb-4">
-                <div></div>
-                    <h3 class="text-xl justify-self-center px-4">Items</h3>
-                    <div class="justify-self-start flex items-center gap-20">
-                    <button type="button" matIconButton (click)="addNewItem()" class="bg-(--mat-sys-secondary-container)!"><mat-icon>add</mat-icon></button>
-                    <input type="text" id="search" placeholder="Search an item" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Search item" class="py-2 justify-self-start rounded-full px-4 outline focus:outline-(--mat-sys-primary) focus:outline-2" />
+            <div class="flex flex-col items-center gap-3 pb-6">
+                    <h3 class="text-xl">Items</h3>
+                    <input type="text" id="craft-item-search" placeholder="Find and add an item" [formControl]="searchControl" [matAutocomplete]="auto" aria-label="Find and add a crafted item" class="w-full max-w-xl py-2 rounded-full px-4 outline focus:outline-(--mat-sys-primary) focus:outline-2" />
                     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayItem" (optionSelected)="onQuickAdd($event.option.value)" >
-                        @for (searchable of filteredItems(); track searchable.item.name) {
-                            <mat-option [value]="searchable">{{searchable.item.name}}</mat-option>
+                        @for (searchable of filteredItems(); track searchable.path.join('/') + searchable.item.name) {
+                            <mat-option [value]="searchable">
+                                <span>{{searchable.item.name}}</span>
+                                <span class="ml-3 text-sm opacity-70">{{formatPath(searchable.path)}}</span>
+                            </mat-option>
                         }
                     </mat-autocomplete>
-                </div>
             </div>
             @for (row of itemRows.controls; track row.value.id) {
-                <div class="flex flex-row gap-4 items-center justify-center" [formGroupName]="$index">
-                    <mat-form-field>
-                        <mat-label>Crafting</mat-label>
-                        <mat-select formControlName="crafting">
-                            @for (craft of crafting; track craft) {
-                            <mat-option [value]="craft">
-                                {{ craft }}
-                            </mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Category</mat-label>
-                        <mat-select formControlName="category">
-                            @for (category of getCategoriesFromRow($index); track category) {
-                                <mat-option [value]="category">
-                                    {{ category }}
-                                </mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-label>Item</mat-label>
-                        <mat-select formControlName="item">
-                            @for (item of getItemsFromRow($index); track item.name) {
-                            <mat-option [value]="item">
-                                {{ item.name }}
-                            </mat-option>
-                            }
-                        </mat-select>
-                    </mat-form-field>
+                <div class="flex flex-wrap gap-4 items-center justify-center" [formGroupName]="$index">
+                    <div class="w-80 min-w-0 mb-5">
+                        <div class="font-medium truncate">{{row.value.item.name}}</div>
+                        <div class="text-sm opacity-70 truncate" [title]="formatPath(row.value.path)">{{formatPath(row.value.path)}}</div>
+                    </div>
                     <mat-form-field>
                         <mat-label>Quantity</mat-label>
-                        <input matInput type="number" formControlName="quantity" aria-label="quantity">
+                        <input matInput type="number" formControlName="quantity" aria-label="Quantity">
                     </mat-form-field>
                     <mat-checkbox class="mb-5" formControlName="laborOnly">Labor only?</mat-checkbox>
-                    <button type="button" class="mb-5" matIconButton (click)="removeItem($index)"><mat-icon>delete</mat-icon></button>
+                    <button type="button" class="mb-5" matIconButton (click)="removeItem($index)" aria-label="Remove item"><mat-icon>delete</mat-icon></button>
                 </div>
             }
         </div>

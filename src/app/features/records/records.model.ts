@@ -30,7 +30,7 @@ export interface MaterialSubmission {
 }
 
 export interface MaterialSubmissionItem {
-    category: string;
+    path: string[];
     item: ItemData;
     quantity: number;
 }
@@ -41,7 +41,7 @@ export interface CraftSubmission {
 }
 
 export interface CraftSubmissionItem {
-    category: string;
+    path: string[];
     item: ItemData;
     quantity: number;
     laborOnly: boolean;

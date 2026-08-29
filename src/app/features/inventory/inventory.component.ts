@@ -4,7 +4,6 @@ import { MaterialComponent } from "./material.component";
 import { CraftComponent } from "./craft.component";
 import { ActivatedRoute, RouterModule } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { ItemData } from "../../core/data/item.model";
 import { DatePipe } from "@angular/common";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatButtonModule } from "@angular/material/button";
@@ -51,44 +50,22 @@ export class InventoryComponent implements OnInit {
     });
 
     async submit() {
-        const material = this.materialForm.getRawValue() as {
-            purpose: string | null;
-            silver: number | null;
-            ownership: string | null;
-            usage: string | null;
-            items: {
-                category: string | null;
-                item: ItemData;
-                quantity: number;
-            }[];
-        };
-
-        const craft = this.craftForm.getRawValue() as {
-            purpose: string | null;
-            items: {
-                category: string | null;
-                item: ItemData;
-                quantity: number;
-                laborOnly: boolean;
-            }[];
-        };
-
         const matSubmission = this.materialForm.getRawValue() as MaterialSubmission;
         const craftSubmission = this.craftForm.getRawValue() as CraftSubmission;
-
-        if (matSubmission.items.length > 0 || (matSubmission.silver !== null && matSubmission.silver > 0)) {
-            await this.recordService.recordMaterialSubmission(matSubmission, this.mode());
-        }
-
-        if (craftSubmission.items.length > 0) {
-            await this.recordService.recordCraftSubmission(craftSubmission, this.mode());
-        }
 
         const includeMaterial = this.shouldRenderMaterial();
         const includeCraft = this.shouldRenderCraft();
 
-        const materialRows = includeMaterial ? material.items ?? [] : [];
-        const craftRows = includeCraft ? craft.items ?? [] : [];
+        const materialRows = includeMaterial ? matSubmission.items : [];
+        const craftRows = includeCraft ? craftSubmission.items : [];
+
+        if (includeMaterial && (materialRows.length > 0 || (matSubmission.silver !== null && matSubmission.silver > 0))) {
+            await this.recordService.recordMaterialSubmission(matSubmission, this.mode());
+        }
+
+        if (includeCraft && craftRows.length > 0) {
+            await this.recordService.recordCraftSubmission(craftSubmission, this.mode());
+        }
 
         const materialTotal = materialRows.reduce(
             (sum, row) => sum + row.quantity * row.item.price,
@@ -106,7 +83,7 @@ export class InventoryComponent implements OnInit {
         const grandTotal =
             materialTotal +
             craftTotal +
-            (includeMaterial ? (material.silver ?? 0) : 0);
+            (includeMaterial ? (matSubmission.silver ?? 0) : 0);
 
         const label =
             this.mode() === 'deposit'
@@ -126,11 +103,11 @@ export class InventoryComponent implements OnInit {
         const itemLines = [
             ...materialRows.map(
                 row =>
-                    `* ${row.quantity}x ${row.item.name} (${row.quantity * row.item.price})`
+                    `* ${row.quantity}x ${row.item.name} [${row.path.join(' / ')}] (${row.quantity * row.item.price})`
             ),
             ...craftRows.map(
                 row =>
-                    `* ${row.quantity}x ${row.item.name} (${
+                    `* ${row.quantity}x ${row.item.name} [${row.path.join(' / ')}] (${
                         row.quantity *
                         (row.laborOnly ? row.item.labor! : row.item.price)
                     })`
@@ -159,32 +136,32 @@ ${craftTotal}`);
 
         if (
             includeMaterial &&
-            material.silver !== null &&
-            material.silver !== 0
+            matSubmission.silver !== null &&
+            matSubmission.silver !== 0
         ) {
             sections.push(`**Silver ${silverLabel}:**
-${material.silver}`);
+${matSubmission.silver}`);
         }
 
         sections.push(`**Total Silver:**
 ${grandTotal}`);
 
-        if (includeMaterial && material.purpose) {
+        if (includeMaterial && matSubmission.purpose) {
             sections.push(`**Purpose of Materials:**
-${material.purpose}`);
+    ${matSubmission.purpose}`);
         }
 
-        if (includeCraft && craft.purpose) {
+        if (includeCraft && craftSubmission.purpose) {
             sections.push(`**Purpose of Crafting:**
-${craft.purpose}`);
+    ${craftSubmission.purpose}`);
         }
 
         if (includeMaterial && this.mode() === 'withdraw') {
             sections.push(`**Personal Use/Clan/Profit?**
-${material.usage ?? ''}
+${matSubmission.usage ?? ''}
 
 **For You, the Clan, or Militia Member?**
-${material.ownership ?? ''}`);
+${matSubmission.ownership ?? ''}`);
         }
 
         const output = sections.join('\n\n');

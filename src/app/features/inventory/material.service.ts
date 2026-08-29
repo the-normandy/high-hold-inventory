@@ -3,7 +3,7 @@ import { ItemData, ItemTree } from '../../core/data/item.model';
 import { DataStore } from '../../core/data/data.store';
 
 export interface SearchableItem {
-    category: string;
+    path: string[];
     item: ItemData;
 }
 
@@ -13,8 +13,7 @@ export interface SearchableItem {
 export class MaterialService {
 
     private readonly data = inject(DataStore);
-
-    private readonly itemLookup = new Map<string, SearchableItem>();
+    private readonly itemLookup: SearchableItem[] = [];
 
     constructor() {
         this.buildLookup();
@@ -24,8 +23,8 @@ export class MaterialService {
         const traverse = (node: ItemTree | ItemData[], path: string[]) => {
             if (Array.isArray(node)) {
                 for (const item of node) {
-                    this.itemLookup.set(item.name, {
-                        category: path.join('/') || '',
+                    this.itemLookup.push({
+                        path,
                         item
                     });
                 }
@@ -41,15 +40,15 @@ export class MaterialService {
     }
 
     clearAndRebuild() {
-        this.itemLookup.clear();
+        this.itemLookup.length = 0;
         this.buildLookup();
     }
 
     getAllItems(): SearchableItem[] {
-        return [...this.itemLookup.values()];
+        return [...this.itemLookup];
     }
 
     findByName(name: string): SearchableItem | undefined {
-        return this.itemLookup.get(name);
+        return this.itemLookup.find(searchable => searchable.item.name === name);
     }
 }

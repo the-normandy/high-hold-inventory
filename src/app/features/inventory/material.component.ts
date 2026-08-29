@@ -1,14 +1,11 @@
-import { Component, computed, inject, input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { ActivatedRoute } from "@angular/router";
-import { DataStore } from "../../core/data/data.store";
 import { MatSelectModule } from "@angular/material/select";
 import { ItemData } from "../../core/data/item.model";
-import { MatSnackBar } from "@angular/material/snack-bar";
 import { MaterialService, SearchableItem } from "./material.service";
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { toSignal } from "@angular/core/rxjs-interop";
@@ -17,6 +14,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
     selector: 'app-material',
     templateUrl: 'material.component.html',
     styles: `:host { @apply flex-1; }`,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
     MatFormFieldModule, MatInputModule, ReactiveFormsModule,
     MatIconModule, MatButtonModule, MatSelectModule,
@@ -25,12 +23,9 @@ import { toSignal } from "@angular/core/rxjs-interop";
 })
 export class MaterialComponent implements OnInit {
 
-    data = inject(DataStore);
     service = inject(MaterialService);
     mode = input.required<string>();
-    route = inject(ActivatedRoute);
     fb = inject(FormBuilder);
-    snackBar = inject(MatSnackBar);
     title = computed(() => this.mode().charAt(0).toUpperCase() + this.mode().slice(1));
 
     form = input.required<FormGroup>();
@@ -79,44 +74,29 @@ export class MaterialComponent implements OnInit {
     }
 
     onQuickAdd(searchable: SearchableItem) {
-        this.addNewItem(searchable.category, searchable.item);
+        this.addNewItem(searchable.path, searchable.item);
         this.searchControl.setValue('');
-        (document.getElementById('search') as HTMLInputElement).value = '';
     }
 
     isDeposit(): boolean {
         return this.mode() === 'deposit';
     }
 
-    get categories(): string[] {
-        return this.data.getChildKeys(['materials']);
-    }
-
-    getItemsFromRow(index: number): ItemData[] {
-        const row = this.itemRows.at(index);
-
-        const category = row.get('category')?.value as string | null;
-
-        return category
-            ? this.data.getLeaf(['materials', category]) ?? []
-            : [];
+    formatPath(path: string[] | null | undefined): string {
+        return path?.join(' / ') ?? '';
     }
 
     get itemRows(): FormArray {
         return this.form().get('items') as FormArray;
     }
 
-    addNewItem(category: string | null = null, item: ItemData | null = null) {
+    addNewItem(path: string[], item: ItemData) {
         const group = this.fb.group({
             id: crypto.randomUUID(),
-            category: [category, Validators.required],
+            path: [path, Validators.required],
             item: [item, Validators.required],
             quantity: [1, [Validators.required, Validators.min(1)]]
         });
-
-        group.get('category')?.valueChanges.subscribe(() => {
-            group.get('item')?.setValue(null);
-        })
 
         this.itemRows.push(group);
     }

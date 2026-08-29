@@ -23,7 +23,7 @@ export class RecordsService {
             ) + silver,
             items: material.items.map(item => ({
                 name: item.item.name,
-                category: item.category,
+                category: item.path.join(' / '),
                 quantity: item.quantity,
                 value: item.item.price
             }))
@@ -47,7 +47,7 @@ export class RecordsService {
             ),
             items: craft.items.map(item => ({
                 name: item.item.name,
-                category: item.category,
+                category: item.path.join(' / '),
                 quantity: item.quantity,
                 value: item.laborOnly
                     ? item.item.labor!

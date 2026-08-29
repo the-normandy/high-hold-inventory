@@ -8,19 +8,18 @@ import { ItemData, ItemTree } from "../../core/data/item.model";
 export class CraftService {
  
     private readonly data = inject(DataStore);
-    private readonly itemLookup = new Map<string, CraftSearchableItem>();
+    private readonly itemLookup: CraftSearchableItem[] = [];
 
     constructor() {
         this.buildLookup();
     }
     
     buildLookup() {
-        const traverse = (node: ItemTree | ItemData[], craft: string, path: string[]) => {
+        const traverse = (node: ItemTree | ItemData[], path: string[]) => {
             if (Array.isArray(node)) {
                 for (const item of node) {
-                    this.itemLookup.set(item.name.toLowerCase(), {
-                        craft,
-                        category: path.join('/') || '',
+                    this.itemLookup.push({
+                        path,
                         item
                     });
                 }
@@ -28,31 +27,29 @@ export class CraftService {
             }
 
             for (const [key, child] of Object.entries(node)) {
-                traverse(child, craft, [...path, key]);
+                traverse(child, [...path, key]);
             }
         };
 
-        for (const [crafting, categories] of Object.entries(this.data.craftData)) {
-            traverse(categories, crafting as string, []);
-        }
+        traverse(this.data.craftData, []);
     }
 
     clearAndRebuild() {
-        this.itemLookup.clear();
+        this.itemLookup.length = 0;
         this.buildLookup();
     }
 
     getAllItems(): CraftSearchableItem[] {
-        return [...this.itemLookup.values()];
+        return [...this.itemLookup];
     }
 
     findByName(name: string): CraftSearchableItem | undefined {
-        return this.itemLookup.get(name.toLowerCase());
+        const normalizedName = name.toLowerCase();
+        return this.itemLookup.find(searchable => searchable.item.name.toLowerCase() === normalizedName);
     }
 }
 
 export interface CraftSearchableItem {
-    craft: string;
-    category: string;
+    path: string[];
     item: ItemData;
 }
