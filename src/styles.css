@@ -6,3 +6,13 @@
 	-webkit-backdrop-filter: blur(3px);
 	backdrop-filter: blur(3px);
 }
+
+.mat-mdc-button-base > .mat-mdc-button-persistent-ripple::before {
+	transition: opacity 150ms ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mat-mdc-button-base > .mat-mdc-button-persistent-ripple::before {
+		transition: none;
+	}
+}
