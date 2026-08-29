@@ -10,6 +10,8 @@ import { WebhookDialogComponent } from "../data/webhook-dialog.component";
 import { SettingsService } from "../../core/settings/settings.service";
 import { SettingsDialogComponent } from "./settings.component";
 import { FormGroup } from "@angular/forms";
+import { MissingPricesDialogComponent } from "./missing-prices-dialog.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
     selector: 'app-home',
@@ -23,20 +25,47 @@ import { FormGroup } from "@angular/forms";
 export class HomeComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
+        await this.offerInitialPricesFile();
         await this.loadSettings();
     }
 
     dialog = inject(MatDialog);
     dataService = inject(DataService);
     settings = inject(SettingsService);
+    snackBar = inject(MatSnackBar);
+
+    async offerInitialPricesFile(): Promise<void> {
+        if (!this.dataService.isMissing()) {
+            return;
+        }
+
+        const dialogRef = this.dialog.open(MissingPricesDialogComponent, {
+            width: '460px',
+            disableClose: true
+        });
+        const shouldCreate = await firstValueFrom(dialogRef.afterClosed()) as boolean;
+
+        if (!shouldCreate) {
+            return;
+        }
+
+        try {
+            await this.dataService.createInitialFile();
+            this.snackBar.open('prices.json created successfully.', 'OK', { duration: 2000 });
+        } catch {
+            this.snackBar.open('Failed to create prices.json.', 'OK', { duration: 3000 });
+        }
+    }
 
     async loadSettings(): Promise<void> {
         try {
             await this.settings.loadSettings();
         } catch {
             const dialogRef = this.dialog.open(SettingsDialogComponent, { width: '400px' });
-            const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup;
-            this.settings.saveSettings(data);
+            const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup | undefined;
+            if (data) {
+                await this.settings.saveSettings(data);
+            }
         }
     }
 
