@@ -1,15 +1,15 @@
 <h2 mat-dialog-title>Set up your Storehouse</h2>
 <form [formGroup]="form" class="contents" (submit)="$event.preventDefault()">
-    <mat-dialog-content class="mt-4!">
-        <div class="flex flex-col gap-4">
-        <mat-form-field>
-            <mat-label>Clan name</mat-label>
-            <input matInput type="text" formControlName="clan" aria-label="Clan name">
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Character name</mat-label>
-            <input matInput type="text" formControlName="character" aria-label="Character name">
-        </mat-form-field>
+    <mat-dialog-content>
+        <div class="settings-fields">
+            <label class="settings-field">
+                <span>Clan name</span>
+                <input type="text" formControlName="clan" autocomplete="organization" />
+            </label>
+            <label class="settings-field">
+                <span>Character name</span>
+                <input type="text" formControlName="character" autocomplete="off" />
+            </label>
         </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
