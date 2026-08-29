@@ -2,3 +2,26 @@
 	height: 2.5rem;
 	object-fit: contain;
 }
+
+.brand-title {
+	display: inline-block;
+	font-family: "Cinzel", Georgia, serif;
+	font-size: 1.25rem;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 1;
+	text-transform: uppercase;
+	background: linear-gradient(
+		180deg,
+		color-mix(in srgb, var(--mat-sys-on-surface) 92%, white) 0%,
+		var(--mat-sys-primary) 48%,
+		color-mix(in srgb, var(--mat-sys-primary) 65%, black) 100%
+	);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	-webkit-text-stroke: 0.35px color-mix(in srgb, var(--mat-sys-on-surface) 42%, transparent);
+	filter:
+		drop-shadow(0 1px 0 color-mix(in srgb, var(--mat-sys-surface) 80%, transparent))
+		drop-shadow(0 2px 2px color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent));
+}
