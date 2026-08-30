@@ -1,4 +1,7 @@
 # Storehouse
+[![Windows](https://img.shields.io/badge/platform-Windows-0078D4?logo=windows&logoColor=white)](https://github.com/the-normandy/high-hold-inventory/releases)
+[![Latest Release](https://img.shields.io/github/v/release/the-normandy/high-hold-inventory)](https://github.com/the-normandy/high-hold-inventory/releases)
+[![License](https://img.shields.io/github/license/the-normandy/high-hold-inventory)](LICENSE)
 
 This was initially made for personal use, then a single clan, and it grew a lot more than I expected.
 
