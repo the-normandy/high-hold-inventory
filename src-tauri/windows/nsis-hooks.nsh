@@ -3,11 +3,17 @@
 
 Var LegacyProductMigrated
 Var LegacyDesktopShortcut
+Var ExistingStartShortcut
 
 !macro NSIS_HOOK_PREINSTALL
   StrCpy $LegacyProductMigrated 0
   StrCpy $LegacyDesktopShortcut 0
+  StrCpy $ExistingStartShortcut 0
   SetShellVarContext current
+
+  IfFileExists "$SMPROGRAMS\${PRODUCTNAME}.lnk" 0 +2
+    StrCpy $ExistingStartShortcut 1
+
   ReadRegStr $R0 HKCU "${LEGACY_UNINSTALL_KEY}" "UninstallString"
 
   ${If} $R0 != ""
@@ -31,11 +37,15 @@ Var LegacyDesktopShortcut
 
 !macro NSIS_HOOK_POSTINSTALL
   ${If} $LegacyProductMigrated = 1
-    CreateShortcut "$SMPROGRAMS\${PRODUCTNAME}.lnk" "$INSTDIR\${MAINBINARYNAME}.exe"
+  ${OrIf} $ExistingStartShortcut = 1
+    Delete "$SMPROGRAMS\${PRODUCTNAME}.lnk"
+    CreateShortcut "$SMPROGRAMS\${PRODUCTNAME}.lnk" "$INSTDIR\${MAINBINARYNAME}.exe" "" "$INSTDIR\storehouse-1.6.1.ico"
     !insertmacro SetLnkAppUserModelId "$SMPROGRAMS\${PRODUCTNAME}.lnk"
+  ${EndIf}
 
+  ${If} $LegacyProductMigrated = 1
     ${If} $LegacyDesktopShortcut = 1
-      CreateShortcut "$DESKTOP\${PRODUCTNAME}.lnk" "$INSTDIR\${MAINBINARYNAME}.exe"
+      CreateShortcut "$DESKTOP\${PRODUCTNAME}.lnk" "$INSTDIR\${MAINBINARYNAME}.exe" "" "$INSTDIR\storehouse-1.6.1.ico"
       !insertmacro SetLnkAppUserModelId "$DESKTOP\${PRODUCTNAME}.lnk"
     ${EndIf}
   ${EndIf}
