@@ -1,9 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { check, Update } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process'
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-updater',
@@ -12,21 +13,37 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     imports: [MatIconModule, MatButtonModule, MatProgressSpinnerModule]
 })
 export class UpdaterComponent implements OnInit {
+    private readonly snackBar = inject(MatSnackBar);
 
-    ngOnInit() {
-        this.verifyUpdate();
+    ngOnInit(): void {
+        void this.verifyUpdate();
     }
 
-    async verifyUpdate() {
-        const update = await check();
-        if (update) {
-            this.updateData = update;
-            this.version.set(update.version);
-            this.renderState.set('request');
+    async verifyUpdate(notifyWhenCurrent = false): Promise<void> {
+        if (this.checking()) return;
+
+        this.checking.set(true);
+        try {
+            const update = await check();
+            if (update) {
+                this.updateData = update;
+                this.version.set(update.version);
+                this.renderState.set('request');
+            } else if (notifyWhenCurrent) {
+                this.snackBar.open('Storehouse is up to date.', 'OK', { duration: 2500 });
+            }
+        } catch (error) {
+            console.error(error);
+            if (notifyWhenCurrent) {
+                this.snackBar.open('Unable to check for updates.', 'OK', { duration: 3000 });
+            }
+        } finally {
+            this.checking.set(false);
         }
     }
 
     debug: unknown = null;
+    readonly checking = signal(false);
     renderMessage = signal<string | null>(null);
     renderState = signal<'idle' | 'request' | 'progress' | 'error'>('idle');
     version = signal<string | null>(null);

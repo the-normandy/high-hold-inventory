@@ -1,4 +1,5 @@
 <main class="home-page">
+    <div class="px-14">
     <header class="home-header">
         <div>
             <p class="home-eyebrow">Storehouse operations</p>
@@ -54,4 +55,22 @@
     </section>
 
     <app-updater />
+    </div>
+
+    <footer class="mt-auto flex items-center justify-between gap-4 border-t border-(--mat-sys-outline-variant) pt-5 text-(--mat-sys-on-surface-variant) max-[48rem]:flex-col max-[48rem]:items-start">
+        <div class="flex min-w-0 items-center gap-2.5 text-xs max-[30rem]:flex-col max-[30rem]:items-start">
+            <strong class="whitespace-nowrap font-medium text-(--mat-sys-on-surface)">Storehouse {{appVersion()}}</strong>
+            <span class="size-0.75 shrink-0 rounded-full bg-(--mat-sys-outline) max-[30rem]:hidden" aria-hidden="true"></span>
+            <span class="flex items-center gap-1.5"><mat-icon class="size-4! text-base!" aria-hidden="true">hard_drive</mat-icon>Local workspace · Data stored locally</span>
+        </div>
+        <nav class="flex shrink-0 items-center gap-0.5 max-[30rem]:w-full max-[30rem]:justify-between" aria-label="Storehouse resources">
+            <button class="min-h-8! px-2.5! text-xs!" matButton="text" type="button" (click)="openDocumentation()">
+                <mat-icon class="size-4! text-base!">description</mat-icon>Documentation
+            </button>
+            <button class="min-h-8! px-2.5! text-xs!" matButton="text" type="button" (click)="checkForUpdates()" [disabled]="updater().checking()">
+                <mat-icon class="size-4! text-base! motion-reduce:animate-none" [class.animate-spin]="updater().checking()">sync</mat-icon>
+                {{updater().checking() ? 'Checking…' : 'Check for updates'}}
+            </button>
+        </nav>
+    </footer>
 </main>

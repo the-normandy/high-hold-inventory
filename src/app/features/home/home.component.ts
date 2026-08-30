@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, signal, viewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { RouterLink } from "@angular/router";
@@ -12,6 +12,10 @@ import { SettingsDialogComponent } from "./settings.component";
 import { FormGroup } from "@angular/forms";
 import { MissingPricesDialogComponent } from "./missing-prices-dialog.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { getVersion } from "@tauri-apps/api/app";
+import { openUrl } from "@tauri-apps/plugin-opener";
+
+const DOCUMENTATION_URL = 'https://github.com/the-normandy/high-hold-inventory';
 
 @Component({
     selector: 'app-home',
@@ -25,6 +29,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 export class HomeComponent implements OnInit {
 
     async ngOnInit(): Promise<void> {
+        this.appVersion.set(await getVersion());
         await this.offerInitialPricesFile();
         await this.loadSettings();
     }
@@ -33,6 +38,20 @@ export class HomeComponent implements OnInit {
     dataService = inject(DataService);
     settings = inject(SettingsService);
     snackBar = inject(MatSnackBar);
+    readonly appVersion = signal('');
+    readonly updater = viewChild.required(UpdaterComponent);
+
+    async openDocumentation(): Promise<void> {
+        try {
+            await openUrl(DOCUMENTATION_URL);
+        } catch {
+            this.snackBar.open('Unable to open the documentation.', 'OK', { duration: 3000 });
+        }
+    }
+
+    async checkForUpdates(): Promise<void> {
+        await this.updater().verifyUpdate(true);
+    }
 
     async offerInitialPricesFile(): Promise<void> {
         if (!this.dataService.isMissing()) {

@@ -77,7 +77,7 @@ export class App {
 
   async updateWindow() {
     await this.getCurrentVersion();
-    await getCurrentWindow().setTitle(`Storehouse ${this.version()}`);
+    await getCurrentWindow().setTitle(`Storehouse`);
   }
 
   themeChange() {

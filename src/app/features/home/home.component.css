@@ -1,11 +1,15 @@
 :host {
+    display: flex;
     flex: 1;
 }
 
 .home-page {
+    display: flex;
     width: min(100%, 68rem);
     margin: 0 auto;
     padding: clamp(1.5rem, 5vh, 3.5rem) 0 2rem;
+    flex: 1;
+    flex-direction: column;
 }
 
 .home-header {
@@ -202,6 +206,7 @@
     .utility-actions {
         justify-content: flex-end;
     }
+
 }
 
 @media (max-width: 30rem) {
@@ -218,4 +223,5 @@
         align-items: stretch;
         flex-direction: column;
     }
+
 }

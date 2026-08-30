@@ -23,6 +23,12 @@
         {"path": "$APPLOCALDATA" }
       ]
     },
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {"url": "https://github.com/the-normandy/high-hold-inventory"}
+      ]
+    },
     "core:window:allow-set-title",
     "updater:allow-check",
     "updater:allow-download",
