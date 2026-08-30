@@ -11,8 +11,20 @@
 	transition: opacity 150ms ease !important;
 }
 
+.destructive-action {
+	transition: color 150ms ease;
+}
+
+.destructive-action:hover {
+	color: var(--mat-sys-error);
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.mat-mdc-button-base > .mat-mdc-button-persistent-ripple::before {
+		transition: none;
+	}
+
+	.destructive-action {
 		transition: none;
 	}
 }

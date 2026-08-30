@@ -42,7 +42,7 @@
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let entry">
                     <button matIconButton matTooltip="View details" (click)="viewEntry(entry)"><mat-icon>visibility</mat-icon></button>
-                    <button matIconButton matTooltip="Delete entry" (click)="deleteEntry(entry)"><mat-icon>delete</mat-icon></button>
+                    <button class="destructive-action" matIconButton matTooltip="Delete entry" (click)="deleteEntry(entry)"><mat-icon>delete</mat-icon></button>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="columns"></tr>

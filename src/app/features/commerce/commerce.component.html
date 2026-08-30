@@ -57,7 +57,7 @@
                             </div>
                             <label class="row-field"><span>Quantity</span><input type="number" min="1" formControlName="quantity" /></label>
                             <label class="row-field price-field"><span>Price each</span><input type="number" min="0" formControlName="unitPrice" placeholder="0" /></label>
-                            <button type="button" matIconButton (click)="removeItem('material', index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
+                            <button type="button" class="destructive-action" matIconButton (click)="removeItem('material', index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
                         </div>
                     }
                 </div>
@@ -93,7 +93,7 @@
                             </div>
                             <label class="row-field"><span>Quantity</span><input type="number" min="1" formControlName="quantity" /></label>
                             <label class="row-field price-field"><span>Price each</span><input type="number" min="0" formControlName="unitPrice" placeholder="0" /></label>
-                            <button type="button" matIconButton (click)="removeItem('craft', index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
+                            <button type="button" class="destructive-action" matIconButton (click)="removeItem('craft', index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
                         </div>
                     }
                 </div>

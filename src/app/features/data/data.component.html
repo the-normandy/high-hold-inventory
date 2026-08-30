@@ -33,7 +33,7 @@
                     }
                     @if (node.path.length > 1) {
                         <button type="button" matTooltip="Rename category" matIconButton (click)="renameCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">bookmark_manager</mat-icon></button>
-                        <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">folder_delete</mat-icon></button>
+                        <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategoryNode(node); $event.stopPropagation()" class="node-action destructive-action"><mat-icon class="text-sm!">folder_delete</mat-icon></button>
                     }
                 </div>
             </div>
@@ -55,7 +55,7 @@
                     }
                     @if (node.path.length > 1) {
                         <button type="button" matTooltip="Rename category" matIconButton (click)="renameCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">bookmark_manager</mat-icon></button>
-                        <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategoryNode(node); $event.stopPropagation()" class="node-action"><mat-icon class="text-sm!">folder_delete</mat-icon></button>
+                        <button type="button" matTooltip="Delete category" matIconButton (click)="removeCategoryNode(node); $event.stopPropagation()" class="node-action destructive-action"><mat-icon class="text-sm!">folder_delete</mat-icon></button>
                     }
                 </div>
             </div>
@@ -122,7 +122,7 @@
                                     <input type="number" formControlName="labor" min="0" inputmode="decimal" />
                                 </label>
                             }
-                            <button type="button" matTooltip="Delete item" matIconButton (click)="removeItem(index)" class="item-delete" [attr.aria-label]="'Delete ' + (group.get('name')?.value || 'item')"><mat-icon>delete</mat-icon></button>
+                            <button type="button" matTooltip="Delete item" matIconButton (click)="removeItem(index)" class="item-delete destructive-action" [attr.aria-label]="'Delete ' + (group.get('name')?.value || 'item')"><mat-icon>delete</mat-icon></button>
                         </div>
                     }
                 </div>

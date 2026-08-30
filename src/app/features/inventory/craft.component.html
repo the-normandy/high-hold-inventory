@@ -33,7 +33,7 @@
                     </div>
                     <label class="row-field"><span>Quantity</span><input type="number" formControlName="quantity" min="1" /></label>
                     <mat-checkbox formControlName="laborOnly">Labor only?</mat-checkbox>
-                    <button type="button" matIconButton (click)="removeItem($index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
+                    <button type="button" class="destructive-action" matIconButton (click)="removeItem($index)" [attr.aria-label]="'Remove ' + row.value.item.name"><mat-icon>delete</mat-icon></button>
                 </div>
             }
         </div>
