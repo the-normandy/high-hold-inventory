@@ -1,7 +1,7 @@
 import { ItemData } from "../../core/data/item.model";
 
 export type EntryType = 'deposit' | 'withdraw'
-type RecordSource = 'material' | 'craft';
+type RecordSource = 'material' | 'craft' | 'mixed';
 
 export interface RecordEntry {
     id: string;

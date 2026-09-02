@@ -6,55 +6,60 @@ import { BaseDirectory, exists, readTextFile, writeTextFile } from "@tauri-apps/
     providedIn: 'root'
 })
 export class RecordsService {
-   
-    private createMaterialRecord(material: MaterialSubmission, mode: string): RecordEntry {
+    private createRecord(
+        material: MaterialSubmission | undefined,
+        craft: CraftSubmission | undefined,
+        mode: string
+    ): RecordEntry {
         const entry = mode as EntryType;
-        const silver = material.silver ?? 0;
+        const silver = material?.silver ?? 0;
+        const materialItems = material?.items ?? [];
+        const craftItems = craft?.items ?? [];
+        const materialTotal = materialItems.reduce(
+            (sum, item) => sum + item.item.price * item.quantity,
+            0
+        );
+        const craftTotal = craftItems.reduce(
+            (sum, item) =>
+                sum +
+                (item.laborOnly ? item.item.labor! : item.item.price) *
+                item.quantity,
+            0
+        );
+        const source = material && craft
+            ? 'mixed'
+            : material
+                ? 'material'
+                : 'craft';
+        const notes = [
+            material?.comment?.trim(),
+            craft?.comment?.trim()
+        ].filter((note): note is string => Boolean(note));
 
         return {
             id: crypto.randomUUID(),
             entry: entry,
-            source: 'material',
+            source,
             timestamp: new Date().toISOString(),
             silver: silver,
-            note: material.comment?.trim() || undefined,
-            totalValue: material.items.reduce(
-                (sum, item) => sum + item.item.price * item.quantity,
-                0
-            ) + silver,
-            items: material.items.map(item => ({
-                name: item.item.name,
-                category: item.path.join(' / '),
-                quantity: item.quantity,
-                value: item.item.price
-            }))
-        };
-    }
-
-    private createCraftRecord(craft: CraftSubmission, mode: string): RecordEntry {
-        const entry = mode as EntryType;
-
-        return {
-            id: crypto.randomUUID(),
-            entry: entry,
-            source: 'craft',
-            timestamp: new Date().toISOString(),
-            note: craft.comment?.trim() || undefined,
-            totalValue: craft.items.reduce(
-                (sum, item) =>
-                    sum +
-                    (item.laborOnly ? item.item.labor! : item.item.price) *
-                    item.quantity,
-                0
-            ),
-            items: craft.items.map(item => ({
-                name: item.item.name,
-                category: item.path.join(' / '),
-                quantity: item.quantity,
-                value: item.laborOnly
-                    ? item.item.labor!
-                    : item.item.price
-            }))
+            note: notes.length > 0 ? notes.join('\n\n') : undefined,
+            totalValue: Math.ceil(materialTotal + craftTotal + silver),
+            items: [
+                ...materialItems.map(item => ({
+                    name: item.item.name,
+                    category: item.path.join(' / '),
+                    quantity: item.quantity,
+                    value: item.item.price
+                })),
+                ...craftItems.map(item => ({
+                    name: item.item.name,
+                    category: item.path.join(' / '),
+                    quantity: item.quantity,
+                    value: item.laborOnly
+                        ? item.item.labor!
+                        : item.item.price
+                }))
+            ]
         };
     }
 
@@ -86,7 +91,7 @@ export class RecordsService {
 
             if (record.source === 'material') {
                 summary.materialEntries++;
-            } else {
+            } else if (record.source === 'craft') {
                 summary.craftEntries++;
             }
         }
@@ -237,17 +242,14 @@ export class RecordsService {
         return `${weekYear}-W${week.toString().padStart(2, '0')}`;
     }
 
-    async recordMaterialSubmission(material: MaterialSubmission, mode: string): Promise<void> {
+    async recordSubmission(
+        material: MaterialSubmission | undefined,
+        craft: CraftSubmission | undefined,
+        mode: string
+    ): Promise<void> {
         if (this.validate(mode)) return;
 
-        const entry = this.createMaterialRecord(material, mode);
-        return this.writeRecord(entry);
-    }
-
-    async recordCraftSubmission(craft: CraftSubmission, mode: string): Promise<void> {
-        if (this.validate(mode)) return;
-
-        const entry = this.createCraftRecord(craft, mode);
+        const entry = this.createRecord(material, craft, mode);
         return this.writeRecord(entry);
     }
 

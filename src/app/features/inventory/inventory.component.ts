@@ -58,12 +58,15 @@ export class InventoryComponent implements OnInit {
         const materialRows = includeMaterial ? matSubmission.items : [];
         const craftRows = includeCraft ? craftSubmission.items : [];
 
-        if (includeMaterial && (materialRows.length > 0 || (matSubmission.silver !== null && matSubmission.silver > 0))) {
-            await this.recordService.recordMaterialSubmission(matSubmission, this.mode());
-        }
+        const hasMaterial = includeMaterial && (materialRows.length > 0 || (matSubmission.silver !== null && matSubmission.silver > 0));
+        const hasCraft = includeCraft && craftRows.length > 0;
 
-        if (includeCraft && craftRows.length > 0) {
-            await this.recordService.recordCraftSubmission(craftSubmission, this.mode());
+        if (hasMaterial || hasCraft) {
+            await this.recordService.recordSubmission(
+                hasMaterial ? matSubmission : undefined,
+                hasCraft ? craftSubmission : undefined,
+                this.mode()
+            );
         }
 
         const materialTotal = materialRows.reduce(
@@ -79,10 +82,11 @@ export class InventoryComponent implements OnInit {
             0
         );
 
-        const grandTotal =
+        const grandTotal = Math.ceil(
             materialTotal +
             craftTotal +
-            (includeMaterial ? (matSubmission.silver ?? 0) : 0);
+            (includeMaterial ? (matSubmission.silver ?? 0) : 0)
+        );
 
         const label =
             this.mode() === 'deposit'
