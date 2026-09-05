@@ -7,11 +7,11 @@
     <button matIconButton class="profile-trigger" [matMenuTriggerFor]="profileMenu" matTooltip="Profile" aria-label="Profile menu">
         <app-profile-avatar [profile]="user.profile()" [size]="32" class="profile-trigger-avatar" />
     </button>
-    <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-menu">
+    <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-menu w-72! max-w-[calc(100vw-2rem)]!">
         @for (profile of user.profiles(); track profile.path) {
             <button mat-menu-item (click)="switchProfile(profile.path)">
                 <mat-icon>{{user.profile()?.path === profile.path ? 'check' : 'person'}}</mat-icon>
-                <span>{{profile.name}} · {{profile.clan}} · {{profile.server}}</span>
+                <span class="profile-menu-label" [title]="profile.name + ' · ' + profile.clan + ' · ' + profile.server">{{profile.name}} · {{profile.clan}} · {{profile.server}}</span>
             </button>
         }
         <mat-divider />
