@@ -19,6 +19,12 @@
       ]
     },
     {
+      "identifier": "fs:allow-remove",
+      "allow": [
+        {"path": "$APPLOCALDATA/**"}
+      ]
+    },
+    {
       "identifier": "opener:allow-open-path",
       "allow": [
         {"path": "$APPLOCALDATA" },
