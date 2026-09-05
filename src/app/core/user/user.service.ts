@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { BaseDirectory, mkdir, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
+import { BaseDirectory, exists, mkdir, readTextFile, remove, writeTextFile } from '@tauri-apps/plugin-fs';
 import { UserProfile } from './user.model';
 
 const PROFILES_FILE = 'profiles.json';
@@ -17,9 +17,10 @@ export interface UserProfileInput {
 })
 export class UserService {
     private readonly activeProfile = signal<UserProfile | null>(null);
-    private profiles: UserProfile[] = [];
+    private readonly profileList = signal<readonly UserProfile[]>([]);
 
     readonly profile = this.activeProfile.asReadonly();
+    readonly profiles = this.profileList.asReadonly();
 
     async load(): Promise<void> {
         const text = await readTextFile(PROFILES_FILE, { baseDir: BaseDirectory.AppLocalData });
@@ -29,27 +30,57 @@ export class UserService {
             throw new Error('profiles.json does not contain a valid profile.');
         }
 
-        this.profiles = profiles.map(profile => this.createProfile(profile));
-        this.activeProfile.set(this.profiles[0]);
+        const loadedProfiles = profiles.map(profile => this.buildProfile(profile));
+        this.profileList.set(loadedProfiles);
+        this.activeProfile.set(loadedProfiles[0]);
     }
 
-    async save(input: UserProfileInput): Promise<void> {
-        const profile = this.createProfile(input, this.activeProfile()?.photo);
+    async create(input: UserProfileInput): Promise<UserProfile> {
+        const profile = this.buildProfile(input);
+        if (this.profileList().some(existing => existing.path === profile.path)) {
+            throw new Error('A profile for this character and clan already exists.');
+        }
 
         await mkdir(profile.path, {
             baseDir: BaseDirectory.AppLocalData,
             recursive: true
         });
-        const activePath = this.activeProfile()?.path;
-        this.profiles = activePath
-            ? this.profiles.map(existing => existing.path === activePath ? profile : existing)
-            : [...this.profiles, profile];
-        await writeTextFile(
-            PROFILES_FILE,
-            JSON.stringify(this.profiles, null, 2),
-            { baseDir: BaseDirectory.AppLocalData }
-        );
+
+        const profiles = [profile, ...this.profileList()];
+        await this.persist(profiles);
+        this.profileList.set(profiles);
         this.activeProfile.set(profile);
+        return profile;
+    }
+
+    async switchProfile(path: string): Promise<void> {
+        const profile = this.profileList().find(candidate => candidate.path === path);
+        if (!profile || profile.path === this.activeProfile()?.path) {
+            return;
+        }
+
+        const profiles = [profile, ...this.profileList().filter(candidate => candidate.path !== path)];
+        await this.persist(profiles);
+        this.profileList.set(profiles);
+        this.activeProfile.set(profile);
+    }
+
+    async deleteProfile(path: string): Promise<void> {
+        const profile = this.profileList().find(candidate => candidate.path === path);
+        if (!profile) {
+            throw new Error('Profile not found.');
+        }
+
+        if (await exists(profile.path, { baseDir: BaseDirectory.AppLocalData })) {
+            await remove(profile.path, { baseDir: BaseDirectory.AppLocalData, recursive: true });
+        }
+
+        const profiles = this.profileList().filter(candidate => candidate.path !== path);
+        await this.persist(profiles);
+        this.profileList.set(profiles);
+        if (this.activeProfile()?.path === path) {
+            this.activeProfile.set(profiles[0] ?? null);
+        }
     }
 
     filePath(fileName: string): string {
@@ -61,18 +92,29 @@ export class UserService {
         return `${profile.path}/${fileName}`;
     }
 
-    private createProfile(input: UserProfileInput, fallbackPhoto = DEFAULT_PHOTO): UserProfile {
+    clanFilePath(fileName: string): string {
+        const profile = this.activeProfile();
+        if (!profile) {
+            throw new Error('A user profile is required before accessing clan data.');
+        }
+
+        return `${profile.clanPath}/${fileName}`;
+    }
+
+    private buildProfile(input: UserProfileInput): UserProfile {
         const name = input.name.trim();
         if (!name) {
             throw new Error('A character name is required.');
         }
 
         const clan = input.clan?.trim() || DEFAULT_CLAN;
+        const clanPath = this.toPathSegment(clan);
         return {
             name,
             clan,
-            photo: input.photo?.trim() || fallbackPhoto,
-            path: `${this.toPathSegment(clan)}/${this.toPathSegment(name)}`
+            photo: input.photo?.trim() || DEFAULT_PHOTO,
+            clanPath,
+            path: `${clanPath}/${this.toPathSegment(name)}`
         };
     }
 
@@ -100,5 +142,13 @@ export class UserService {
             && profile.name.trim().length > 0
             && (profile.clan == null || typeof profile.clan === 'string')
             && (profile.photo == null || typeof profile.photo === 'string');
+    }
+
+    private persist(profiles: readonly UserProfile[]): Promise<void> {
+        return writeTextFile(
+            PROFILES_FILE,
+            JSON.stringify(profiles, null, 2),
+            { baseDir: BaseDirectory.AppLocalData }
+        );
     }
 }

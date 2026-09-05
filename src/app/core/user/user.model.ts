@@ -1,6 +1,7 @@
 export interface UserProfile {
-    name: string;
-    clan: string;
-    photo: string;
-    path: string;
+    readonly name: string;
+    readonly clan: string;
+    readonly photo: string;
+    readonly clanPath: string;
+    readonly path: string;
 }

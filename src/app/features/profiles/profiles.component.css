@@ -1,0 +1,149 @@
+:host {
+    display: flex;
+    flex: 1;
+}
+
+.profiles-page {
+    display: flex;
+    width: min(100%, 58rem);
+    margin: 0 auto;
+    padding: clamp(1.5rem, 5vh, 3.5rem) 0 2rem;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profiles-header,
+.workflow-heading,
+.profile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.profiles-header {
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.profiles-header h1 {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.section-label {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.active-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+}
+
+.active-avatar {
+    width: 150px;
+    height: 150px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 0.5rem;
+    object-fit: cover;
+}
+
+.active-copy h2 {
+    margin-top: 0.125rem;
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+.active-copy > p:not(.section-label) {
+    margin-bottom: 1rem;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.profile-workflow {
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.workflow-heading {
+    padding: 1.25rem 0 0.75rem;
+}
+
+.workflow-heading h2 {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.workflow-heading > span {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.75rem;
+}
+
+.profile-list {
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.profile-row {
+    min-height: 4.5rem;
+    padding: 0.625rem 0.75rem;
+    background: var(--mat-sys-surface);
+}
+
+.profile-row + .profile-row {
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.profile-row.active {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.profile-avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 0.375rem;
+    object-fit: cover;
+}
+
+.profile-identity {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+}
+
+.profile-identity span {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.8125rem;
+}
+
+.active-marker {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--mat-sys-primary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.active-marker mat-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    font-size: 1.125rem;
+}
+
+@media (max-width: 40rem) {
+    .profiles-header,
+    .active-profile {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .profile-row {
+        flex-wrap: wrap;
+    }
+}

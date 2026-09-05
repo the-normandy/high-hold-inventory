@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Delete {{profile.name}}?</h2>
+<mat-dialog-content>
+    <p>This permanently deletes the profile and every character-specific file in <strong>{{profile.path}}</strong>.</p>
+    <p class="mt-3 text-sm text-(--mat-sys-error)">This action cannot be undone. Clan prices and webhook settings will not be deleted.</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button type="button" matButton="tonal" [mat-dialog-close]="false">Cancel</button>
+    <button type="button" matButton="filled" class="destructive-action" [mat-dialog-close]="true">Delete profile</button>
+</mat-dialog-actions>

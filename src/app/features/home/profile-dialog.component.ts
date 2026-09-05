@@ -3,7 +3,10 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { UserProfile } from '../../core/user/user.model';
+
+export interface ProfileDialogData {
+    canCancel: boolean;
+}
 
 @Component({
     selector: 'app-profile-dialog',
@@ -48,13 +51,13 @@ import { UserProfile } from '../../core/user/user.model';
     imports: [MatDialogModule, MatButtonModule, ReactiveFormsModule, NgOptimizedImage]
 })
 export class ProfileDialogComponent {
-    protected readonly profile = inject<UserProfile | null>(MAT_DIALOG_DATA, { optional: true });
+    protected readonly data = inject<ProfileDialogData | null>(MAT_DIALOG_DATA, { optional: true });
 
     readonly form = new FormGroup({
-        name: new FormControl(this.profile?.name ?? '', {
+        name: new FormControl('', {
             nonNullable: true,
             validators: [Validators.required, Validators.pattern(/\S/)]
         }),
-        clan: new FormControl(this.profile?.clan ?? '', { nonNullable: true })
+        clan: new FormControl('', { nonNullable: true })
     });
 }

@@ -575,7 +575,7 @@ export class DataComponent implements OnInit {
             throw new Error("Webhook not detected in settings.");
         }
         try {
-            const bytes = await readFile(this.user.filePath('prices.json'), { baseDir: BaseDirectory.AppLocalData });
+            const bytes = await readFile(this.user.clanFilePath('prices.json'), { baseDir: BaseDirectory.AppLocalData });
             const blob = new Blob([bytes], {type: 'application/json'});
             const form = new FormData();
             form.append('files[0]', blob, 'prices.json');

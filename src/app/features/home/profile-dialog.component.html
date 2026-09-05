@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ profile ? 'Edit profile' : 'Create your profile' }}</h2>
+<h2 mat-dialog-title>Create a profile</h2>
 <form [formGroup]="form" class="contents" (submit)="$event.preventDefault()">
     <mat-dialog-content>
         <div class="profile-fields">
@@ -17,9 +17,9 @@
         </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-        @if (profile) {
+        @if (data?.canCancel) {
             <button type="button" matButton="tonal" [mat-dialog-close]>Cancel</button>
         }
-        <button type="submit" matButton="filled" [disabled]="form.invalid" [mat-dialog-close]="form.getRawValue()">Save profile</button>
+        <button type="submit" matButton="filled" [disabled]="form.invalid" [mat-dialog-close]="form.getRawValue()">Create profile</button>
     </mat-dialog-actions>
 </form>

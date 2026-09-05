@@ -26,8 +26,9 @@ export class DataService {
     readonly isMissing = this.missingFile.asReadonly();
 
     async load(): Promise<void> {
+        this.dataStore.load({ schema: 1, materials: {}, craft: {} });
         try {
-            const filePath = this.user.filePath('prices.json');
+            const filePath = this.user.clanFilePath('prices.json');
             const fileExists = await exists(filePath, { baseDir: BaseDirectory.AppLocalData });
             if (!fileExists) {
                 this.missingFile.set(true);
@@ -77,7 +78,7 @@ export class DataService {
         const json = JSON.stringify(data, null, 2);
 
         await writeTextFile(
-            this.user.filePath('prices.json'),
+            this.user.clanFilePath('prices.json'),
             json,
             {
                 baseDir: BaseDirectory.AppLocalData
@@ -86,7 +87,7 @@ export class DataService {
     }
 
     async saveWebhook(url: string): Promise<void> {
-        await writeTextFile(this.user.filePath('webhook.json'),
+        await writeTextFile(this.user.clanFilePath('webhook.json'),
             JSON.stringify({ url }, null, 2), 
             { baseDir: BaseDirectory.AppLocalData }
         );
@@ -94,9 +95,10 @@ export class DataService {
     }
 
     async loadWebhook(): Promise<void> {
+        this.dataStore.webhook.set(null);
         try {
             const text = await readTextFile(
-                this.user.filePath('webhook.json'),
+                this.user.clanFilePath('webhook.json'),
                 { baseDir: BaseDirectory.AppLocalData }
             );
 

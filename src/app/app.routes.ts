@@ -11,6 +11,7 @@ export const routes: Routes = [
     {path: 'new/:mode', component: InventoryComponent},
     {path: 'data', component: DataComponent},
     {path: 'records', component: RecordsComponent},
+    {path: 'profiles', loadComponent: () => import('./features/profiles/profiles.component').then(module => module.ProfilesComponent)},
     {path: 'commerce/ledger', component: CommerceLedgerComponent},
     {path: 'commerce/:type', component: CommerceComponent}
 ];
