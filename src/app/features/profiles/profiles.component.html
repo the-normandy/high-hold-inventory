@@ -12,12 +12,12 @@
 
     @if (user.profile(); as active) {
         <section class="active-profile" aria-labelledby="active-profile-title">
-            <img [ngSrc]="active.photo" width="150" height="150" alt="" class="active-avatar" priority />
+            <app-profile-avatar [profile]="active" [size]="150" [alt]="active.name + ' profile picture'" class="active-avatar" />
             <div class="active-copy">
                 <p class="section-label">Current profile</p>
                 <h2 id="active-profile-title">{{active.name}}</h2>
                 <p>{{active.clan}}</p>
-                <button matButton="outlined" type="button" disabled><mat-icon>add_a_photo</mat-icon>Change avatar</button>
+                <button matButton="outlined" type="button" (click)="changeAvatar(active)"><mat-icon>add_a_photo</mat-icon>Change avatar</button>
             </div>
         </section>
     }
@@ -34,7 +34,7 @@
         <div class="profile-list">
             @for (profile of user.profiles(); track profile.path) {
                 <article class="profile-row" [class.active]="profile.path === user.profile()?.path">
-                    <img [ngSrc]="profile.photo" width="52" height="52" alt="" class="profile-avatar" />
+                    <app-profile-avatar [profile]="profile" [size]="52" class="profile-avatar" />
                     <div class="profile-identity">
                         <strong>{{profile.name}}</strong>
                         <span>{{profile.clan}}</span>

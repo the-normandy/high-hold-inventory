@@ -6,6 +6,7 @@ const fsMocks = vi.hoisted(() => ({
     mkdir: vi.fn(),
     readTextFile: vi.fn(),
     remove: vi.fn(),
+    writeFile: vi.fn(),
     writeTextFile: vi.fn()
 }));
 
@@ -24,6 +25,7 @@ describe('UserService', () => {
         fsMocks.exists.mockResolvedValue(true);
         fsMocks.mkdir.mockResolvedValue(undefined);
         fsMocks.remove.mockResolvedValue(undefined);
+        fsMocks.writeFile.mockResolvedValue(undefined);
         fsMocks.writeTextFile.mockResolvedValue(undefined);
     });
 
@@ -39,6 +41,32 @@ describe('UserService', () => {
         });
         expect(service.profile()).toBe(profile);
         expect(service.profiles()).toEqual([profile]);
+    });
+
+    it('stores a cropped avatar in the character folder during creation', async () => {
+        const avatar = new Uint8Array([1, 2, 3]);
+
+        const profile = await service.create({ name: 'Character', clan: 'Clan', avatar });
+
+        expect(fsMocks.writeFile).toHaveBeenCalledWith('clan/character/avatar.png', avatar, {
+            baseDir: 16
+        });
+        expect(profile.photo).toBe('clan/character/avatar.png');
+    });
+
+    it('replaces only the profile avatar', async () => {
+        const profile = await service.create({ name: 'Character', clan: 'Clan' });
+        const avatar = new Uint8Array([4, 5, 6]);
+
+        await service.updateAvatar(profile.path, avatar);
+
+        expect(fsMocks.writeFile).toHaveBeenCalledWith('clan/character/avatar.png', avatar, {
+            baseDir: 16
+        });
+        expect(service.profile()).toEqual({
+            ...profile,
+            photo: 'clan/character/avatar.png'
+        });
     });
 
     it('persists the selected profile first', async () => {

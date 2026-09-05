@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Frame your profile picture</h2>
+<mat-dialog-content>
+    <p class="crop-help">Drag the image to position it. Use the controls below to choose how much of the photo fills the frame.</p>
+    <div class="crop-frame">
+        <canvas #canvas width="300" height="300" tabindex="0" aria-label="Profile picture crop area. Drag to reposition or use arrow keys." (pointerdown)="pointerDown($event)" (pointermove)="pointerMove($event)" (keydown)="nudge($event)"></canvas>
+        <div class="crop-guide" aria-hidden="true"></div>
+    </div>
+    <div class="zoom-control">
+        <button matIconButton type="button" aria-label="Zoom out" (click)="adjustZoom(-0.1)"><mat-icon>remove</mat-icon></button>
+        <mat-slider min="1" max="3" step="0.01" aria-label="Image zoom">
+            <input matSliderThumb [value]="zoom()" (valueChange)="updateZoom($event)" />
+        </mat-slider>
+        <button matIconButton type="button" aria-label="Zoom in" (click)="adjustZoom(0.1)"><mat-icon>add</mat-icon></button>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button type="button" matButton="tonal" [mat-dialog-close]>Cancel</button>
+    <button type="button" matButton="filled" [disabled]="!ready()" (click)="save()">Use photo</button>
+</mat-dialog-actions>

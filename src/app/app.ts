@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,10 +17,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { firstValueFrom } from 'rxjs';
 import { ProfileDialogComponent } from './features/home/profile-dialog.component';
 import { UserService, UserProfileInput } from './core/user/user.service';
+import { AvatarWorkflowService } from './core/user/avatar-workflow.service';
+import { ProfileAvatarComponent } from './core/user/profile-avatar.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule, RouterLink, MatTooltipModule, MatMenuModule, MatDividerModule, NgOptimizedImage],
+  imports: [RouterOutlet, MatToolbarModule, MatIconModule, MatButtonModule, RouterLink, MatTooltipModule, MatMenuModule, MatDividerModule, ProfileAvatarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +36,7 @@ export class App implements OnInit {
   snackBar = inject(MatSnackBar);
   dialog = inject(MatDialog);
   user = inject(UserService);
+  avatarWorkflow = inject(AvatarWorkflowService);
   router = inject(Router);
   ready = signal(false);
 
@@ -97,6 +99,21 @@ export class App implements OnInit {
   async switchProfile(path: string) {
     await this.user.switchProfile(path);
     await this.loadActiveProfile();
+  }
+
+  async changeAvatar() {
+    const profile = this.user.profile();
+    if (!profile) return;
+
+    const avatar = await this.avatarWorkflow.selectAndCrop();
+    if (!avatar) return;
+
+    try {
+      await this.user.updateAvatar(profile.path, avatar);
+      this.snackBar.open('Profile picture updated.', 'OK', {duration: 2000});
+    } catch {
+      this.snackBar.open('Failed to update profile picture.', 'OK', {duration: 3000});
+    }
   }
 
   private async loadActiveProfile() {

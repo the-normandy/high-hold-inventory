@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { BaseDirectory, exists, mkdir, readTextFile, remove, writeTextFile } from '@tauri-apps/plugin-fs';
+import { BaseDirectory, exists, mkdir, readTextFile, remove, writeFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { UserProfile } from './user.model';
 
 const PROFILES_FILE = 'profiles.json';
@@ -10,6 +10,7 @@ export interface UserProfileInput {
     name: string;
     clan?: string | null;
     photo?: string | null;
+    avatar?: Uint8Array;
 }
 
 @Injectable({
@@ -18,9 +19,11 @@ export interface UserProfileInput {
 export class UserService {
     private readonly activeProfile = signal<UserProfile | null>(null);
     private readonly profileList = signal<readonly UserProfile[]>([]);
+    private readonly avatarChange = signal(0);
 
     readonly profile = this.activeProfile.asReadonly();
     readonly profiles = this.profileList.asReadonly();
+    readonly avatarRevision = this.avatarChange.asReadonly();
 
     async load(): Promise<void> {
         const text = await readTextFile(PROFILES_FILE, { baseDir: BaseDirectory.AppLocalData });
@@ -45,12 +48,33 @@ export class UserService {
             baseDir: BaseDirectory.AppLocalData,
             recursive: true
         });
+        if (input.avatar) {
+            await writeFile(profile.photo, input.avatar, { baseDir: BaseDirectory.AppLocalData });
+        }
 
         const profiles = [profile, ...this.profileList()];
         await this.persist(profiles);
         this.profileList.set(profiles);
         this.activeProfile.set(profile);
         return profile;
+    }
+
+    async updateAvatar(path: string, avatar: Uint8Array): Promise<void> {
+        const profile = this.profileList().find(candidate => candidate.path === path);
+        if (!profile) {
+            throw new Error('Profile not found.');
+        }
+
+        const photo = `${profile.path}/avatar.png`;
+        await writeFile(photo, avatar, { baseDir: BaseDirectory.AppLocalData });
+        const updatedProfile = { ...profile, photo };
+        const profiles = this.profileList().map(candidate => candidate.path === path ? updatedProfile : candidate);
+        await this.persist(profiles);
+        this.profileList.set(profiles);
+        if (this.activeProfile()?.path === path) {
+            this.activeProfile.set(updatedProfile);
+        }
+        this.avatarChange.update(revision => revision + 1);
     }
 
     async switchProfile(path: string): Promise<void> {
@@ -109,12 +133,13 @@ export class UserService {
 
         const clan = input.clan?.trim() || DEFAULT_CLAN;
         const clanPath = this.toPathSegment(clan);
+        const path = `${clanPath}/${this.toPathSegment(name)}`;
         return {
             name,
             clan,
-            photo: input.photo?.trim() || DEFAULT_PHOTO,
+            photo: input.avatar ? `${path}/avatar.png` : input.photo?.trim() || DEFAULT_PHOTO,
             clanPath,
-            path: `${clanPath}/${this.toPathSegment(name)}`
+            path
         };
     }
 

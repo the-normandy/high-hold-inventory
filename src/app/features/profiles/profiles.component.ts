@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -12,12 +11,14 @@ import { UserProfile } from '../../core/user/user.model';
 import { UserProfileInput, UserService } from '../../core/user/user.service';
 import { ProfileDialogComponent } from '../home/profile-dialog.component';
 import { ProfileDeleteDialogComponent } from './profile-delete-dialog.component';
+import { AvatarWorkflowService } from '../../core/user/avatar-workflow.service';
+import { ProfileAvatarComponent } from '../../core/user/profile-avatar.component';
 
 @Component({
     selector: 'app-profiles',
     templateUrl: 'profiles.component.html',
     styleUrl: 'profiles.component.css',
-    imports: [NgOptimizedImage, MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule, RouterLink],
+    imports: [MatButtonModule, MatDialogModule, MatIconModule, MatTooltipModule, RouterLink, ProfileAvatarComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProfilesComponent {
@@ -25,6 +26,7 @@ export class ProfilesComponent {
     private readonly dataService = inject(DataService);
     private readonly dialog = inject(MatDialog);
     private readonly snackBar = inject(MatSnackBar);
+    private readonly avatarWorkflow = inject(AvatarWorkflowService);
 
     async createProfile(mandatory = false): Promise<void> {
         const dialogRef = this.dialog.open(ProfileDialogComponent, {
@@ -55,6 +57,18 @@ export class ProfilesComponent {
             this.snackBar.open(`Switched to ${profile.name}.`, 'OK', { duration: 2000 });
         } catch {
             this.snackBar.open('Failed to switch profiles.', 'OK', { duration: 3000 });
+        }
+    }
+
+    async changeAvatar(profile: UserProfile): Promise<void> {
+        const avatar = await this.avatarWorkflow.selectAndCrop();
+        if (!avatar) return;
+
+        try {
+            await this.user.updateAvatar(profile.path, avatar);
+            this.snackBar.open('Profile picture updated.', 'OK', { duration: 2000 });
+        } catch {
+            this.snackBar.open('Failed to update profile picture.', 'OK', { duration: 3000 });
         }
     }
 

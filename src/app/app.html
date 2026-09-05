@@ -5,7 +5,7 @@
 </a>
 <span class="ml-auto flex items-center gap-2">
     <button matIconButton class="profile-trigger" [matMenuTriggerFor]="profileMenu" matTooltip="Profile" aria-label="Profile menu">
-        <img [ngSrc]="user.profile()?.photo ?? '/avatar.png'" width="32" height="32" alt="" class="profile-trigger-avatar" />
+        <app-profile-avatar [profile]="user.profile()" [size]="32" class="profile-trigger-avatar" />
     </button>
     <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-menu">
         @for (profile of user.profiles(); track profile.path) {
@@ -15,7 +15,7 @@
             </button>
         }
         <mat-divider />
-        <button mat-menu-item disabled><mat-icon>add_a_photo</mat-icon><span>Change avatar</span></button>
+        <button mat-menu-item (click)="changeAvatar()"><mat-icon>add_a_photo</mat-icon><span>Change avatar</span></button>
         <button mat-menu-item (click)="createProfile()"><mat-icon>person_add</mat-icon><span>New profile</span></button>
         <a mat-menu-item routerLink="/profiles"><mat-icon>manage_accounts</mat-icon><span>Profiles</span></a>
     </mat-menu>
