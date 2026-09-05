@@ -7,13 +7,11 @@ import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { DataService } from "../../core/data/data.service";
 import { firstValueFrom } from "rxjs";
 import { WebhookDialogComponent } from "../data/webhook-dialog.component";
-import { SettingsService } from "../../core/settings/settings.service";
-import { SettingsDialogComponent } from "./settings.component";
-import { FormGroup } from "@angular/forms";
 import { MissingPricesDialogComponent } from "./missing-prices-dialog.component";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { getVersion } from "@tauri-apps/api/app";
 import { openUrl } from "@tauri-apps/plugin-opener";
+import { UserService } from "../../core/user/user.service";
 
 const DOCUMENTATION_URL = 'https://github.com/the-normandy/high-hold-inventory';
 
@@ -31,12 +29,11 @@ export class HomeComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.appVersion.set(await getVersion());
         await this.offerInitialPricesFile();
-        await this.loadSettings();
     }
 
     dialog = inject(MatDialog);
     dataService = inject(DataService);
-    settings = inject(SettingsService);
+    user = inject(UserService);
     snackBar = inject(MatSnackBar);
     readonly appVersion = signal('');
     readonly updater = viewChild.required(UpdaterComponent);
@@ -73,18 +70,6 @@ export class HomeComponent implements OnInit {
             this.snackBar.open('prices.json created successfully.', 'OK', { duration: 2000 });
         } catch {
             this.snackBar.open('Failed to create prices.json.', 'OK', { duration: 3000 });
-        }
-    }
-
-    async loadSettings(): Promise<void> {
-        try {
-            await this.settings.loadSettings();
-        } catch {
-            const dialogRef = this.dialog.open(SettingsDialogComponent, { width: '400px' });
-            const data = await firstValueFrom(dialogRef.afterClosed()) as FormGroup | undefined;
-            if (data) {
-                await this.settings.saveSettings(data);
-            }
         }
     }
 

@@ -4,6 +4,7 @@ import { exists, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { ItemData, ItemTree } from './item.model';
+import { UserService } from '../user/user.service';
 
 export interface PricesFile {
     schema: number;
@@ -17,6 +18,7 @@ export interface PricesFile {
 })
 export class DataService {
     private readonly dataStore = inject(DataStore);
+    private readonly user = inject(UserService);
     private readonly loadError = signal<string | null>(null);
     private readonly missingFile = signal(false);
 
@@ -25,7 +27,8 @@ export class DataService {
 
     async load(): Promise<void> {
         try {
-            const fileExists = await exists('prices.json', { baseDir: BaseDirectory.AppLocalData });
+            const filePath = this.user.filePath('prices.json');
+            const fileExists = await exists(filePath, { baseDir: BaseDirectory.AppLocalData });
             if (!fileExists) {
                 this.missingFile.set(true);
                 this.loadError.set('prices.json was not found.');
@@ -33,7 +36,7 @@ export class DataService {
             }
 
             this.missingFile.set(false);
-            const text = await readTextFile('prices.json', {baseDir: BaseDirectory.AppLocalData});
+            const text = await readTextFile(filePath, {baseDir: BaseDirectory.AppLocalData});
             const data = JSON.parse(text) as Partial<PricesFile>;
             if (
                 typeof data.schema !== 'number'
@@ -74,7 +77,7 @@ export class DataService {
         const json = JSON.stringify(data, null, 2);
 
         await writeTextFile(
-            'prices.json',
+            this.user.filePath('prices.json'),
             json,
             {
                 baseDir: BaseDirectory.AppLocalData
@@ -83,7 +86,7 @@ export class DataService {
     }
 
     async saveWebhook(url: string): Promise<void> {
-        await writeTextFile('webhook.json', 
+        await writeTextFile(this.user.filePath('webhook.json'),
             JSON.stringify({ url }, null, 2), 
             { baseDir: BaseDirectory.AppLocalData }
         );
@@ -93,7 +96,7 @@ export class DataService {
     async loadWebhook(): Promise<void> {
         try {
             const text = await readTextFile(
-                'webhook.json',
+                this.user.filePath('webhook.json'),
                 { baseDir: BaseDirectory.AppLocalData }
             );
 

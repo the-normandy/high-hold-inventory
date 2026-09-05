@@ -17,7 +17,7 @@
     </mat-menu>
     <button matIconButton (click)="refreshData()" matTooltip="Synchronize prices"><mat-icon>sync</mat-icon></button>
     <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_managed</mat-icon></button>
-    <button matIconButton (click)="openSettings()" matTooltip="Settings"><mat-icon>settings</mat-icon></button>
+    <button matIconButton (click)="openProfile()" matTooltip="Profile"><mat-icon>account_circle</mat-icon></button>
     </span>
     <span class="flex flex-row items-center justify-items-center gap-2!">
         <mat-icon>light_mode</mat-icon>
@@ -27,6 +27,7 @@
 </span> 
 </mat-toolbar>
 <main class="flex flex-col flex-1 px-10">
+@if (ready()) {
     <div class="flex flex-row flex-1">
         <router-outlet />
     </div>
@@ -37,5 +38,6 @@
         <button matButton="outlined" (click)="retryLoadData()">Retry</button>
         <button matButton="outlined" (click)="openDataFolder()">Open folder</button>
     </div>
+}
 }
 </main>

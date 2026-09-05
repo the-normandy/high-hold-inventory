@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { CraftSubmission, MaterialSubmission, RecordEntry } from './records.model';
 import { RecordsService } from './records.service';
 
@@ -6,7 +7,8 @@ describe('RecordsService', () => {
     let writtenRecord: RecordEntry | undefined;
 
     beforeEach(() => {
-        service = new RecordsService();
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(RecordsService);
         writtenRecord = undefined;
 
         vi.spyOn(service, 'writeRecord').mockImplementation(async record => {

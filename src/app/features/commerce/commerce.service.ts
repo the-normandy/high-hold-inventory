@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BaseDirectory, exists, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import {
     CommerceBalancePoint,
@@ -9,6 +9,7 @@ import {
     CommerceSummary,
     CommerceType
 } from './commerce.model';
+import { UserService } from '../../core/user/user.service';
 
 const COMMERCE_LEDGER_FILE = 'ledger-commerce.json';
 
@@ -16,6 +17,8 @@ const COMMERCE_LEDGER_FILE = 'ledger-commerce.json';
     providedIn: 'root'
 })
 export class CommerceService {
+    private readonly user = inject(UserService);
+
     async record(submission: CommerceSubmission, type: CommerceType): Promise<CommerceEntry> {
         const entry: CommerceEntry = {
             id: crypto.randomUUID(),
@@ -44,12 +47,13 @@ export class CommerceService {
     }
 
     async load(): Promise<CommerceEntry[]> {
-        if (!(await exists(COMMERCE_LEDGER_FILE, { baseDir: BaseDirectory.AppLocalData }))) {
+        const filePath = this.user.filePath(COMMERCE_LEDGER_FILE);
+        if (!(await exists(filePath, { baseDir: BaseDirectory.AppLocalData }))) {
             await this.write([]);
             return [];
         }
 
-        const text = await readTextFile(COMMERCE_LEDGER_FILE, {
+        const text = await readTextFile(filePath, {
             baseDir: BaseDirectory.AppLocalData
         });
 
@@ -128,7 +132,7 @@ export class CommerceService {
 
     private async write(entries: CommerceEntry[]): Promise<void> {
         await writeTextFile(
-            COMMERCE_LEDGER_FILE,
+            this.user.filePath(COMMERCE_LEDGER_FILE),
             JSON.stringify(entries, null, 2),
             { baseDir: BaseDirectory.AppLocalData }
         );

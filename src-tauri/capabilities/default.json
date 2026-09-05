@@ -14,13 +14,15 @@
     {
       "identifier": "fs:allow-app-write",
       "allow": [
-        {"path": "$APPLOCALDATA"}
+        {"path": "$APPLOCALDATA"},
+        {"path": "$APPLOCALDATA/**"}
       ]
     },
     {
       "identifier": "opener:allow-open-path",
       "allow": [
-        {"path": "$APPLOCALDATA" }
+        {"path": "$APPLOCALDATA" },
+        {"path": "$APPLOCALDATA/**" }
       ]
     },
     {
