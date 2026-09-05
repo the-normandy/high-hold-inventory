@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>{{ profile ? 'Edit profile' : 'Create your profile' }}</h2>
+<form [formGroup]="form" class="contents" (submit)="$event.preventDefault()">
+    <mat-dialog-content>
+        <div class="profile-fields">
+            <div class="flex items-center gap-4">
+                <img ngSrc="/avatar.png" width="72" height="72" alt="Profile avatar" class="size-18 rounded-md object-cover" priority />
+                <button type="button" matButton="outlined" disabled>Choose photo</button>
+            </div>
+            <label class="profile-field">
+                <span>Character name</span>
+                <input type="text" formControlName="name" autocomplete="name" required />
+            </label>
+            <label class="profile-field">
+                <span>Clan name</span>
+                <input type="text" formControlName="clan" autocomplete="organization" placeholder="Solo" />
+            </label>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        @if (profile) {
+            <button type="button" matButton="tonal" [mat-dialog-close]>Cancel</button>
+        }
+        <button type="submit" matButton="filled" [disabled]="form.invalid" [mat-dialog-close]="form.getRawValue()">Save profile</button>
+    </mat-dialog-actions>
+</form>

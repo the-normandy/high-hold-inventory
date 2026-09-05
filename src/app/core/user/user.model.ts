@@ -1,5 +1,6 @@
-interface UserProfile {
+export interface UserProfile {
     name: string;
-    clan: string; // Fallback as 'Solo' on form
-    photo?: string;
+    clan: string;
+    photo: string;
+    path: string;
 }
