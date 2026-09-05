@@ -19,6 +19,8 @@ import { ProfileDialogComponent } from './features/home/profile-dialog.component
 import { UserService, UserProfileInput } from './core/user/user.service';
 import { AvatarWorkflowService } from './core/user/avatar-workflow.service';
 import { ProfileAvatarComponent } from './core/user/profile-avatar.component';
+import { LegacyDataMigrationService } from './core/data/legacy-data-migration.service';
+import { LegacyDataMigrationDialogComponent } from './features/home/legacy-data-migration-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -37,6 +39,7 @@ export class App implements OnInit {
   dialog = inject(MatDialog);
   user = inject(UserService);
   avatarWorkflow = inject(AvatarWorkflowService);
+  migration = inject(LegacyDataMigrationService);
   router = inject(Router);
   ready = signal(false);
 
@@ -46,11 +49,35 @@ export class App implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.requireProfile();
+    await this.offerLegacyDataMigration();
     await Promise.all([
       this.dataService.load(),
       this.dataService.loadWebhook()
     ]);
     this.ready.set(true);
+  }
+
+  private async offerLegacyDataMigration(): Promise<void> {
+    const files = await this.migration.findLegacyFiles();
+    if (files.length === 0) return;
+
+    const dialogRef = this.dialog.open(LegacyDataMigrationDialogComponent, {
+      width: '520px',
+      disableClose: true,
+      data: files
+    });
+    const shouldMigrate = await firstValueFrom(dialogRef.afterClosed()) as boolean;
+
+    try {
+      if (shouldMigrate) {
+        await this.migration.migrate(files);
+        this.snackBar.open('Previous app data migrated successfully.', 'OK', {duration: 3000});
+      } else {
+        await this.migration.completeDecision();
+      }
+    } catch {
+      this.snackBar.open('Failed to migrate previous app data. You will be asked again next time.', 'OK', {duration: 4000});
+    }
   }
 
   private async requireProfile(): Promise<void> {
