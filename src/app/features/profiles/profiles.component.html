@@ -14,8 +14,8 @@
         <section class="active-profile" aria-labelledby="active-profile-title">
             <app-profile-avatar [profile]="active" [size]="150" [alt]="active.name + ' profile picture'" class="active-avatar" />
             <div class="active-copy">
-                <p class="section-label">Current profile</p>
-                <h2 id="active-profile-title">{{active.name}}</h2>
+                <p class="section-label pb-4">Current profile</p>
+                <h2 id="active-profile-title" class="pb-2">{{active.name}}</h2>
                 <p>{{active.clan}}</p>
                 <button matButton="outlined" type="button" (click)="changeAvatar(active)"><mat-icon>add_a_photo</mat-icon>Change avatar</button>
             </div>
