@@ -37,6 +37,7 @@ export class ProfilesComponent {
 
         try {
             await this.user.create(input);
+            await this.dataService.ensureInitialFile();
             await this.reloadClanData();
             this.snackBar.open(`${input.name.trim()} is now active.`, 'OK', { duration: 2000 });
         } catch (error) {

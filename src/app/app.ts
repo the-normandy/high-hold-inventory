@@ -61,6 +61,7 @@ export class App implements OnInit {
       });
       const profile = await firstValueFrom(dialogRef.afterClosed()) as UserProfileInput;
       await this.user.create(profile);
+      await this.dataService.ensureInitialFile();
     }
   }
 
@@ -86,6 +87,7 @@ export class App implements OnInit {
     if (!profile) return;
     try {
       await this.user.create(profile);
+      await this.dataService.ensureInitialFile();
       await this.loadActiveProfile();
     } catch (error) {
       this.snackBar.open(error instanceof Error ? error.message : 'Failed to create profile.', 'OK', {duration: 3000});

@@ -74,6 +74,15 @@ export class DataService {
         }
     }
 
+    async ensureInitialFile(): Promise<void> {
+        const filePath = this.user.clanFilePath('prices.json');
+        if (await exists(filePath, { baseDir: BaseDirectory.AppLocalData })) {
+            return;
+        }
+
+        await this.createInitialFile();
+    }
+
     async save(data: PricesFile): Promise<void> {
         const json = JSON.stringify(data, null, 2);
 
