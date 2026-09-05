@@ -16,7 +16,7 @@
             <div class="active-copy">
                 <p class="section-label pb-4">Current profile</p>
                 <h2 id="active-profile-title" class="pb-2">{{active.name}}</h2>
-                <p>{{active.clan}}</p>
+                <p>{{active.clan}} · {{active.server}}</p>
                 <button matButton="outlined" type="button" (click)="changeAvatar(active)"><mat-icon>add_a_photo</mat-icon>Change avatar</button>
             </div>
         </section>
@@ -37,7 +37,7 @@
                     <app-profile-avatar [profile]="profile" [size]="52" class="profile-avatar" />
                     <div class="profile-identity">
                         <strong>{{profile.name}}</strong>
-                        <span>{{profile.clan}}</span>
+                        <span>{{profile.clan}} · {{profile.server}}</span>
                     </div>
                     @if (profile.path === user.profile()?.path) {
                         <span class="active-marker"><mat-icon>check_circle</mat-icon>Active</span>

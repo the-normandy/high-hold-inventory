@@ -11,7 +11,7 @@
         @for (profile of user.profiles(); track profile.path) {
             <button mat-menu-item (click)="switchProfile(profile.path)">
                 <mat-icon>{{user.profile()?.path === profile.path ? 'check' : 'person'}}</mat-icon>
-                <span>{{profile.name}} · {{profile.clan}}</span>
+                <span>{{profile.name}} · {{profile.clan}} · {{profile.server}}</span>
             </button>
         }
         <mat-divider />

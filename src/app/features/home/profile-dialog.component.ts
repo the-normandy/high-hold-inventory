@@ -65,6 +65,10 @@ export class ProfileDialogComponent {
             nonNullable: true,
             validators: [Validators.required, Validators.pattern(/\S/)]
         }),
+        server: new FormControl('', {
+            nonNullable: true,
+            validators: [Validators.required, Validators.pattern(/\S/)]
+        }),
         clan: new FormControl('', { nonNullable: true })
     });
 

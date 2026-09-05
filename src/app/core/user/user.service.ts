@@ -2,12 +2,14 @@ import { Injectable, signal } from '@angular/core';
 import { BaseDirectory, exists, mkdir, readTextFile, remove, writeFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { UserProfile } from './user.model';
 
-const PROFILES_FILE = 'profiles.json';
+const DATA_DIRECTORY = 'data';
+const PROFILES_FILE = `${DATA_DIRECTORY}/profiles.json`;
 const DEFAULT_CLAN = 'Solo';
 const DEFAULT_PHOTO = '/avatar.png';
 
 export interface UserProfileInput {
     name: string;
+    server: string;
     clan?: string | null;
     photo?: string | null;
     avatar?: Uint8Array;
@@ -41,7 +43,7 @@ export class UserService {
     async create(input: UserProfileInput): Promise<UserProfile> {
         const profile = this.buildProfile(input);
         if (this.profileList().some(existing => existing.path === profile.path)) {
-            throw new Error('A profile for this character and clan already exists.');
+            throw new Error('A profile for this character, clan, and server already exists.');
         }
 
         await mkdir(profile.path, {
@@ -131,11 +133,17 @@ export class UserService {
             throw new Error('A character name is required.');
         }
 
+        const server = input.server.trim();
+        if (!server) {
+            throw new Error('A server name is required.');
+        }
+
         const clan = input.clan?.trim() || DEFAULT_CLAN;
-        const clanPath = this.toPathSegment(clan);
+        const clanPath = `${DATA_DIRECTORY}/${this.toPathSegment(server)}/${this.toPathSegment(clan)}`;
         const path = `${clanPath}/${this.toPathSegment(name)}`;
         return {
             name,
+            server,
             clan,
             photo: input.avatar ? `${path}/avatar.png` : input.photo?.trim() || DEFAULT_PHOTO,
             clanPath,
@@ -165,15 +173,18 @@ export class UserService {
         const profile = value as Partial<UserProfileInput>;
         return typeof profile.name === 'string'
             && profile.name.trim().length > 0
+            && typeof profile.server === 'string'
+            && profile.server.trim().length > 0
             && (profile.clan == null || typeof profile.clan === 'string')
             && (profile.photo == null || typeof profile.photo === 'string');
     }
 
     private persist(profiles: readonly UserProfile[]): Promise<void> {
-        return writeTextFile(
-            PROFILES_FILE,
-            JSON.stringify(profiles, null, 2),
-            { baseDir: BaseDirectory.AppLocalData }
-        );
+        return mkdir(DATA_DIRECTORY, { baseDir: BaseDirectory.AppLocalData, recursive: true })
+            .then(() => writeTextFile(
+                PROFILES_FILE,
+                JSON.stringify(profiles, null, 2),
+                { baseDir: BaseDirectory.AppLocalData }
+            ));
     }
 }

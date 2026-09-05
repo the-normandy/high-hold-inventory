@@ -21,7 +21,7 @@ describe('DataService clan initialization', () => {
         TestBed.configureTestingModule({
             providers: [{
                 provide: UserService,
-                useValue: { clanFilePath: (fileName: string) => `silver-sentinels/${fileName}` }
+                useValue: { clanFilePath: (fileName: string) => `data/server/silver-sentinels/${fileName}` }
             }]
         });
         service = TestBed.inject(DataService);
@@ -44,8 +44,18 @@ describe('DataService clan initialization', () => {
         await service.ensureInitialFile();
 
         expect(fsMocks.writeTextFile).toHaveBeenCalledWith(
-            'silver-sentinels/prices.json',
+            'data/server/silver-sentinels/prices.json',
             JSON.stringify({ schema: 1, materials: {}, craft: {} }, null, 2),
+            expect.any(Object)
+        );
+    });
+
+    it('stores the webhook beside clan prices', async () => {
+        await service.saveWebhook('https://example.test/webhook');
+
+        expect(fsMocks.writeTextFile).toHaveBeenCalledWith(
+            'data/server/silver-sentinels/webhook.json',
+            JSON.stringify({ url: 'https://example.test/webhook' }, null, 2),
             expect.any(Object)
         );
     });
