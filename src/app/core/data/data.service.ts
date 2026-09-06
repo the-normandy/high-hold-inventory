@@ -4,6 +4,8 @@ import { exists, readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { ItemData, ItemTree } from './item.model';
+import { UserService } from '../user/user.service';
+import { parsePricesFile } from './prices-file.parser';
 
 export interface PricesFile {
     schema: number;
@@ -17,6 +19,7 @@ export interface PricesFile {
 })
 export class DataService {
     private readonly dataStore = inject(DataStore);
+    private readonly user = inject(UserService);
     private readonly loadError = signal<string | null>(null);
     private readonly missingFile = signal(false);
 
@@ -24,8 +27,10 @@ export class DataService {
     readonly isMissing = this.missingFile.asReadonly();
 
     async load(): Promise<void> {
+        this.dataStore.load({ schema: 1, materials: {}, craft: {} });
         try {
-            const fileExists = await exists('prices.json', { baseDir: BaseDirectory.AppLocalData });
+            const filePath = this.user.clanFilePath('prices.json');
+            const fileExists = await exists(filePath, { baseDir: BaseDirectory.AppLocalData });
             if (!fileExists) {
                 this.missingFile.set(true);
                 this.loadError.set('prices.json was not found.');
@@ -33,20 +38,8 @@ export class DataService {
             }
 
             this.missingFile.set(false);
-            const text = await readTextFile('prices.json', {baseDir: BaseDirectory.AppLocalData});
-            const data = JSON.parse(text) as Partial<PricesFile>;
-            if (
-                typeof data.schema !== 'number'
-                || !data.materials
-                || typeof data.materials !== 'object'
-                || Array.isArray(data.materials)
-                || !data.craft
-                || typeof data.craft !== 'object'
-                || Array.isArray(data.craft)
-            ) {
-                throw new Error('prices.json does not contain the required roots.');
-            }
-            this.dataStore.load(data as PricesFile);
+            const text = await readTextFile(filePath, {baseDir: BaseDirectory.AppLocalData});
+            this.dataStore.load(parsePricesFile(text));
             this.loadError.set(null);
         } catch (error) {
             console.error(error);
@@ -70,11 +63,20 @@ export class DataService {
         }
     }
 
+    async ensureInitialFile(): Promise<void> {
+        const filePath = this.user.clanFilePath('prices.json');
+        if (await exists(filePath, { baseDir: BaseDirectory.AppLocalData })) {
+            return;
+        }
+
+        await this.createInitialFile();
+    }
+
     async save(data: PricesFile): Promise<void> {
         const json = JSON.stringify(data, null, 2);
 
         await writeTextFile(
-            'prices.json',
+            this.user.clanFilePath('prices.json'),
             json,
             {
                 baseDir: BaseDirectory.AppLocalData
@@ -83,7 +85,7 @@ export class DataService {
     }
 
     async saveWebhook(url: string): Promise<void> {
-        await writeTextFile('webhook.json', 
+        await writeTextFile(this.user.clanFilePath('webhook.json'),
             JSON.stringify({ url }, null, 2), 
             { baseDir: BaseDirectory.AppLocalData }
         );
@@ -91,9 +93,10 @@ export class DataService {
     }
 
     async loadWebhook(): Promise<void> {
+        this.dataStore.webhook.set(null);
         try {
             const text = await readTextFile(
-                'webhook.json',
+                this.user.clanFilePath('webhook.json'),
                 { baseDir: BaseDirectory.AppLocalData }
             );
 

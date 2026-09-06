@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Create a profile</h2>
+<form [formGroup]="form" class="contents" (ngSubmit)="submit()">
+    <mat-dialog-content>
+        <div class="profile-fields">
+            <div class="flex items-center gap-4">
+                <img [src]="preview()" width="72" height="72" alt="Profile avatar preview" class="size-18 rounded-full object-cover" />
+                <button type="button" matButton="outlined" (click)="choosePhoto()"><mat-icon>add_a_photo</mat-icon>Choose photo</button>
+            </div>
+            <label class="profile-field">
+                <span>Character name</span>
+                <input type="text" formControlName="name" autocomplete="name" required />
+            </label>
+            <label class="profile-field">
+                <span>Server</span>
+                <input type="text" formControlName="server" autocomplete="off" required />
+            </label>
+            <label class="profile-field">
+                <span>Clan name</span>
+                <input type="text" formControlName="clan" autocomplete="organization" placeholder="Solo" />
+            </label>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        @if (data?.canCancel) {
+            <button type="button" matButton="tonal" [mat-dialog-close]>Cancel</button>
+        }
+        <button type="submit" matButton="filled" [disabled]="form.invalid">Create profile</button>
+    </mat-dialog-actions>
+</form>

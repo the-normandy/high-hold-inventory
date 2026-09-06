@@ -3,18 +3,14 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { ThemeStore } from './core/theme/theme.store';
 import { MatIconRegistry } from '@angular/material/icon';
-import { DataService } from './core/data/data.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideAppInitializer(() => { 
-      const theme = inject(ThemeStore); 
+      inject(ThemeStore);
       inject(MatIconRegistry).setDefaultFontSetClass('material-symbols-outlined');
-      const dataService = inject(DataService);
-      dataService.loadWebhook();
-      return inject(DataService).load()
     })
   ]
 };

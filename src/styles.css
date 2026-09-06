@@ -19,6 +19,24 @@
 	color: var(--mat-sys-error);
 }
 
+.profile-menu .mat-mdc-menu-item,
+.profile-menu .mat-mdc-menu-item-text {
+	min-width: 0;
+}
+
+.profile-menu .mat-mdc-menu-item-text {
+	overflow: hidden;
+}
+
+.profile-menu-label {
+	display: block;
+	min-width: 0;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.mat-mdc-button-base > .mat-mdc-button-persistent-ripple::before {
 		transition: none;

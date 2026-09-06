@@ -1,11 +1,14 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { BalancePeriod, BalancePoint, BalanceRange, CraftSubmission, EntryType, MaterialSubmission, RecordEntry, RecordSummary } from "./records.model";
 import { BaseDirectory, exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { UserService } from "../../core/user/user.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class RecordsService {
+    private readonly user = inject(UserService);
+
     private createRecord(
         material: MaterialSubmission | undefined,
         craft: CraftSubmission | undefined,
@@ -255,9 +258,10 @@ export class RecordsService {
 
     async writeRecord(entry: RecordEntry): Promise<void> {
         let records: RecordEntry[] = [];
+        const filePath = this.user.filePath('ledger.json');
 
-        if (await exists('ledger.json', { baseDir: BaseDirectory.AppLocalData })) {
-            const text = await readTextFile('ledger.json', {
+        if (await exists(filePath, { baseDir: BaseDirectory.AppLocalData })) {
+            const text = await readTextFile(filePath, {
                 baseDir: BaseDirectory.AppLocalData
             });
 
@@ -272,13 +276,14 @@ export class RecordsService {
                 new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
         )
 
-        await writeTextFile('ledger.json', JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
+        await writeTextFile(filePath, JSON.stringify(records, null, 2), {baseDir: BaseDirectory.AppLocalData});
     }
 
     async load(): Promise<RecordEntry[]> {
-        if (!(await exists('ledger.json', { baseDir: BaseDirectory.AppLocalData }))) {
+        const filePath = this.user.filePath('ledger.json');
+        if (!(await exists(filePath, { baseDir: BaseDirectory.AppLocalData }))) {
             await writeTextFile(
-                'ledger.json',
+                filePath,
                 '[]',
                 { baseDir: BaseDirectory.AppLocalData }
             );
@@ -286,7 +291,7 @@ export class RecordsService {
             return [];
         }
 
-        const text = await readTextFile('ledger.json', {
+        const text = await readTextFile(filePath, {
             baseDir: BaseDirectory.AppLocalData
         });
 
@@ -295,7 +300,8 @@ export class RecordsService {
 
     async delete(id: string): Promise<void> {
         try {
-            const text = await readTextFile('ledger.json', {
+            const filePath = this.user.filePath('ledger.json');
+            const text = await readTextFile(filePath, {
                 baseDir: BaseDirectory.AppLocalData
             });
 
@@ -304,7 +310,7 @@ export class RecordsService {
             const filtered = records.filter(record => record.id !== id);
 
             await writeTextFile(
-                'ledger.json',
+                filePath,
                 JSON.stringify(filtered, null, 2),
                 {
                     baseDir: BaseDirectory.AppLocalData

@@ -1,0 +1,54 @@
+.crop-help {
+    max-width: 26rem;
+    margin-bottom: 1rem;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.875rem;
+}
+
+.crop-frame {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--mat-sys-surface-container-highest);
+}
+
+canvas {
+    display: block;
+    width: 300px;
+    height: 300px;
+    cursor: grab;
+    touch-action: none;
+}
+
+canvas:active {
+    cursor: grabbing;
+}
+
+canvas:focus-visible {
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: -3px;
+}
+
+.crop-guide {
+    position: absolute;
+    inset: 0;
+    border: 2px solid color-mix(in srgb, white 80%, transparent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3rem color-mix(in srgb, black 42%, transparent);
+    pointer-events: none;
+}
+
+.zoom-control {
+    display: grid;
+    grid-template-columns: 3rem minmax(12rem, 1fr) 3rem;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+mat-slider {
+    width: 100%;
+}

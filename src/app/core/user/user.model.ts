@@ -1,5 +1,8 @@
-interface UserProfile {
-    name: string;
-    clan: string; // Fallback as 'Solo' on form
-    photo?: string;
+export interface UserProfile {
+    readonly name: string;
+    readonly server: string;
+    readonly clan: string;
+    readonly photo: string;
+    readonly clanPath: string;
+    readonly path: string;
 }

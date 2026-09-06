@@ -11,16 +11,25 @@
     "fs:allow-app-read-recursive",
     "fs:allow-appcache-read",
     "fs:allow-appcache-read-recursive",
+    "fs:allow-read-text-file",
     {
       "identifier": "fs:allow-app-write",
       "allow": [
-        {"path": "$APPLOCALDATA"}
+        {"path": "$APPLOCALDATA"},
+        {"path": "$APPLOCALDATA/**"}
+      ]
+    },
+    {
+      "identifier": "fs:allow-remove",
+      "allow": [
+        {"path": "$APPLOCALDATA/**"}
       ]
     },
     {
       "identifier": "opener:allow-open-path",
       "allow": [
-        {"path": "$APPLOCALDATA" }
+        {"path": "$APPLOCALDATA" },
+        {"path": "$APPLOCALDATA/**" }
       ]
     },
     {

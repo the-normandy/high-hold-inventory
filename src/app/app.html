@@ -3,10 +3,39 @@
     <img src="/storehouse.png" alt="Storehouse" class="app-logo" />
     <span class="brand-title">{{title()}}</span>
 </a>
-<span class="ml-auto flex flex-row items-center justify-items-center gap-10">
-    <span class="flex flex-row gap-4">
-    <button matIconButton matTooltip="Color themes" [matMenuTriggerFor]="menu"><mat-icon>color_lens</mat-icon></button>
-    <mat-menu #menu="matMenu" xPosition="before" class="rounded-md! w-44!">
+<span class="ml-auto flex items-center gap-2">
+    <button matIconButton class="profile-trigger" [matMenuTriggerFor]="profileMenu" matTooltip="Profile" aria-label="Profile menu">
+        <app-profile-avatar [profile]="user.profile()" [size]="32" class="profile-trigger-avatar" />
+    </button>
+    <mat-menu #profileMenu="matMenu" xPosition="before" class="profile-menu w-72! max-w-[calc(100vw-2rem)]!">
+        @for (profile of user.profiles(); track profile.path) {
+            <button mat-menu-item (click)="switchProfile(profile.path)">
+                <mat-icon>{{user.profile()?.path === profile.path ? 'check' : 'person'}}</mat-icon>
+                <span class="profile-menu-label" [title]="profile.name + ' · ' + profile.clan + ' · ' + profile.server">{{profile.name}} · {{profile.clan}} · {{profile.server}}</span>
+            </button>
+        }
+        <mat-divider />
+        <button mat-menu-item (click)="changeAvatar()"><mat-icon>add_a_photo</mat-icon><span>Change avatar</span></button>
+        <button mat-menu-item (click)="createProfile()"><mat-icon>person_add</mat-icon><span>New profile</span></button>
+        <a mat-menu-item routerLink="/profiles"><mat-icon>manage_accounts</mat-icon><span>Profiles</span></a>
+    </mat-menu>
+
+    <button matIconButton matTooltip="Settings" [matMenuTriggerFor]="settingsMenu" aria-label="Settings"><mat-icon>settings</mat-icon></button>
+    <mat-menu #settingsMenu="matMenu" xPosition="before">
+        <button mat-menu-item [matMenuTriggerFor]="themeMenu"><mat-icon>color_lens</mat-icon><span>Color theme</span></button>
+        <button mat-menu-item (click)="refreshData()"><mat-icon>sync</mat-icon><span>Synchronize prices</span></button>
+        <button mat-menu-item (click)="openAppFolder()"><mat-icon>folder_managed</mat-icon><span>Open app folder</span></button>
+        <mat-divider />
+        <div class="mode-picker" aria-label="Appearance">
+            <button matIconButton type="button" matTooltip="Light mode" aria-label="Use light mode" [class.active]="!mode.isDark()" (click)="$event.stopPropagation(); setDarkMode(false)">
+                <mat-icon>light_mode</mat-icon>
+            </button>
+            <button matIconButton type="button" matTooltip="Dark mode" aria-label="Use dark mode" [class.active]="mode.isDark()" (click)="$event.stopPropagation(); setDarkMode(true)">
+                <mat-icon>dark_mode</mat-icon>
+            </button>
+        </div>
+    </mat-menu>
+    <mat-menu #themeMenu="matMenu" class="rounded-md! w-44!">
         <button mat-menu-item (click)="mode.accent.set('default')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('default') ? 'check' : 'star' }}</mat-icon>Default</button>
         <button mat-menu-item (click)="mode.accent.set('summer')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('summer') ? 'check' : 'brightness_5' }}</mat-icon>Summer</button>
         <button mat-menu-item (click)="mode.accent.set('spring')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('spring') ? 'check' : 'local_florist' }}</mat-icon>Spring</button>
@@ -15,18 +44,10 @@
         <button mat-menu-item (click)="mode.accent.set('duskwillow')" class="rounded-md"><mat-icon>{{mode.isAccentTheme('duskwillow') ? 'check' : 'symptoms'}}</mat-icon>Fifth Season</button>
         <button mat-menu-item (click)="mode.accent.set('high-hold')" class="rounded-md"><mat-icon>{{ mode.isAccentTheme('high-hold') ? 'check' : 'crown' }}</mat-icon>High Hold</button>
     </mat-menu>
-    <button matIconButton (click)="refreshData()" matTooltip="Synchronize prices"><mat-icon>sync</mat-icon></button>
-    <button matIconButton (click)="openDataFolder()" matTooltip="Open app folder"><mat-icon>folder_managed</mat-icon></button>
-    <button matIconButton (click)="openSettings()" matTooltip="Settings"><mat-icon>settings</mat-icon></button>
-    </span>
-    <span class="flex flex-row items-center justify-items-center gap-2!">
-        <mat-icon>light_mode</mat-icon>
-        <mat-slide-toggle (change)="themeChange()" [checked]="getSliderPosition()"></mat-slide-toggle>
-        <mat-icon>dark_mode</mat-icon>
-    </span> 
 </span> 
 </mat-toolbar>
 <main class="flex flex-col flex-1 px-10">
+@if (ready()) {
     <div class="flex flex-row flex-1">
         <router-outlet />
     </div>
@@ -37,5 +58,6 @@
         <button matButton="outlined" (click)="retryLoadData()">Retry</button>
         <button matButton="outlined" (click)="openDataFolder()">Open folder</button>
     </div>
+}
 }
 </main>

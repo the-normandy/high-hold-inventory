@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, signal } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
@@ -13,34 +13,49 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from "@angular
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { HttpClient } from "@angular/common/http";
-import { BaseDirectory, readFile } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, readFile, readTextFile } from "@tauri-apps/plugin-fs";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import type { UnlistenFn } from "@tauri-apps/api/event";
 import { firstValueFrom } from "rxjs";
 import { MaterialService } from "../inventory/material.service";
 import { CraftService } from "../inventory/craft.service";
 import { CategoryDialogComponent } from "./category-dialog.component";
 import { CategoryDeleteDialogComponent } from "./category-delete-dialog.component";
+import { UserService } from "../../core/user/user.service";
+import { parsePricesFile } from "../../core/data/prices-file.parser";
 
 @Component({
     selector: 'app-data',
     templateUrl: 'data.component.html',
     styles: `:host { @apply flex-1; }`,
     styleUrl: 'data.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [
         MatButtonModule, MatTreeModule, MatIconModule, RouterLink,
         ReactiveFormsModule, MatTooltipModule, MatSnackBarModule, MatDialogModule
     ]
 })
-export class DataComponent implements OnInit {
+export class DataComponent implements OnInit, OnDestroy {
+
+    private unlistenFileDrop?: UnlistenFn;
+    private destroyed = false;
 
     ngOnInit(): void {
         this.refreshSnapshot();
+        void this.listenForFileDrops();
         if (!this.data.webhook()) {
             this.snackBar.open("Failed to detect webhook data. It's highly recommended you set it up in Settings.", 'Dismiss', {duration: 5000});
         }
     }
 
+    ngOnDestroy(): void {
+        this.destroyed = true;
+        this.unlistenFileDrop?.();
+    }
+
     protected readonly data = inject(DataStore);
     private readonly dataService = inject(DataService);
+    private readonly user = inject(UserService);
     private readonly materialService = inject(MaterialService);
     private readonly craftService = inject(CraftService);
     private readonly dialog = inject(MatDialog);
@@ -55,10 +70,57 @@ export class DataComponent implements OnInit {
     dataSnapshot = signal<PricesFile | null>(null);
     treeData = signal<TreeNode[]>([]);
     selected = signal<string[]>([]);
+    isDraggingFile = signal(false);
     fb = inject(FormBuilder);
     form = this.fb.group({
         items: this.fb.array<FormGroup>([])
     });
+
+    private async listenForFileDrops(): Promise<void> {
+        try {
+            const unlisten = await getCurrentWindow().onDragDropEvent(event => {
+                if (event.payload.type === 'enter' || event.payload.type === 'over') {
+                    this.isDraggingFile.set(true);
+                    return;
+                }
+
+                this.isDraggingFile.set(false);
+                if (event.payload.type === 'drop') {
+                    void this.importDroppedFile(event.payload.paths);
+                }
+            });
+
+            if (this.destroyed) {
+                unlisten();
+            } else {
+                this.unlistenFileDrop = unlisten;
+            }
+        } catch {
+            this.isDraggingFile.set(false);
+        }
+    }
+
+    private async importDroppedFile(paths: string[]): Promise<void> {
+        if (paths.length !== 1) {
+            this.snackBar.open('Drop one prices.json file at a time.', 'OK', { duration: 3000 });
+            return;
+        }
+
+        const path = paths[0];
+        if (!path.toLowerCase().endsWith('.json')) {
+            this.snackBar.open('Only JSON files can be loaded.', 'OK', { duration: 3000 });
+            return;
+        }
+
+        try {
+            const snapshot = parsePricesFile(await readTextFile(path));
+            this.selected.set([]);
+            this.setSnapshot(snapshot);
+            this.snackBar.open('Data loaded. Review it, then save to keep your changes.', 'OK', { duration: 4000 });
+        } catch {
+            this.snackBar.open('The file is not valid prices data.', 'OK', { duration: 4000 });
+        }
+    }
 
     isCraft = computed(() => this.selected()[0] === 'craft');
 
@@ -573,7 +635,7 @@ export class DataComponent implements OnInit {
             throw new Error("Webhook not detected in settings.");
         }
         try {
-            const bytes = await readFile('prices.json', { baseDir: BaseDirectory.AppLocalData });
+            const bytes = await readFile(this.user.clanFilePath('prices.json'), { baseDir: BaseDirectory.AppLocalData });
             const blob = new Blob([bytes], {type: 'application/json'});
             const form = new FormData();
             form.append('files[0]', blob, 'prices.json');
