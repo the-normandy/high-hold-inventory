@@ -40,13 +40,20 @@ export class AvatarCropDialogComponent {
     }
 
     protected updateZoom(value: number): void {
-        this.zoom.set(value);
+        this.zoom.set(Math.round(Math.min(3, Math.max(1, value)) * 100) / 100);
         this.constrainOffset();
         this.draw();
     }
 
     protected adjustZoom(amount: number): void {
-        this.updateZoom(Math.min(3, Math.max(1, this.zoom() + amount)));
+        this.updateZoom(this.zoom() + amount);
+    }
+
+    protected zoomWithWheel(event: WheelEvent): void {
+        if (event.deltaY === 0) return;
+
+        event.preventDefault();
+        this.adjustZoom(event.deltaY < 0 ? 0.1 : -0.1);
     }
 
     protected pointerDown(event: PointerEvent): void {
