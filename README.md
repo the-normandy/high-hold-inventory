@@ -13,7 +13,9 @@ Storehouse can manage your reports and ledgers for roleplaying fantasy servers, 
 2. Download the latest release's `.exe` file.
 3. Run the `.exe` installer.
 
-Make sure to grab `prices.json` from the your clan or otherwise make your own. The app will warn you if no `prices.json` is found and offer to create a blank one. Should you dismiss it, the warning will also display a helpful button to open the exact folder it should be at, making it a matter of drag-and-drop, and then a retry button.
+Make sure to grab `prices.json` from the your clan or otherwise make your own. The app will warn you if no `prices.json` is found and offer to create a blank one. 
+
+Should you dismiss it, you can always do it through the `Data Management` functionality. It allows drag-and-drop `json` files for ease of use.
 
 # Updating
 
@@ -24,6 +26,18 @@ Alternatively, just download the latest `.exe` installer and run it. You don't n
 If prices change with `prices.json`, open the app folder (top right button, at the header), drag and drop, overwrite.
 
 # Functionalities
+
+## Profiles
+
+Profiles are used to know which character, of which clan, in which server you are making these changes to. Beyond looking pretty, the functionality is to separate different types of data.
+
+A profile consists of character name, character clan, and which server this character belongs to. This structure gives the profiles different invariants about what data is shared or separated between them.
+
+| **Data** | **Shared between profiles?** | **Requirements** |
+|---|---|---|
+| Ledgers | No | N/A |
+| Items/prices | Yes | Same server, same clan *(both)* |
+| Webhook URL | Yes | Same server, same clan *(both)* |
 
 ## Reports
 
@@ -45,9 +59,13 @@ Ledgers are the analytics, and it's separated in ledger for Reports and ledger f
 
 Ledgers give you a summary of how much you sold/purchased, deposited/withdrawn both in absolute currency value as well as in number of entries. A chart will show your activity over time, and a table will display each individual entry.
 
+Ledgers are character-based. Different profiles will always have different ledgers, both internal and commercial.
+
 ## Data management
 
-This is more relevant for leadership or solo players. It's about manipulating `prices.json` via the application instead of manually opening the file, and exporting it somewhere if need be.
+This section is about manipulating `prices.json` via the application instead of manually opening the file, and exporting it somewhere if need be.
+
+This data, both for the webhook and items/prices, is shared between profiles that are of the same server *and* the same clan.
 
 ### Manage data
 
@@ -65,6 +83,8 @@ There are some invariants to the data structure:
 - Each item is expected to have its fields filled.
 
 Breach of those invariants may make the functionalities behave unpredictably, but other than that, the structure is quite flexible.
+
+If you already have `prices.json` from somewhere else, you can drag and drop the file on this section. If it's valid, it'll parse through the data and give it to you as a snapshot. Do note that you still have to save that data to persist it in your current profile.
 
 ### Webhook
 
