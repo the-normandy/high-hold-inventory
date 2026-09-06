@@ -23,7 +23,7 @@ There's an auto updater that will warn you when there's a new version. You just 
 
 Alternatively, just download the latest `.exe` installer and run it. You don't need to manually uninstall anything, Windows will automatically detect the previous version and prompt you to uninstall it. The autoupdater doesn't prevent you from manually updating if you prefer it.
 
-If prices change with `prices.json`, open the app folder (top right button, at the header), drag and drop, overwrite.
+If there's a new `prices.json` available (such as a clan leader updating things), you may to go `Manage data`, drag and drop the file, and save.
 
 # Functionalities
 
