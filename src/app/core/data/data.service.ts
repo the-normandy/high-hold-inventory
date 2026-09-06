@@ -5,6 +5,7 @@ import { BaseDirectory } from '@tauri-apps/api/path';
 import { DataStore } from './data.store';
 import { ItemData, ItemTree } from './item.model';
 import { UserService } from '../user/user.service';
+import { parsePricesFile } from './prices-file.parser';
 
 export interface PricesFile {
     schema: number;
@@ -38,19 +39,7 @@ export class DataService {
 
             this.missingFile.set(false);
             const text = await readTextFile(filePath, {baseDir: BaseDirectory.AppLocalData});
-            const data = JSON.parse(text) as Partial<PricesFile>;
-            if (
-                typeof data.schema !== 'number'
-                || !data.materials
-                || typeof data.materials !== 'object'
-                || Array.isArray(data.materials)
-                || !data.craft
-                || typeof data.craft !== 'object'
-                || Array.isArray(data.craft)
-            ) {
-                throw new Error('prices.json does not contain the required roots.');
-            }
-            this.dataStore.load(data as PricesFile);
+            this.dataStore.load(parsePricesFile(text));
             this.loadError.set(null);
         } catch (error) {
             console.error(error);

@@ -1,4 +1,11 @@
-<section class="flex w-full min-w-0 flex-col gap-4">
+<section class="relative flex w-full min-w-0 flex-col gap-4">
+@if (isDraggingFile()) {
+    <div class="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-(--mat-sys-primary) bg-(--mat-sys-surface) text-(--mat-sys-on-surface) opacity-95" role="status" aria-live="polite">
+        <mat-icon class="size-12! text-5xl! text-(--mat-sys-primary)">upload_file</mat-icon>
+        <strong>Drop prices.json to load it</strong>
+        <span class="text-sm text-(--mat-sys-on-surface-variant)">You will still need to save your changes.</span>
+    </div>
+}
 <header class="flex min-h-16 flex-wrap items-center justify-between gap-6">
     <div>
         <h1 class="text-2xl font-medium">Item data</h1>
