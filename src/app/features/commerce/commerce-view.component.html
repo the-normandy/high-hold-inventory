@@ -1,4 +1,4 @@
-<h2 mat-dialog-title class="capitalize">{{entry.type}} with {{entry.customer}}</h2>
+<h2 mat-dialog-title class="capitalize">Customer: {{entry.customer}} ({{entry.type}})</h2>
 <form class="contents" (submit)="$event.preventDefault(); copy()">
 <mat-dialog-content class="py-4!">
     <div class="mb-5 flex flex-wrap gap-x-10 gap-y-2">
