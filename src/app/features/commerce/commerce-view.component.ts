@@ -16,17 +16,21 @@ export class CommerceViewComponent {
     private readonly snackBar = inject(MatSnackBar);
 
     async copy(): Promise<void> {
+        const entry = this.entry;
+        const pad = (value: string | number, width: number) => String(value).padEnd(width);
+        const namePad = Math.max('Name'.length, ...entry.items.map(item => item.name.length)) + 5;
+
         const lines = [
-            `## ${this.entry.type.toUpperCase()}`,
-            `*${new Date(this.entry.timestamp).toLocaleDateString('en-GB')}*`,
-            `**Customer:**\n${this.entry.customer}`,
-            `**Items:**\n${this.entry.items.map(item =>
-                `* ${item.quantity}x ${item.name} [${item.source === 'material' ? 'Materials' : 'Craft'} / ${item.category}] @ ${item.unitPrice} each (${item.quantity * item.unitPrice})`
-            ).join('\n')}`,
-            `**Total Silver:**\n${this.entry.totalValue}`,
-            ...(this.entry.comment ? [`**Comment:**\n${this.entry.comment}`] : [])
+            `${new Date(entry.timestamp).toISOString().slice(0, 10)} ${entry.type.charAt(0).toUpperCase() + entry.type.slice(1)} for ${entry.customer}`,
+            '',
+            `${pad('Name', namePad)} ${pad('Source', 12)} ${pad('Category', 15)} ${pad('Qty', 5)} ${pad('Unit Price', 12)} ${pad('Value', 10)}`,
+            ...entry.items.map(item => `${pad(item.name, namePad)} ${pad(item.source === 'material' ? 'Materials' : 'Craft', 12)} ${pad(item.category, 15)} ${pad(item.quantity, 5)} ${pad(item.unitPrice, 12)} ${pad(item.quantity * item.unitPrice, 10)}`),
+            '',
+            `Total: ${entry.totalValue} silver`,
+            ...(entry.comment ? ['', `Comment: ${entry.comment}`] : [])
         ];
-        await navigator.clipboard.writeText(lines.join('\n\n'));
+
+        await navigator.clipboard.writeText(['```', ...lines, '```'].join('\n'));
         this.snackBar.open('Copied to clipboard.', 'OK', { duration: 2000 });
     }
 }
